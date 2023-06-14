@@ -21,7 +21,7 @@
               </div>
             </div>
             <div class="card_name">
-              <h2 class="card_product_name">{{ props.product_variant.product_name }}</h2>
+              <h2 class="card_product_name">{{ props.product_variant.product_name ? props.product_variant.product_name : props.product_variant.name }}</h2>
             </div>
             <div class="card_rating">
               <h4 class="rating_title">Рейтинг</h4>
@@ -93,11 +93,12 @@
           </Transition>
           <Transition name="fade" v-if="windowWidth <= 1640" mode="out-in" appear>
             <div class="card_btn" v-if="!pressedBasket">
-              <Button @click="addProductToBasket(props.product_variant)" :width_btn="6" :src_btn="src"></Button>
+              <Button @click="addProductToBasket(props.product_variant)" :without_padding="true" :width_btn="6" :src_btn="src"></Button>
             </div>
             <div class="card_btn-outline" v-else>
               <ButtonRedOutline :basket_btn="true" :route_btn="''" :width_btn="6" >
-                <nuxt-img class="btn-svg" sizes="xxl:100vw xl:100vw lg:100vw md:110vw sm:180vw xs:300vw" :src="'img/basket-red.svg'" alt="btn-svg" loading="lazy"/>
+                <nuxt-img class="btn-svg" sizes="xxl:200vw xl:230vw lg:250vw md:360vw sm:400vw" :src="'img/basket-red.svg'" alt="btn-svg" loading="lazy"/>
+                <!--                <nuxt-img class="btn-svg" sizes="xxl:100vw xl:100vw lg:100vw md:110vw sm:180vw xs:300vw" :src="'img/basket-red.svg'" alt="btn-svg" loading="lazy"/>-->
               </ButtonRedOutline>
             </div>
           </Transition>
@@ -191,12 +192,13 @@
               </Transition>
               <Transition name="fade" v-if="windowWidth <= 1640" mode="out-in" appear>
                 <div class="card_btn" v-if="!pressedBasket">
-                  <Button v-if="windowWidth > 368" @click="addProductToBasket(props.product_variant)" :width_btn="6" :src_btn="src"></Button>
-                  <Button v-if="windowWidth <= 368" @click="addProductToBasket(props.product_variant)" :width_btn="12" :src_btn="src"></Button>
+                  <Button v-if="windowWidth > 368" @click="addProductToBasket(props.product_variant)" :without_padding="true" :width_btn="6" :src_btn="src"></Button>
+                  <Button v-if="windowWidth <= 368" @click="addProductToBasket(props.product_variant)" :without_padding="true" :width_btn="12" :src_btn="src"></Button>
                 </div>
                 <div class="card_btn-outline" v-else>
                   <ButtonRedOutline :basket_btn="true" :route_btn="''" :width_btn="6" >
-                    <nuxt-img class="btn-svg" sizes="xxl:100vw xl:100vw lg:100vw md:110vw sm:180vw xs:300vw" :src="'img/basket-red.svg'" alt="btn-svg" loading="lazy"/>
+                    <nuxt-img class="btn-svg" sizes="md:0vw sm:250px xs:90vw" :src="'img/basket-red.svg'" alt="btn-svg" loading="lazy"/>
+<!--                    <nuxt-img class="btn-svg" sizes="xxl:100vw xl:100vw lg:100vw md:110vw sm:180vw xs:300vw" :src="'img/basket-red.svg'" alt="btn-svg" loading="lazy"/>-->
                   </ButtonRedOutline>
                 </div>
               </Transition>

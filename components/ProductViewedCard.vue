@@ -25,8 +25,8 @@
           </div>
           <nuxt-link :to="`/catalog/products/${props.product_variant.slug}`" prefetch>
             <div class="card_name">
-              <h2 class="card_product_name" v-if="props.product_variant.product_name.length >= 41 && windowWidth <= 370">{{ props.product_variant.product_name.slice(0, 40) }}...</h2>
-              <h2 class="card_product_name" v-else>{{ props.product_variant.product_name }}</h2>
+              <h2 class="card_product_name" v-if="(props.product_variant.product_name ? props.product_variant.product_name.length >= 41 : props.product_variant.name.length >= 41) && windowWidth <= 370">{{ props.product_variant.product_name ? props.product_variant.product_name.slice(0, 40) : props.product_variant.name.slice(0, 40) }}...</h2>
+              <h2 class="card_product_name" v-else>{{ props.product_variant.product_name ? props.product_variant.product_name : props.product_variant.name }}</h2>
             </div>
           </nuxt-link>
 

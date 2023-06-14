@@ -514,7 +514,7 @@
                           </div>
                           <div v-else>
                             <Button v-if="windowWidth > 640" :pressed="pressedBasket" :disabled_btn="1" :width_btn="10.625" :src_btn="src">В корзину</Button>
-                            <Button v-if="windowWidth <= 640" :pressed="pressedBasket" :disabled_btn="1" :width_btn="5.625" :src_btn="src"></Button>
+                            <Button v-if="windowWidth <= 640" :without_padding="true" :pressed="pressedBasket" :disabled_btn="1" :width_btn="5.625" :src_btn="src"></Button>
                           </div>
                         </div>
                       </div>
@@ -527,7 +527,7 @@
                       <span>Самовывоз</span> из магазинов Телефон.Рум Сегодня и позже, бесплатно
                     </p>
                     <p class="del_text">
-                      <span>Доставка</span> после онлайн-оплаты Сегодня или позже, бесплатно
+                      <span>Доставка</span> после онлайн-оплаты Курьером до двери, бесплатно
                     </p>
                   </div>
                 </div>
@@ -569,7 +569,7 @@
               <span>Самовывоз</span> из магазинов Телефон.Рум Сегодня и позже, бесплатно
             </p>
             <p class="del_text">
-              <span>Доставка</span> после онлайн-оплаты Сегодня или позже, бесплатно
+              <span>Доставка</span> после онлайн-оплаты Курьером до двери, бесплатно
             </p>
           </div>
         </div>
@@ -951,7 +951,7 @@
                   </div>
                 </div>
                 <div class="write_review">
-                  <h2 class="first_review">Будьте первым! Поделитесь своим мнением об этом товаре</h2>
+                  <h2 class="first_review">Будьте первым(ой)! Поделитесь своим мнением об этом товаре</h2>
                   <Button @click="description_page=false;properties_page=false;comments_page=true" :route_btn="''" :width_btn="12">Оставить отзыв</Button>
                 </div>
               </div>
@@ -1150,6 +1150,7 @@ const addProductToBasket = (product) => {
   }
   else{
     if (pressedBasket.value === false) {
+      product.quantity = quantity.value;
       useBasketProductsStore().pushProduct(product);
       pressedBasket.value = true;
     }

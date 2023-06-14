@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ais-instant-search class="search_container" :search-client="client" index-name="category_variant" :routing="routing">
+    <ais-instant-search class="search_container" :search-client="client" index-name="category_variant_rating_desc" :routing="routing">
       <div class="autocomplete_box">
         <Autocomplete />
       </div>

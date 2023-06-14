@@ -429,7 +429,7 @@ const props = defineProps({
 const url = computed(() => config.public.apiBaseUrl + `tags/${props.slug}`);
 
 const { data: tag, pending } = await useLazyAsyncData("tag", () => $fetch(url.value));
-
+console.log(tag.value);
 function shuffle(arr){
   let j, temp;
   for(let i = arr.length - 1; i > 0; i--){

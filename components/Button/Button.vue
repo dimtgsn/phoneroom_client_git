@@ -3,7 +3,7 @@
     <div v-if="route_btn && !props.disabled_btn">
       <nuxt-link :to="props.route_btn || '/'" class="button" :style="{ 'width': props.width_btn+'rem', 'height': props.height_btn+'rem' }" :class="{'in_basket': props.pressed, 'disabled': props.disabled_btn}">
         <div v-if="src_btn">
-          <ButtonImage :src_img="props.src_btn" />
+          <ButtonImage :without_padding="props.without_padding" :src_img="props.src_btn" />
         </div>
         <div v-if="!props.pressed">
           <ButtonTitle><slot/></ButtonTitle>
@@ -16,7 +16,7 @@
     <div v-else>
       <button class="button" :style="{ 'width': props.width_btn+'rem', 'height': props.height_btn+'rem' }" :class="{'in_basket': props.pressed, 'disabled': props.disabled_btn}">
         <div v-if="src_btn">
-          <ButtonImage :src_img="props.src_btn" />
+          <ButtonImage :without_padding="props.without_padding" :src_img="props.src_btn" />
         </div>
         <div v-if="!props.pressed">
           <ButtonTitle><slot/></ButtonTitle>
@@ -35,6 +35,7 @@ const props = defineProps({
   route_btn: String,
   width_btn: Number,
   height_btn: Number,
+  without_padding: Boolean,
   src_btn: String,
   disabled_btn: Boolean,
 });

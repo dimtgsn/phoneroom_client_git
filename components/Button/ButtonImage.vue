@@ -1,9 +1,6 @@
 <template>
-  <div id="btn-img">
-<!--    {{ $props.src_img }}-->
-<!--    <nuxt-img v-if="windowWidth > 500" class="btn-svg" sizes="xxl:100vw xl:100vw lg:130vw md:140vw sm:200vw" :src="$props.src_img" alt="btn-svg" loading="lazy"/>-->
+  <div :id="$props.without_padding !== true ? 'btn-img' : 'btn-img_without_padding'">
     <nuxt-img v-if="windowWidth > 500" class="btn-svg" sizes="xxl:200vw xl:230vw lg:250vw md:360vw sm:400vw" :src="$props.src_img" alt="btn-svg" loading="lazy"/>
-<!--    <nuxt-img v-if="windowWidth <= 500" class="btn-svg" sizes="xxl:100vw xl:100vw lg:100vw md:140vw sm:300vw" :src="$props.src_img" alt="btn-svg" loading="lazy"/>-->
     <nuxt-img v-if="windowWidth <= 500" class="btn-svg" sizes="md:0vw sm:250px xs:90vw" :src="$props.src_img" alt="btn-svg" loading="lazy"/>
   </div>
 </template>
@@ -12,7 +9,8 @@
 import {onMounted, ref} from "vue";
 
 const props = defineProps({
-  src_img: String
+  src_img: String,
+  without_padding: Boolean,
 });
 
 const windowWidth = ref(0);
@@ -30,9 +28,9 @@ onMounted(()=>{
   padding-right: .4375rem;
   display: flex;
 }
-/*.btn-svg{*/
-/*  transition: all 10.3s ease;*/
-/*}*/
+#btn-img_without_padding{
+  display: flex;
+}
 
 @media (max-width: 640px) {
   #btn-img {

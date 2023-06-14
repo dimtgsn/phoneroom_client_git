@@ -18,7 +18,7 @@
       <div class="card-content_text">
           <nuxt-link :to="`/catalog/products/${productVariant.slug}`" prefetch>
             <div class="card_name">
-              <h2 class="card_product_name">{{ productVariant.product_name }}</h2>
+              <h2 class="card_product_name">{{ productVariant.product_name ? productVariant.product_name : productVariant.name }}</h2>
             </div>
           </nuxt-link>
 
@@ -80,7 +80,7 @@
               <NotInStock v-if="productVariant.units_in_stock === 0" />
             </div>
           </div>
-          <div class="line"></div>
+<!--          <div class="line"></div>-->
           <div class="product-icons">
             <IconsHeartIcon class="heart_wrap" @click="addFavoriteProduct(productVariant)" :pressed="pressedFavorite" /><span class="title_heart">В избранное</span>
             <IconsDeleteIcon @click="removeProduct(productVariant)" /><span class="title_heart">Удалить</span>
@@ -176,7 +176,6 @@ const removeProduct = (product) => {
     emit('delete');
   }
 };
-
 
 const quantity = ref(props.product_variant.quantity);
 
@@ -438,7 +437,6 @@ onMounted(()=>{
 .product-icons{
   display: flex;
   margin-top: .625rem;
-  justify-content: end;
   align-items: center;
 }
 
@@ -510,38 +508,41 @@ onMounted(()=>{
   }
 }
 @media (max-width: 425px) {
-  /*.card_rating{*/
-  /*  margin: 4px 0;*/
-  /*}*/
-  /*.img-wrap{*/
-  /*  width: 10rem;*/
-  /*}*/
-  /*.card_product_name,*/
-  /*.price_title,*/
-  /*.old_price_title,*/
-  /*.quantity{*/
-  /*  font-size: 1.225rem;*/
-  /*}*/
-  /*.quantity-wrap{*/
-  /*  margin-bottom: 1rem;*/
-  /*}*/
-  /*.rating_title {*/
-  /*  font-size: .75rem;*/
-  /*}*/
-  /*.remove,*/
-  /*.add{*/
-  /*  width: 2rem;*/
-  /*  height: 2rem;*/
-  /*  font-size: 1rem;*/
-  /*}*/
+  .card_rating{
+    margin: 4px 0;
+  }
+  .img-wrap{
+    width: 10rem;
+  }
+  .card_product_name,
+  .price_title,
+  .old_price_title,
+  .quantity{
+    font-size: 1.225rem;
+  }
+  .quantity-wrap{
+    margin-bottom: 1rem;
+  }
+  .rating_title {
+    font-size: .75rem;
+  }
+  .remove,
+  .add{
+    width: 2rem;
+    height: 2rem;
+    font-size: 1rem;
+  }
 }
-@media (max-width: 368px) {
+@media (max-width: 450px) {
   .card_body{
     flex-direction: column;
   }
   .card-footer{
     flex-direction: row;
     margin-top: 1.875rem;
+    justify-content: right;
+    margin-right: .5rem;
+    margin-left: 0;
   }
   .quantity-wrap{
     margin-right: 1.75rem;

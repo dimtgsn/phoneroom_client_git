@@ -307,7 +307,6 @@
                   </transition>
                   <div class="filter" v-if="windowWidth > 768">
                     <div class="filter-block">
-
                       <div class="filter-row">
                         <div class="filter_title filter_price">Цена</div>
                       </div>
@@ -320,6 +319,7 @@
                       </div>
 
                       <div class="line red_line"></div>
+
                       <ais-toggle-refinement style="margin-top: 30px" attribute="with_old_price" label="Товары со скидкой">
                         <template v-slot="{ value, refine, createURL, sendEvent }">
                           <div class="in_stock-wrapp">
@@ -533,15 +533,19 @@ const new_items_options = ref([]);
 const new_items = ref([]);
 const checkOptionsNames = (items) => {
   for (let itm = 0; itm<items.length; itm++) {
-    for (let i = 0; i<items[itm].options_names.length; i++) {
-      if (new_items_options.value.indexOf(items[itm].options_names[i]) !== -1) {
-        continue;
+    if(items[itm].options_names){
+      for (let i = 0; i<items[itm].options_names.length; i++) {
+        if (new_items_options.value.indexOf(items[itm].options_names[i]) !== -1) {
+          continue;
+        }
+        new_items.value.push(items[itm]);
+        new_items_options.value.push(items[itm].options_names[i]);
       }
-      new_items.value.push(items[itm]);
-      new_items_options.value.push(items[itm].options_names[i]);
     }
   }
-  new_items.value[0].options_names = new_items_options.value;
+  if (new_items_options.value.length){
+    new_items.value[0].options_names = new_items_options.value;
+  }
   return new_items.value;
 };
 

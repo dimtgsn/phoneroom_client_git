@@ -21,7 +21,7 @@
           </nuxt-link>
         </li>
         <li>
-          <nuxt-link to="/" class="index_link">
+          <nuxt-link to="/catalog/naushniki" class="index_link">
             <nuxt-img class="index_link_png" src="img/headphone2.svg" loading="lazy" sizes="xxl:100vw xl:100vw lg:120vw md:140vw sm:140vw xs:100vw" alt="headphone"/>
             <h3 class="index_link_title">Наушники</h3>
           </nuxt-link>

@@ -20,7 +20,7 @@
             </div>
           </div>
           <div class="card_name">
-            <h2 class="card_product_name">{{ props.product_variant.product_name }}</h2>
+            <h2 class="card_product_name">{{ props.product_variant.product_name ? props.product_variant.product_name : props.product_variant.name }}</h2>
           </div>
           <div class="card_rating">
             <h4 class="rating_title">Рейтинг</h4>

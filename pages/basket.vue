@@ -174,7 +174,7 @@ onBeforeUpdate(() => {
         totalQuantity.value = totalQuantity.value + parseInt(product.quantity);
         detailProducts.push({
           id: product.id,
-          product_name: product.product_name,
+          product_name: product.product_name ? product.product_name : product.name,
           image: product.image,
           quantity: product.quantity,
         });
@@ -220,7 +220,7 @@ onMounted(() => {
         totalQuantity.value = totalQuantity.value + parseInt(product.quantity);
         detailProducts.push({
           id: product.id,
-          product_name: product.product_name,
+          product_name: product.product_name ? product.product_name : product.name,
           image: product.image,
           quantity: product.quantity,
         });
@@ -302,7 +302,7 @@ const editQuantity = () => {
         totalPrice.value = totalPrice.value * parseInt(product.quantity);
         detailProducts.push({
           id: product.id,
-          product_name: product.product_name,
+          product_name: product.product_name ? product.product_name : product.name,
           image: product.image,
           quantity: product.quantity,
         });

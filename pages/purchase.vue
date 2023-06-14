@@ -314,8 +314,9 @@
           <div class="products">
             <div class="detail_product" v-for="product in useBasketProductsStore().getTotalBasket().value.detailProducts">
               <img class="detail_image" :src="config.public.baseUrl+product.image" alt="Product">
-              <h2 class="detail_name" v-if="product.product_name.split(' ').length > 4">{{ product.product_name.split(" ").slice(0, 4).join(" ") }}...</h2>
-              <h2 class="detail_name" v-else>{{ product.product_name }}</h2>
+              <h2 class="detail_name" v-if="product.product_name.length < 31">{{ product.product_name }}</h2>
+              <h2 class="detail_name" v-else-if="product.product_name.split(' ').slice(0, 4).join(' ').length >= 31">{{ product.product_name.split(" ").slice(0, 3).join(" ") }}...</h2>
+              <h2 class="detail_name" v-else>{{ product.product_name.split(" ").slice(0, 4).join(" ") }}...</h2>
               <h2 class="detail_quantity">{{ product.quantity }}</h2>
             </div>
           </div>
@@ -1196,8 +1197,7 @@ const zipCheckFormRequest = async () => {
 .detail_image{
   width: 45px;
   height: 45px;
-  margin-right: .225rem;
-  margin-top: .5rem;
+  margin-right: .5rem;
 }
 .detail_name,
 .detail_quantity{

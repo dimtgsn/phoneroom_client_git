@@ -310,9 +310,9 @@
                     <div class="filter_title filter_price">Цена</div>
                   </div>
                   <div class="filter-body price_body">
-                    <ais-range-input attribute="price" :min="(category.parent_id !== null ? category.min_price:category.min_price_main)" :max="(category.parent_id !== null ? category.max_price:category.max_price_main)">
+                    <ais-range-input attribute="price" :min="(category.min_price ? category.min_price : 1000)" :max="(category.max_price ? category.max_price : 100000)">
                       <template v-slot="{ currentRefinement, range, refine }">
-                        <SliderElement :value="toValue(currentRefinement, range)" @change="refine({ min: $event[0], max: $event[1] })" :min="(category.parent_id !== null ? category.min_price:category.min_price_main)" :max="(category.parent_id !== null ? category.max_price:category.max_price_main)" :lazy="true"/>
+                        <SliderElement :value="toValue(currentRefinement, range)" @change="refine({ min: $event[0], max: $event[1] })" :min="(category.min_price ? category.min_price : 1000)" :max="(category.max_price ? category.max_price : 100000)" :lazy="true"/>
                       </template>
                     </ais-range-input>
                   </div>
@@ -439,7 +439,9 @@ const routing = {
   stateMapping: singleIndexMapping('category_variant_rating_desc'),
 };
 
-const query = computed(() => category.value.slug);
+// const query = computed(() => category.value.slug);
+const query = computed(() => slug.value);
+
 onBeforeMount(() => {
   if (category.value !== null){
     if (category.value.parent_id){
@@ -483,19 +485,25 @@ const toValue = (value, range) => {
 
 const new_items_options = ref([]);
 const new_items = ref([]);
+
 const checkOptionsNames = (items) => {
   for (let itm = 0; itm<items.length; itm++) {
-    for (let i = 0; i<items[itm].options_names.length; i++) {
-      if (new_items_options.value.indexOf(items[itm].options_names[i]) !== -1) {
-        continue;
+    if(items[itm].options_names){
+      for (let i = 0; i<items[itm].options_names.length; i++) {
+        if (new_items_options.value.indexOf(items[itm].options_names[i]) !== -1) {
+          continue;
+        }
+        new_items.value.push(items[itm]);
+        new_items_options.value.push(items[itm].options_names[i]);
       }
-      new_items.value.push(items[itm]);
-      new_items_options.value.push(items[itm].options_names[i]);
     }
   }
-  new_items.value[0].options_names = new_items_options.value;
+  if (new_items_options.value.length){
+    new_items.value[0].options_names = new_items_options.value;
+  }
   return new_items.value;
 };
+
 const toSlug = (str) => {
   str = str.replace(/ /g,"");
 
