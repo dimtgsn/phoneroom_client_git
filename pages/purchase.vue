@@ -15,8 +15,8 @@
               <h3 class="data_subtitle">Доставка</h3>
               <div class="data_text">Курьером до двери, <span>Бесплатно</span></div>
               <div class="data_images">
-                <nuxt-img style="margin: .625rem 0 0 0" src="img/pochta_ru.svg" loading="lazy" sizes="xxl:3vw xl:10vw lg:3vw md:5vw sm:25vw xs:5vw" alt="boxberry"/>
-                <nuxt-img style="margin: .625rem 0 0 1rem" src="img/logo-boxberry.png" loading="lazy" sizes="xxl:100vw xl:100vw lg:100vw md:200vw sm:230vw xs:200vw" alt="pochta-ru"/>
+                <nuxt-img style="margin: .625rem 0 0 0" src="img/pochta_ru.svg" loading="lazy" sizes="lg:20vw md:200vw sm:230vw xs:200vw" alt="pochta-ru"/>
+                <nuxt-img style="margin: 3rem 0 0 1rem" src="img/logo-boxberry.png" loading="lazy" sizes="xxl:100vw xl:100vw lg:100vw md:200vw sm:230vw xs:200vw" alt="boxberry"/>
               </div>
             </div>
           </div>
@@ -572,7 +572,7 @@
     </div>
     <div v-else style="display: none"></div>
 
-    <a href="#" @click="payment(false)">тест</a>
+    <a href="#" @click="payment(false)">тест</a><br>
   </section>
 </template>
 
@@ -730,6 +730,11 @@ const payment = (disabled) => {
     //   });
     paymentFormRequest().then((res) => {
       console.log(res);
+      if (res){
+        useBasketProductsStore().destroyBasketProducts();
+        useBasketProductsStore().destroyTotalBasket();
+        navigateTo(`/success-page/${res}`);
+      }
     }).catch((err) => {
       paymentError.value = `Проверьте корректноcть введенных данных`;
       console.error('Contact form could not be send', err)
@@ -776,7 +781,7 @@ const paymentFormRequest = async () => {
     },
     method: 'POST',
     params: {
-      user_id:  57,
+      user_id:  2,
       total:  parseInt(useBasketProductsStore().getTotalBasket().value.totalPrice),
       details: JSON.stringify(useBasketProductsStore().getTotalBasket().value.detailProducts),
       ship_address: {

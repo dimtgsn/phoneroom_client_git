@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8c18b85c-df0e-4f3f-88d1-f5da10274c2b" name="Changes" comment="" />
+    <list default="true" id="8c18b85c-df0e-4f3f-88d1-f5da10274c2b" name="Changes" comment="Update search indexes">
+      <change afterPath="$PROJECT_DIR$/pages/success-page/[purchase_id].vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/ProductBasketCard.vue" beforeDir="false" afterPath="$PROJECT_DIR$/components/ProductBasketCard.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/ProductCard.vue" beforeDir="false" afterPath="$PROJECT_DIR$/components/ProductCard.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/ProductSearchCard.vue" beforeDir="false" afterPath="$PROJECT_DIR$/components/ProductSearchCard.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/ProductViewedCard.vue" beforeDir="false" afterPath="$PROJECT_DIR$/components/ProductViewedCard.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/error.vue" beforeDir="false" afterPath="$PROJECT_DIR$/error.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/basket.vue" beforeDir="false" afterPath="$PROJECT_DIR$/pages/basket.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/purchase.vue" beforeDir="false" afterPath="$PROJECT_DIR$/pages/purchase.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stores/BasketProductsStore.js" beforeDir="false" afterPath="$PROJECT_DIR$/stores/BasketProductsStore.js" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -10,23 +22,35 @@
   <component name="ComposerSettings">
     <execution />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Vue Single File Component" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
   <component name="ProjectId" id="2PVXHDGJHWenU6TFPEBrFiYrxBw" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "nodejs_package_manager_path": "npm",
+    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\PhpStorm 2022.2.3\\plugins\\JavaScriptLanguage\\jsLanguageServicesImpl\\external",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -37,10 +61,25 @@
       <updated>1683543132541</updated>
       <workItem from="1683543135201" duration="31000" />
       <workItem from="1685973107272" duration="684000" />
+      <workItem from="1686728310452" duration="1878000" />
+      <workItem from="1686744819833" duration="3892000" />
+      <workItem from="1686815624134" duration="611000" />
+      <workItem from="1686917063751" duration="9548000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>

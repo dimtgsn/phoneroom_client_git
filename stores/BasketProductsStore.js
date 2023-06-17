@@ -27,6 +27,16 @@ export const useBasketProductsStore = defineStore('basketProductsStore', () => {
 
     }
 
+    function destroyBasketProducts() {
+        basketProducts.value = [];
+        localStorage.setItem('basketProducts', '[]');
+    }
+
+    function destroyTotalBasket() {
+        totalBasket.value = [];
+        localStorage.setItem('totalBasket', '');
+    }
+
     function createTotalBasket(item) {
         totalBasket.value = '';
         totalBasket.value = item;
@@ -59,6 +69,8 @@ export const useBasketProductsStore = defineStore('basketProductsStore', () => {
         needUpdate,
         removeProduct,
         getTotalBasket,
+        destroyBasketProducts,
+        destroyTotalBasket,
         createTotalBasket,
         checkProduct,
         getBasketProducts,

@@ -15,8 +15,8 @@
             </div>
             <div class="card_status">
               <div class="card_status">
-                <InStock v-if="props.product_variant.units_in_stock >= 20" />
-                <NotMuchLeftInStock v-else-if="props.product_variant.units_in_stock < 20 && props.product_variant.units_in_stock > 0" />
+                <InStock v-if="parseInt(props.product_variant.units_in_stock) >= 20" />
+                <NotMuchLeftInStock v-else-if="parseInt(props.product_variant.units_in_stock) < 20 && parseInt(props.product_variant.units_in_stock) > 0" />
                 <NotInStock v-else />
               </div>
             </div>
@@ -116,8 +116,8 @@
           <div class="mobile-content">
             <div class="card_status">
               <div class="card_status">
-                <InStock v-if="props.product_variant.units_in_stock >= 20" />
-                <NotMuchLeftInStock v-else-if="props.product_variant.units_in_stock < 20 && props.product_variant.units_in_stock > 0" />
+                <InStock v-if="parseInt(props.product_variant.units_in_stock) >= 20" />
+                <NotMuchLeftInStock v-else-if="parseInt(props.product_variant.units_in_stock) < 20 && parseInt(props.product_variant.units_in_stock) > 0" />
                 <NotInStock v-else />
               </div>
             </div>

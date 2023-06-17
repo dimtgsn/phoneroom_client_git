@@ -75,9 +75,9 @@
           </div>
           <div class="card_status">
             <div class="card_status">
-              <InStock v-if="productVariant.units_in_stock >= 20" />
-              <NotMuchLeftInStock v-if="productVariant.units_in_stock < 20" />
-              <NotInStock v-if="productVariant.units_in_stock === 0" />
+              <InStock v-if="parseInt(productVariant.units_in_stock) >= 20" />
+              <NotMuchLeftInStock v-else-if="parseInt(productVariant.units_in_stock) < 20 && parseInt(productVariant.units_in_stock) > 0" />
+              <NotInStock v-else />
             </div>
           </div>
 <!--          <div class="line"></div>-->
@@ -89,9 +89,9 @@
       </div>
       <div class="card-footer">
         <div class="quantity-wrap">
-          <div class="remove" @click="reduceQuantity(product_variant)">–</div>
+          <div class="remove" :class="{'not_in_stock' : parseInt(product_variant.units_in_stock) === 0}" @click="reduceQuantity(product_variant)">–</div>
           <div class="quantity">{{ quantity }}</div>
-          <div class="add" @click="increaseQuantity(product_variant)">+</div>
+          <div class="add" :class="{'not_in_stock' : parseInt(product_variant.units_in_stock) === 0}" @click="increaseQuantity(product_variant)">+</div>
         </div>
         <div class="card_price">
           <h2 class="price_title">{{ priceFormat(productVariant.price) }}&nbsp;₽</h2>
@@ -180,31 +180,13 @@ const removeProduct = (product) => {
 const quantity = ref(props.product_variant.quantity);
 
 const increaseQuantity = (product) =>{
-  quantity.value++;
-  if (useUserStore().getUser().value){
-    basketUpdateFormRequest(product, quantity.value).then((res) => {
-      console.log(res);
-      emit('editQuantity');
-
-    }).catch((err) => {
-      console.error('Contact form could not be send', err);
-    });
-  }
-  else {
-    useBasketProductsStore().removeProduct(product);
-    product.quantity = quantity.value;
-    useBasketProductsStore().pushProduct(product);
-    emit('editQuantity');
-  }
-}
-
-const reduceQuantity = (product) =>{
-  if (quantity.value >= 2){
-    quantity.value--;
+  if (parseInt(product.units_in_stock) > 0){
+    quantity.value++;
     if (useUserStore().getUser().value){
       basketUpdateFormRequest(product, quantity.value).then((res) => {
         console.log(res);
         emit('editQuantity');
+
       }).catch((err) => {
         console.error('Contact form could not be send', err);
       });
@@ -214,6 +196,28 @@ const reduceQuantity = (product) =>{
       product.quantity = quantity.value;
       useBasketProductsStore().pushProduct(product);
       emit('editQuantity');
+    }
+  }
+}
+
+const reduceQuantity = (product) =>{
+  if (parseInt(product.units_in_stock) > 0){
+    if (quantity.value >= 2){
+      quantity.value--;
+      if (useUserStore().getUser().value){
+        basketUpdateFormRequest(product, quantity.value).then((res) => {
+          console.log(res);
+          emit('editQuantity');
+        }).catch((err) => {
+          console.error('Contact form could not be send', err);
+        });
+      }
+      else {
+        useBasketProductsStore().removeProduct(product);
+        product.quantity = quantity.value;
+        useBasketProductsStore().pushProduct(product);
+        emit('editQuantity');
+      }
     }
   }
 }
@@ -430,6 +434,14 @@ onMounted(()=>{
   color: #384255;
   padding-left: .75rem;
   vertical-align: text-bottom;
+}
+.not_in_stock{
+  cursor: default;
+}
+.not_in_stock:hover{
+  background-color: #fff;
+  color: #384255;
+  opacity: 1;
 }
 .title_heart{
   padding-right: .875rem;

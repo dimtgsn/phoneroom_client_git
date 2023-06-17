@@ -52,7 +52,7 @@ onMounted(()=>{
   width: 50rem;
   height: 30rem;
   text-align: center;
-  margin: 6.25rem 0 11.25rem 0;
+  margin: 12.25rem 0 11.25rem 0;
   box-shadow: 0 0 30px rgba(133, 143, 164, 0.5);
   border-radius: 6px;
 }

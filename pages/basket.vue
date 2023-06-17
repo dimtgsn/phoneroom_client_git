@@ -145,12 +145,14 @@ onBeforeUpdate(() => {
     totalQuantity.value = 0;
     if (products.value && products.value.length){
       for (const product of products.value) {
-        totalPrice.value = totalPrice.value + parseInt(product.price);
-        totalPrice.value = totalPrice.value * parseInt(product.quantity);
-        totalQuantity.value = totalQuantity.value + parseInt(product.quantity);
-        if (product.old_price){
-          totalSalePrice.value = totalSalePrice.value + (parseInt(product.price)-parseInt(product.old_price));
-          totalSalePrice.value = totalSalePrice.value * parseInt(product.quantity);
+        if(parseInt(product.units_in_stock) > 0){
+          totalPrice.value = totalPrice.value + parseInt(product.price);
+          totalPrice.value = totalPrice.value * parseInt(product.quantity);
+          totalQuantity.value = totalQuantity.value + parseInt(product.quantity);
+          if (product.old_price){
+            totalSalePrice.value = totalSalePrice.value + (parseInt(product.price)-parseInt(product.old_price));
+            totalSalePrice.value = totalSalePrice.value * parseInt(product.quantity);
+          }
         }
       }
     }
@@ -169,18 +171,20 @@ onBeforeUpdate(() => {
     let detailProducts = [];
     if (products.value && products.value.length){
       for (const product of products.value) {
-        totalPrice.value = totalPrice.value + parseInt(product.price);
-        totalPrice.value = totalPrice.value * parseInt(product.quantity);
-        totalQuantity.value = totalQuantity.value + parseInt(product.quantity);
-        detailProducts.push({
-          id: product.id,
-          product_name: product.product_name ? product.product_name : product.name,
-          image: product.image,
-          quantity: product.quantity,
-        });
-        if (product.old_price){
-          totalSalePrice.value = totalSalePrice.value + (parseInt(product.price)-parseInt(product.old_price));
-          totalSalePrice.value = totalSalePrice.value * parseInt(product.quantity);
+        if(parseInt(product.units_in_stock) > 0){
+          totalPrice.value = totalPrice.value + parseInt(product.price);
+          totalPrice.value = totalPrice.value * parseInt(product.quantity);
+          totalQuantity.value = totalQuantity.value + parseInt(product.quantity);
+          detailProducts.push({
+            id: product.id,
+            product_name: product.product_name ? product.product_name : product.name,
+            image: product.image,
+            quantity: product.quantity,
+          });
+          if (product.old_price){
+            totalSalePrice.value = totalSalePrice.value + (parseInt(product.price)-parseInt(product.old_price));
+            totalSalePrice.value = totalSalePrice.value * parseInt(product.quantity);
+          }
         }
       }
     }
@@ -215,18 +219,20 @@ onMounted(() => {
     let detailProducts = [];
     if (products.value && products.value.length){
       for (const product of products.value) {
-        totalPrice.value = totalPrice.value + parseInt(product.price);
-        totalPrice.value = totalPrice.value * parseInt(product.quantity);
-        totalQuantity.value = totalQuantity.value + parseInt(product.quantity);
-        detailProducts.push({
-          id: product.id,
-          product_name: product.product_name ? product.product_name : product.name,
-          image: product.image,
-          quantity: product.quantity,
-        });
-        if (product.old_price){
-          totalSalePrice.value = totalSalePrice.value + (parseInt(product.price)-parseInt(product.old_price));
-          totalSalePrice.value = totalSalePrice.value * parseInt(product.quantity);
+        if(parseInt(product.units_in_stock) > 0){
+          totalPrice.value = totalPrice.value + parseInt(product.price);
+          totalPrice.value = totalPrice.value * parseInt(product.quantity);
+          totalQuantity.value = totalQuantity.value + parseInt(product.quantity);
+          detailProducts.push({
+            id: product.id,
+            product_name: product.product_name ? product.product_name : product.name,
+            image: product.image,
+            quantity: product.quantity,
+          });
+          if (product.old_price){
+            totalSalePrice.value = totalSalePrice.value + (parseInt(product.price)-parseInt(product.old_price));
+            totalSalePrice.value = totalSalePrice.value * parseInt(product.quantity);
+          }
         }
       }
     }
@@ -258,11 +264,13 @@ const updateUserProducts = () => {
   totalSalePrice.value = 0;
   if (products.value && products.value.length){
     for (const product of products.value) {
-      totalPrice.value = totalPrice.value + parseInt(product.price);
-      totalPrice.value = totalPrice.value * parseInt(product.quantity);
-      if (product.old_price){
-        totalSalePrice.value = totalSalePrice.value + (parseInt(product.price)-parseInt(product.old_price));
-        totalSalePrice.value = totalSalePrice.value * parseInt(product.quantity);
+      if(parseInt(product.units_in_stock) > 0){
+        totalPrice.value = totalPrice.value + parseInt(product.price);
+        totalPrice.value = totalPrice.value * parseInt(product.quantity);
+        if (product.old_price){
+          totalSalePrice.value = totalSalePrice.value + (parseInt(product.price)-parseInt(product.old_price));
+          totalSalePrice.value = totalSalePrice.value * parseInt(product.quantity);
+        }
       }
     }
   }
@@ -280,11 +288,13 @@ const editQuantity = () => {
     totalSalePrice.value = 0;
     if (products.value && products.value.length){
       for (const product of products.value) {
-        totalPrice.value = totalPrice.value + parseInt(product.price);
-        totalPrice.value = totalPrice.value * parseInt(product.quantity);
-        if (product.old_price){
-          totalSalePrice.value = totalSalePrice.value + (parseInt(product.price)-parseInt(product.old_price));
-          totalSalePrice.value = totalSalePrice.value * parseInt(product.quantity);
+        if(parseInt(product.units_in_stock) > 0){
+          totalPrice.value = totalPrice.value + parseInt(product.price);
+          totalPrice.value = totalPrice.value * parseInt(product.quantity);
+          if (product.old_price){
+            totalSalePrice.value = totalSalePrice.value + (parseInt(product.price)-parseInt(product.old_price));
+            totalSalePrice.value = totalSalePrice.value * parseInt(product.quantity);
+          }
         }
       }
     }
@@ -298,17 +308,19 @@ const editQuantity = () => {
     let detailProducts = [];
     if (products.value && products.value.length){
       for (const product of products.value) {
-        totalPrice.value = totalPrice.value + parseInt(product.price);
-        totalPrice.value = totalPrice.value * parseInt(product.quantity);
-        detailProducts.push({
-          id: product.id,
-          product_name: product.product_name ? product.product_name : product.name,
-          image: product.image,
-          quantity: product.quantity,
-        });
-        if (product.old_price){
-          totalSalePrice.value = totalSalePrice.value + (parseInt(product.price)-parseInt(product.old_price));
-          totalSalePrice.value = totalSalePrice.value * parseInt(product.quantity);
+        if(parseInt(product.units_in_stock) > 0){
+          totalPrice.value = totalPrice.value + parseInt(product.price);
+          totalPrice.value = totalPrice.value * parseInt(product.quantity);
+          detailProducts.push({
+            id: product.id,
+            product_name: product.product_name ? product.product_name : product.name,
+            image: product.image,
+            quantity: product.quantity,
+          });
+          if (product.old_price){
+            totalSalePrice.value = totalSalePrice.value + (parseInt(product.price)-parseInt(product.old_price));
+            totalSalePrice.value = totalSalePrice.value * parseInt(product.quantity);
+          }
         }
       }
     }
