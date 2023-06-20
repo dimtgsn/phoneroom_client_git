@@ -241,7 +241,7 @@
                         Получить код</Button>
                     </div>
                   </div>
-                  <div class="payment_error" v-if="paymentError">{{ paymentError }}</div>
+                  <div class="error_message" v-if="paymentError">{{ paymentError }}</div>
                 </form>
               </div>
             </div>
@@ -330,6 +330,9 @@
         <h2 class="data_title">Ваши данные</h2>
         <div class="user-container data_body">
           <div class="left-user">
+            <div style="display: none" :class="{not_access_block: btn_pending}">
+              <img src="img/295.svg" alt="">
+            </div>
             <div v-if="pending">....</div>
             <div v-else class="form-section">
               <form action="" >
@@ -531,37 +534,41 @@
                       Получить код</Button>
                   </div>
                 </div>
-                <div class="payment_error" v-if="paymentError">{{ paymentError }}</div>
+                <div class="error_message" v-if="paymentError">{{ paymentError }}</div>
                 <div class="login-form" >
-                  <Button @click.prevent="payment(disabled_payment)"
-                          :route_btn="''"
-                          :disabled_btn="disabled_payment=(v$.name.$error ||
-                               v$.phone.$error ||
-                               v$.code.$error ||
-                               v$.email.$error ||
-                               v$.middle_name.$error ||
-                               v$.last_name.$error ||
-                               formData.phone==='' ||
-                               formData.code==='' ||
-                               formData.name==='' ||
-                               formData.address==='' ||
-                               formData.middle_name==='' ||
-                               formData.last_name==='' ||
-                               delivery_chose_1==='' ||
-                               payment_chose_1==='' ||
-                               zipCheck === false ||
-                               formData.suggestion.data===null ||
-                               formData.suggestion.data.postal_code===null ||
-                               formData.suggestion.data.region===null ||
-                               formData.suggestion.data.street===null ||
-                               formData.suggestion.data.house===null ||
-                               (formData.suggestion.data.city==='' && formData.suggestion.data.settlement===''))">
-                    Оплатить картой</Button>
+<!--                  <Button @click.prevent="payment(disabled_payment)"-->
+<!--                          :route_btn="''"-->
+<!--                          :disabled_btn="disabled_payment=(v$.name.$error ||-->
+<!--                               v$.phone.$error ||-->
+<!--                               v$.code.$error ||-->
+<!--                               v$.email.$error ||-->
+<!--                               v$.middle_name.$error ||-->
+<!--                               v$.last_name.$error ||-->
+<!--                               formData.phone==='' ||-->
+<!--                               formData.code==='' ||-->
+<!--                               formData.name==='' ||-->
+<!--                               formData.address==='' ||-->
+<!--                               formData.middle_name==='' ||-->
+<!--                               formData.last_name==='' ||-->
+<!--                               delivery_chose_1==='' ||-->
+<!--                               payment_chose_1==='' ||-->
+<!--                               zipCheck === false ||-->
+<!--                               formData.suggestion.data===null ||-->
+<!--                               formData.suggestion.data.postal_code===null ||-->
+<!--                               formData.suggestion.data.region===null ||-->
+<!--                               formData.suggestion.data.street===null ||-->
+<!--                               formData.suggestion.data.house===null ||-->
+<!--                               (formData.suggestion.data.city==='' && formData.suggestion.data.settlement===''))">-->
+<!--                    Оплатить картой</Button>-->
+                  <Button @click.prevent="payment(false)" :route_btn="''" :src_btn="btn_pending_src" :disabled_btn="btn_pending===true" :without_padding="btn_pending!==true">
+                    {{ !btn_pending ? 'Оплатить картой' : '' }}
+                  </Button>
                 </div>
               </form>
             </div>
           </div>
           <div v-if="!user" class="right-user">
+<!--            <div style="display: none" :class="{not_access_block: btn_pending}"></div>-->
             <h3 class="login_title">
               У вас уже есть личный кабинет?<br>
               <h4 class="login_title-link"><AuthModal :top="'6.26'" :link_color="'#E31235'">Авторизируйтесь</AuthModal></h4> <span>для отслеживания статуса заказа</span>
@@ -582,12 +589,15 @@ import {useBasketProductsStore} from "../stores/BasketProductsStore.js";
 import { useVuelidate } from '@vuelidate/core'
 import {required, minLength, maxLength, helpers, sameAs, email} from '@vuelidate/validators'
 import { VueTelInput } from 'vue-tel-input';
-
 import {computed, onBeforeUpdate, onMounted, reactive, ref} from "vue";
 
 definePageMeta({
   layout: "purchase",
 });
+
+const btn_pending = ref(false);
+const btn_pending_src = ref('');
+
 const userStore = useUserStore();
 const config = useRuntimeConfig();
 const token = config.public.dadataToken;
@@ -728,6 +738,7 @@ const payment = (disabled) => {
     //     paymentError.value = `Проверьте корректноcть введенных данных`;
     //     console.error('Contact form could not be send', err)
     //   });
+    openButtonPending();
     paymentFormRequest().then((res) => {
       console.log(res);
       if (res){
@@ -736,7 +747,10 @@ const payment = (disabled) => {
         navigateTo(`/success-page/${res}`);
       }
     }).catch((err) => {
-      paymentError.value = `Проверьте корректноcть введенных данных`;
+      setTimeout(() => {
+        closeButtonPending();
+        paymentError.value = `Проверьте корректноcть введенных данных`;
+      }, 5000);
       console.error('Contact form could not be send', err)
     });
     // }
@@ -872,12 +886,57 @@ const zipCheckFormRequest = async () => {
     },
   });
 }
+
+const getBodyScrollTop = () => {
+  return self.pageYOffset || (document.documentElement && document.documentElement.ScrollTop) || (document.body && document.body.scrollTop);
+}
+
+const existVerticalScroll = () => {
+  return document.body.offsetHeight > window.innerHeight
+}
+
+const openButtonPending = () => {
+  btn_pending.value = true;
+  btn_pending_src.value = 'img/835.svg';
+
+  document.querySelector('body').dataset.scrollY = getBodyScrollTop()
+
+  // modal.classList.add('modal--open')
+  if(existVerticalScroll()) {
+    document.querySelector('body').classList.add('lock')
+    document.querySelector('body').style.top = `-${document.querySelector('body').dataset.scrollY}px`
+  }
+};
+
+const closeButtonPending = () => {
+  btn_pending.value = false;
+  btn_pending_src.value = '';
+
+  // modal.classList.remove('modal--open')
+  if(existVerticalScroll()) {
+    document.querySelector('body').classList.remove('lock')
+    window.scrollTo(0,document.querySelector('body').dataset.scrollY)
+  }
+};
 </script>
 
 <style scoped>
 .container-purchase{
   display: flex;
   justify-content: space-between;
+}
+.not_access_block{
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  background-color: transparent;
+  backdrop-filter: blur(1px);
 }
 
 .purchase-section {
@@ -1007,7 +1066,7 @@ const zipCheckFormRequest = async () => {
   font-weight: 700;
 }
 .user-section{
-  margin-bottom: 10rem;
+  margin-bottom: 17rem;
 }
 .left-user,
 .right-user{
@@ -1119,7 +1178,7 @@ const zipCheckFormRequest = async () => {
 .error_message{
   font-family: 'Inter', sans-serif;
   font-weight: 500;
-  font-size: .875rem;
+  font-size: .975rem;
   line-height: 110%;
   color: #E31235;
   margin-top: 5px;
