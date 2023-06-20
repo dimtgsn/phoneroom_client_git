@@ -330,7 +330,7 @@
         <h2 class="data_title">Ваши данные</h2>
         <div class="user-container data_body">
           <div class="left-user">
-            <div style="display: none" :class="{not_access_block: btn_pending}">
+            <div id="not_access_block" style="display: none" :class="{not_access_block: btn_pending}">
               <img src="img/295.svg" alt="">
             </div>
             <div v-if="pending">....</div>
@@ -584,12 +584,12 @@
 </template>
 
 <script setup>
-import {useUserStore} from "../stores/UserStore.js";
-import {useBasketProductsStore} from "../stores/BasketProductsStore.js";
+import { useUserStore } from "../stores/UserStore.js";
+import { useBasketProductsStore } from "../stores/BasketProductsStore.js";
 import { useVuelidate } from '@vuelidate/core'
-import {required, minLength, maxLength, helpers, sameAs, email} from '@vuelidate/validators'
+import { required, minLength, maxLength, helpers, sameAs, email } from '@vuelidate/validators'
 import { VueTelInput } from 'vue-tel-input';
-import {computed, onBeforeUpdate, onMounted, reactive, ref} from "vue";
+import { computed, onBeforeUpdate, onMounted, reactive, ref } from "vue";
 
 definePageMeta({
   layout: "purchase",
@@ -891,10 +891,6 @@ const getBodyScrollTop = () => {
   return self.pageYOffset || (document.documentElement && document.documentElement.ScrollTop) || (document.body && document.body.scrollTop);
 }
 
-const existVerticalScroll = () => {
-  return document.body.offsetHeight > window.innerHeight
-}
-
 const openButtonPending = () => {
   btn_pending.value = true;
   btn_pending_src.value = 'img/835.svg';
@@ -902,10 +898,8 @@ const openButtonPending = () => {
   document.querySelector('body').dataset.scrollY = getBodyScrollTop()
 
   // modal.classList.add('modal--open')
-  if(existVerticalScroll()) {
-    document.querySelector('body').classList.add('lock')
-    document.querySelector('body').style.top = `-${document.querySelector('body').dataset.scrollY}px`
-  }
+  document.querySelector('body').classList.add('lock')
+  document.querySelector('body').style.top = `-${document.querySelector('body').dataset.scrollY}px`
 };
 
 const closeButtonPending = () => {
@@ -913,10 +907,8 @@ const closeButtonPending = () => {
   btn_pending_src.value = '';
 
   // modal.classList.remove('modal--open')
-  if(existVerticalScroll()) {
-    document.querySelector('body').classList.remove('lock')
-    window.scrollTo(0,document.querySelector('body').dataset.scrollY)
-  }
+  document.querySelector('body').classList.remove('lock')
+  window.scrollTo(0,document.querySelector('body').dataset.scrollY)
 };
 </script>
 

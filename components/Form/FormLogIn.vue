@@ -36,31 +36,53 @@
         <div v-if="disabled_send_count >= 1 && currentTime > 0">
           <Button  @click.prevent="phoneAuth(disabled_send)"
                    :width_btn="14"
+                   :src_btn="btn_code_pending_src"
                    :route_btn="''"
+                   :without_padding="true"
                    :disabled_btn="disabled_send=true" >
-            Получить код</Button>
+            {{ !btn_code_pending_src ? 'Получить код' : '' }}
+          </Button>
+<!--          <div class="login_error" v-if="phoneAuthError">{{ phoneAuthError }}</div>-->
           <span class="timeout-message" v-if="disabled_send_count >= 6">Кажется использовано слишком много попыток, попробуйте снова позже.</span>
           <span class="timeout-message" v-if="disabled_send_count >= 1 && disabled_send_count !== 6">До получения нового кода {{ currentTime }}с</span>
         </div>
         <div v-else>
           <Button  @click.prevent="phoneAuth(disabled_send)"
                    :width_btn="14"
+                   :src_btn="btn_code_pending_src"
                    :route_btn="''"
+                   :without_padding="true"
                    :disabled_btn="disabled_send=(v$.phone.$error ||
                                               formData.phone==='')" >
-            Получить код</Button>
+            {{ !btn_code_pending_src ? 'Получить код' : '' }}
+          </Button>
+<!--          <div class="login_error" v-if="phoneAuthError">{{ phoneAuthError }}</div>-->
         </div>
       </div>
       <div class="login_error" v-if="loginError">{{ loginError }}</div>
+      <div class="login_error" v-else>{{ phoneAuthError }}</div>
       <div class="login-form" >
+<!--        <Button @click.prevent="login(disabled_reg)"-->
+<!--                :width_btn="22"-->
+<!--                :src_btn="btn_pending_src"-->
+<!--                :route_btn="''"-->
+<!--                :disabled_btn="disabled_reg=(v$.phone.$error ||-->
+<!--                               v$.code.$error ||-->
+<!--                               formData.phone==='' ||-->
+<!--                               formData.code==='')">-->
+<!--          {{ !btn_pending_src ? 'Войти' : '' }}-->
+<!--        </Button>-->
         <Button @click.prevent="login(disabled_reg)"
                 :width_btn="22"
+                :src_btn="btn_pending_src"
+                :without_padding="true"
                 :route_btn="''"
                 :disabled_btn="disabled_reg=(v$.phone.$error ||
                                v$.code.$error ||
                                formData.phone==='' ||
-                               formData.code==='')">
-          Войти</Button>
+                               btn_pending_src!=='')">
+          {{ !btn_pending_src ? 'Войти' : '' }}
+        </Button>
       </div>
     </form>
   </div>
@@ -74,13 +96,15 @@ import { VueTelInput } from 'vue-tel-input';
 import {useUserStore} from "../../stores/UserStore";
 import {computed, reactive, ref} from "vue";
 
-
 const userStore = useUserStore();
 
+const btn_pending_src = ref('');
+const btn_code_pending_src = ref('');
 
 const emit = defineEmits(['login,']);
 
 const loginError = ref('');
+const phoneAuthError = ref('');
 const authToken = ref('');
 
 const config = useRuntimeConfig();
@@ -120,6 +144,9 @@ const currentTime = ref(0);
 let timer = null;
 const phoneAuth = (disabled) => {
   if (!disabled){
+    btn_code_pending_src.value = 'img/835.svg';
+    phoneAuthError.value = '';
+    loginError.value = '';
     userStore.addDis();
     timer = null;
     currentTime.value = 45 * disabled_send_count.value;
@@ -130,7 +157,8 @@ const phoneAuth = (disabled) => {
         }, 1000);
       }
       else if (timer === 0){
-        clearTimeout(timer)
+        clearTimeout(timer);
+        btn_code_pending_src.value = '';
       }
     }
     if (disabled_send_count.value <= 5){
@@ -140,12 +168,17 @@ const phoneAuth = (disabled) => {
         res = JSON.parse(res);
         console.log(res)
         if (res.success === true){
+          btn_code_pending_src.value = '';
           smsCode.value = parseInt(res.data.text.replace(/[^\d]/g, ''));
         }
         else {
+          btn_code_pending_src.value = '';
+          phoneAuthError.value = `Отпрака сообщения не удалась. Проверьте формат номера телефона`;
           console.error('Sms code could not be send')
         }
       }).catch((err) => {
+        btn_code_pending_src.value = '';
+        phoneAuthError.value = `Авторизация не удалась, проверьте корректность введённых данных.`;
         console.error('Contact form could not be send', err)
       });
 
@@ -155,18 +188,22 @@ const phoneAuth = (disabled) => {
 
 const login = (disabled) => {
   if (!disabled){
-    if (smsCode.value === formData.code && formData.code !== ''){
+    btn_pending_src.value = 'img/835.svg';
+    loginError.value = '';
+    phoneAuthError.value = '';
+    // if (smsCode.value === formData.code && formData.code !== ''){
       loginFormRequest().then((res) => {
         addUser(res);
-        console.log(res);
         getUser();
+        btn_pending_src.value = '';
         emit('login');
         userStore.removeDis();
       }).catch((err) => {
-        loginError.value = `Авторизация не удалась. Проверьте формат номера (+7___ __ __) или данный номер ещё не зарегистрирован`;
+        btn_pending_src.value = '';
+        loginError.value = `Авторизация не удалась, проверьте корректность введённых данных.`;
         console.error('Contact form could not be send', err)
       });
-    }
+    // }
   }
 };
 
@@ -254,7 +291,6 @@ const bindProps = computed(() => {
 .form-input_wrapp:hover {
   border: 1px solid rgba(133, 143, 164, 1);
 }
-
 .form_input{
   font-family: 'Inter', sans-serif;
   font-weight: 400;

@@ -67,9 +67,9 @@
         <LogoTitle />
       </div>
       <div v-if="windowWidth > 768" class="header-main_city city">
-        <h2 class="city_title" v-if="userCity" @click="toggleShowChoiceCity">{{ userCity }}</h2>
-        <h2 class="city_title" v-if="ipInfoCity && !userCity" @click="toggleShowChoiceCity">{{ ipInfoCity }}</h2>
-        <h2 class="city_title" v-if="!ipInfoCity && !userCity" @click="toggleShowChoiceCity">Выбрать город</h2>
+        <h2 class="city_title" v-if="userCity" @click="openModalCity">{{ userCity }}</h2>
+        <h2 class="city_title" v-if="ipInfoCity && !userCity" @click="openModalCity">{{ ipInfoCity }}</h2>
+        <h2 class="city_title" v-if="!ipInfoCity && !userCity" @click="openModalCity">Выбрать город</h2>
         <Transition name="fade">
           <component  @openCity="isOpenCity" :is="choiceCity ? SelectCity : 'div'" />
         </Transition>
@@ -329,9 +329,22 @@ onMounted(()=>{
 const choiceCity = ref(false);
 
 
-const toggleShowChoiceCity = () => {
-  choiceCity.value = true;
+// const toggleShowChoiceCity = () => {
+//   choiceCity.value = true;
+// }
+
+const getBodyScrollTop = () => {
+  return self.pageYOffset || (document.documentElement && document.documentElement.ScrollTop) || (document.body && document.body.scrollTop);
 }
+
+const openModalCity = () => {
+  document.querySelector('body').dataset.scrollY = getBodyScrollTop()
+
+  choiceCity.value = true;
+
+  document.querySelector('body').classList.add('lock')
+  document.querySelector('body').style.top = `-${document.querySelector('body').dataset.scrollY}px`
+};
 
 const isOpenCity = () => {
   choiceCity.value = !choiceCity.value;

@@ -49,6 +49,7 @@ export default defineNuxtConfig({
         '~/plugins/nuxt-lazy-hydrate.ts',
         '~/plugins/breadcrumbs.js',
         '~/plugins/vuetify.ts',
+        '~/plugins/focus-trap.ts',
         '~/plugins/vue-dadata.js',
         {src: '~/plugins/vue-tel-input.js', mode: 'client'},
         {src: '~/plugins/vue-star-rating.ts', mode: 'client'},

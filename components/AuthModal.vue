@@ -1,26 +1,30 @@
 <template>
-  <button :style="{color: props.link_color}" class="header_link" @click="open = true">
+  <button :style="{color: props.link_color}" class="header_link" @click="openModal">
     <slot />
   </button>
   <Teleport to="body" @login="isLogin">
-    <Transition name="fade" >
-      <section v-if="open" class="modal-section" :style="{top: props.top+'rem'}" >
-        <div class="modal">
-          <div class="modal-top">
-            <div class="modal_titles">
-              <h2 class="log_in " :class="{'active': logIn}" @click="changeOnLogIn">Войти</h2>
-<!--              <h2 class="log_in active">Войти или регистрация</h2>-->
-              <h2 class="register" :class="{'active': register}" @click="changeOnRegister">Регистрация</h2>
+    <Transition name="fade">
+      <section v-if="open" class="modal-section" @click="closeModal" :style="{top: props.top+'rem'}" >
+        <focus-trap @click.stop="open=true" v-model:active="open">
+          <modal-dialog>
+            <div class="modal">
+              <div class="modal-top">
+                <div class="modal_titles">
+                  <h2 class="log_in " :class="{'active': logIn}" @click="changeOnLogIn">Войти</h2>
+                  <!--              <h2 class="log_in active">Войти или регистрация</h2>-->
+                  <h2 class="register" :class="{'active': register}" @click="changeOnRegister">Регистрация</h2>
+                </div>
+                <div class="modal_close" @click.stop="closeModal"></div>
+              </div>
+              <div class="modal-body">
+                <div class="form">
+                  <FormLogIn v-if="logIn"/>
+                  <FormRegistration v-if="register"/>
+                </div>
+              </div>
             </div>
-            <div class="modal_close" @click="open = false"></div>
-          </div>
-          <div class="modal-body">
-            <div class="form">
-              <FormLogIn v-if="logIn"/>
-              <FormRegistration v-if="register"/>
-            </div>
-          </div>
-        </div>
+          </modal-dialog>
+        </focus-trap>
       </section>
     </Transition>
   </Teleport>
@@ -29,6 +33,7 @@
 <script setup>
 
 import FormRegistration from "./Form/FormRegistration";
+import FormLogIn from "./Form/FormLogIn";
 
 const open = ref(false);
 const register = ref(false);
@@ -50,6 +55,26 @@ const changeOnLogIn = () => {
 
 const isLogin = () => {
   open.value = false;
+};
+
+const getBodyScrollTop = () => {
+  return self.pageYOffset || (document.documentElement && document.documentElement.ScrollTop) || (document.body && document.body.scrollTop);
+}
+
+const openModal = () => {
+  document.querySelector('body').dataset.scrollY = getBodyScrollTop()
+
+  open.value = true;
+
+  document.querySelector('body').classList.add('lock')
+  document.querySelector('body').style.top = `-${document.querySelector('body').dataset.scrollY}px`
+};
+
+const closeModal = () => {
+  open.value = false;
+
+  document.querySelector('body').classList.remove('lock')
+  window.scrollTo(0,document.querySelector('body').dataset.scrollY)
 };
 </script>
 
@@ -98,7 +123,7 @@ const isLogin = () => {
 }
 .modal_titles{
   padding-top: 1.5rem;
-  margin-bottom: 2.625rem;
+  margin-bottom: 2rem;
   display: inline-block;
 }
 .register,

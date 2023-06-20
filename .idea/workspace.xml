@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8c18b85c-df0e-4f3f-88d1-f5da10274c2b" name="Changes" comment="add btn and page loaders" />
+    <list default="true" id="8c18b85c-df0e-4f3f-88d1-f5da10274c2b" name="Changes" comment="add btn and page loaders">
+      <change afterPath="$PROJECT_DIR$/plugins/focus-trap.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/AuthModal.vue" beforeDir="false" afterPath="$PROJECT_DIR$/components/AuthModal.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/Form/FormLogIn.vue" beforeDir="false" afterPath="$PROJECT_DIR$/components/Form/FormLogIn.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/Form/FormRegistration.vue" beforeDir="false" afterPath="$PROJECT_DIR$/components/Form/FormRegistration.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/HeaderMain.vue" beforeDir="false" afterPath="$PROJECT_DIR$/components/HeaderMain.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/SelectCity.vue" beforeDir="false" afterPath="$PROJECT_DIR$/components/SelectCity.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nuxt.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/nuxt.config.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/purchase.vue" beforeDir="false" afterPath="$PROJECT_DIR$/pages/purchase.vue" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -14,6 +26,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Vue Single File Component" />
+        <option value="TypeScript File" />
       </list>
     </option>
   </component>
@@ -34,7 +47,7 @@
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/projects/phoneroom_client_git/public/img&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/projects/phoneroom_client_git&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\PhpStorm 2022.2.3\\plugins\\JavaScriptLanguage\\jsLanguageServicesImpl\\external&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
@@ -42,6 +55,7 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\projects\phoneroom_client_git" />
       <recent name="D:\projects\phoneroom_client_git\public\img" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
@@ -64,6 +78,8 @@
       <workItem from="1686917063751" duration="9548000" />
       <workItem from="1687019954398" duration="7613000" />
       <workItem from="1687249394361" duration="11834000" />
+      <workItem from="1687270374181" duration="10005000" />
+      <workItem from="1687292481608" duration="1814000" />
     </task>
     <task id="LOCAL-00001" summary="add success page">
       <created>1687020033516</created>
@@ -86,7 +102,14 @@
       <option name="project" value="LOCAL" />
       <updated>1687270175481</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="add btn and page loaders">
+      <created>1687270469990</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1687270469990</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

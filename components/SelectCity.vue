@@ -1,21 +1,24 @@
 <template>
   <Teleport to="body" >
     <Transition name="fade" >
-      <section v-if="open" class="modal-section" :style="{'top': props.top+'rem'}">
-        <div class="modal">
-          <div class="modal-top">
-            <div class="modal_titles">
-              <h2 class="city_title">Выберите город</h2>
+      <section v-if="open" class="modal-section" @click="closeModalCity" :style="{'top': props.top+'rem'}">
+        <focus-trap @click.stop="open=true" v-model:active="open">
+          <modal-dialog>
+            <div class="modal">
+              <div class="modal-top">
+                <div class="modal_titles">
+                  <h2 class="city_title">Выберите город</h2>
+                </div>
+                <div class="modal_close" @click="closeModalCity"></div>
+              </div>
+              <div class="modal-body">
+                <div class="form">
+                  <FormSelectCity />
+                </div>
+              </div>
             </div>
-            <div class="modal_close" @click="getCity"></div>
-          </div>
-          <div class="modal-body">
-            <div class="form">
-              <FormSelectCity />
-            </div>
-          </div>
-
-        </div>
+          </modal-dialog>
+        </focus-trap>
       </section>
     </Transition>
   </Teleport>
@@ -29,9 +32,16 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['openCity',]);
-const getCity = () => {
+// const getCity = () => {
+//   open.value = false;
+//   emit('openCity');
+// };
+
+const closeModalCity = () => {
   open.value = false;
   emit('openCity');
+  document.querySelector('body').classList.remove('lock')
+  window.scrollTo(0,document.querySelector('body').dataset.scrollY)
 };
 </script>
 

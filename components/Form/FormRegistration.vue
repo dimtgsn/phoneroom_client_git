@@ -53,8 +53,11 @@
           <Button  @click.prevent="phoneAuth(disabled_send)"
                    :width_btn="14"
                    :route_btn="''"
+                   :without_padding="true"
+                   :src_btn="btn_code_pending_src"
                    :disabled_btn="disabled_send=true" >
-            Получить код</Button>
+            {{ !btn_code_pending_src ? 'Получить код' : '' }}
+          </Button>
           <span class="timeout-message" v-if="disabled_send_count >= 6">Кажется использовано слишком много попыток, попробуйте снова позже.</span>
           <span class="timeout-message" v-if="disabled_send_count >= 1 && disabled_send_count !== 6">До получения нового кода {{ currentTime }}с</span>
         </div>
@@ -62,25 +65,44 @@
           <Button  @click.prevent="phoneAuth(disabled_send)"
                    :width_btn="14"
                    :route_btn="''"
+                   :without_padding="true"
+                   :src_btn="btn_code_pending_src"
                    :disabled_btn="disabled_send=(v$.name.$error ||
                                               v$.phone.$error ||
                                               formData.phone==='' ||
-                                              formData.name==='')" >
-            Получить код</Button>
+                                              formData.name==='' ||
+                                              btn_code_pending_src!=='')" >
+            {{ !btn_code_pending_src ? 'Получить код' : '' }}
+          </Button>
         </div>
       </div>
       <div class="register_error" v-if="registerError">{{ registerError }}</div>
+      <div class="register_error" v-else>{{ phoneAuthError }}</div>
       <div class="login-form" >
+<!--        <Button @click.prevent="register(disabled_reg)"-->
+<!--                :width_btn="22"-->
+<!--                :route_btn="''"-->
+<!--                :disabled_btn="disabled_reg=(v$.name.$error ||-->
+<!--                               v$.phone.$error ||-->
+<!--                               v$.code.$error ||-->
+<!--                               formData.phone==='' ||-->
+<!--                               formData.name==='' ||-->
+<!--                               formData.code==='')">-->
+<!--          Зарегистрироваться-->
+<!--        </Button>-->
         <Button @click.prevent="register(disabled_reg)"
                 :width_btn="22"
                 :route_btn="''"
+                :without_padding="true"
+                :src_btn="btn_pending_src"
                 :disabled_btn="disabled_reg=(v$.name.$error ||
                                v$.phone.$error ||
                                v$.code.$error ||
                                formData.phone==='' ||
                                formData.name==='' ||
-                               formData.code==='')">
-          Войти</Button>
+                               btn_pending_src!=='')">
+          {{ !btn_pending_src ? 'Зарегистрироваться' : '' }}
+        </Button>
       </div>
     </form>
   </div>
@@ -95,6 +117,8 @@ import {useUserStore} from "../../stores/UserStore";
 import {computed, reactive, ref} from "vue";
 const userStore = useUserStore();
 
+const btn_pending_src = ref('');
+const btn_code_pending_src = ref('');
 
 const emit = defineEmits(['login,']);
 
@@ -135,12 +159,16 @@ const urlPhoneAuth = computed(() => config.public.apiBaseUrl + 'users/phone_auth
 const urlRegister = computed(() => config.public.apiBaseUrl + 'users/register');
 
 const registerError = ref('');
+const phoneAuthError = ref('');
 const authToken = ref('');
 
 const currentTime = ref(0);
 let timer = null;
 const phoneAuth = (disabled) => {
   if (!disabled){
+    btn_code_pending_src.value = 'img/835.svg';
+    phoneAuthError.value = '';
+    registerError.value = '';
     userStore.addDis();
     timer = null;
     currentTime.value = 45 * disabled_send_count.value;
@@ -151,7 +179,8 @@ const phoneAuth = (disabled) => {
         }, 1000);
       }
       else if (timer === 0){
-        clearTimeout(timer)
+        clearTimeout(timer);
+        btn_code_pending_src.value = '';
       }
     }
     if (disabled_send_count.value <= 5){
@@ -160,12 +189,16 @@ const phoneAuth = (disabled) => {
         res = JSON.parse(res);
         console.log(res)
         if (res.success === true){
+          btn_code_pending_src.value = '';
           smsCode.value = parseInt(res.data.text.replace(/[^\d]/g, ''));
         }
         else {
+          btn_code_pending_src.value = '';
+          phoneAuthError.value = `Отпрака сообщения не удалась. Проверьте формат номера телефона`;
           console.error('Sms code could not be send')
         }
       }).catch((err) => {
+        btn_code_pending_src.value = '';
         registerError.value = `Регистрация не удалась. Проверьте правильность номера телефона`;
         console.error('Contact form could not be send', err)
       });
@@ -176,17 +209,22 @@ const phoneAuth = (disabled) => {
 
 const register = (disabled) => {
   if (!disabled){
-    if (smsCode.value === formData.code && formData.code !== ''){
+    btn_pending_src.value = 'img/835.svg';
+    registerError.value = '';
+    phoneAuthError.value = '';
+    // if (smsCode.value === formData.code && formData.code !== ''){
       registerFormRequest().then((res) => {
         addUser(res);
         getUser();
+        btn_pending_src.value = '';
         emit('login');
         userStore.removeDis();
       }).catch((err) => {
+        btn_pending_src.value = '';
         registerError.value = `Регистрация не удалась. Данные некоректны или данный номер уже зарегистрирован`;
         console.error('Contact form could not be send', err)
       });
-    }
+    // }
   }
 };
 
