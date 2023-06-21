@@ -509,8 +509,8 @@
                         </div>
                         <div class="btn-wrap">
                           <div v-if="!pressedBasket">
-                            <Button v-if="windowWidth > 640" @click="addProductToBasket(product)" :pressed="pressedBasket" :width_btn="10.625" :src_btn="src">В корзину</Button>
-                            <Button v-if="windowWidth <= 640" @click="addProductToBasket(product)" :pressed="pressedBasket" :width_btn="5.625" :src_btn="src"></Button>
+                            <Button v-if="windowWidth > 640" @click="addProductToBasket(product)" :pressed="pressedBasket" :disabled_btn="src==='img/835.svg'" :width_btn="10.625" :src_btn="src">В корзину</Button>
+                            <Button v-if="windowWidth <= 640" @click="addProductToBasket(product)" :without_padding="true" :pressed="pressedBasket" :disabled_btn="src==='img/835.svg'" :width_btn="5.625" :src_btn="src"></Button>
                           </div>
                           <div v-else>
                             <Button v-if="windowWidth > 640" :pressed="pressedBasket" :disabled_btn="1" :width_btn="10.625" :src_btn="src">В корзину</Button>
@@ -557,7 +557,7 @@
                   <div class="add" @click="increaseQuantity">+</div>
                 </div>
                 <div class="btn-wrap">
-                  <Button @click="addProductToBasket(product)" :pressed="pressedBasket" :width_btn="10.625" :src_btn="src">В корзину</Button>
+                  <Button @click="addProductToBasket(product)" :pressed="pressedBasket" :disabled_btn="src==='img/835.svg'" :width_btn="10.625" :src_btn="src">В корзину</Button>
                 </div>
               </div>
             </div>
@@ -1136,23 +1136,27 @@ const addCompareProduct = (product) => {
 };
 
 const addProductToBasket = (product) => {
-  if  (user.value){
-    if (pressedBasket.value === false) {
-      basketCreateFormRequest(product.id).then((res) => {
-        useBasketProductsStore().pushProduct(product);
-        useBasketProductsStore().needUpdate = true;
-        console.log(res)
-        pressedBasket.value = true;
-      }).catch((err) => {
-        console.error('Contact form could not be send', err)
-      });
+  if (src.value === 'img/basket.svg'){
+    src.value = 'img/835.svg';
+    if  (user.value){
+      if (pressedBasket.value === false) {
+        basketCreateFormRequest(product.id).then((res) => {
+          useBasketProductsStore().pushProduct(product);
+          useBasketProductsStore().needUpdate = true;
+          console.log(res)
+          pressedBasket.value = true;
+        }).catch((err) => {
+          src.value = 'img/basket.svg';
+          console.error('Contact form could not be send', err)
+        });
+      }
     }
-  }
-  else{
-    if (pressedBasket.value === false) {
-      product.quantity = quantity.value;
-      useBasketProductsStore().pushProduct(product);
-      pressedBasket.value = true;
+    else{
+      if (pressedBasket.value === false) {
+        product.quantity = quantity.value;
+        useBasketProductsStore().pushProduct(product);
+        pressedBasket.value = true;
+      }
     }
   }
 };

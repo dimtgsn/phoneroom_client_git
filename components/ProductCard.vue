@@ -82,7 +82,7 @@
         </div>
         <Transition name="fade" v-if="windowWidth > 640" mode="out-in" appear>
           <div class="card_btn" v-if="!pressedBasket">
-            <Button @click="addProductToBasket(props.product_variant)" :width_btn="7.9375" :src_btn="src">В корзину</Button>
+            <Button @click="addProductToBasket(props.product_variant)" :width_btn="7.9375" :disabled_btn="src==='img/835.svg'" :src_btn="src">В корзину</Button>
           </div>
           <div class="card_btn-outline" v-else>
             <ButtonRedOutline :basket_btn="true" :route_btn="''" :width_btn="6" >
@@ -92,7 +92,7 @@
         </Transition>
         <Transition name="fade" v-if="windowWidth <= 640" mode="out-in" appear>
           <div class="card_btn" v-if="!pressedBasket">
-            <Button @click="addProductToBasket(props.product_variant)" :width_btn="6" :src_btn="src"></Button>
+            <Button @click="addProductToBasket(props.product_variant)" :width_btn="6" :disabled_btn="src==='img/835.svg'" :without_padding="true" :src_btn="src"></Button>
           </div>
           <div class="card_btn-outline" v-else>
             <ButtonRedOutline :basket_btn="true" :route_btn="''" :width_btn="6" >
@@ -207,23 +207,27 @@ const addCompareProduct = (product) => {
 };
 
 const addProductToBasket = (product) => {
-  if  (user.value){
-    if (pressedBasket.value === false) {
-      pressedBasket.value = true;
-      basketCreateFormRequest(product.id).then((res) => {
-        useBasketProductsStore().pushProduct(product);
-        useBasketProductsStore().needUpdate = true;
-        console.log(res)
-      }).catch((err) => {
-        pressedBasket.value = false;
-        console.error('Contact form could not be send', err)
-      });
+  if (src.value === 'img/basket.svg'){
+    src.value = 'img/835.svg';
+    if  (user.value){
+      if (pressedBasket.value === false) {
+        pressedBasket.value = true;
+        basketCreateFormRequest(product.id).then((res) => {
+          useBasketProductsStore().pushProduct(product);
+          useBasketProductsStore().needUpdate = true;
+          console.log(res)
+        }).catch((err) => {
+          pressedBasket.value = false;
+          src.value = 'img/basket.svg';
+          console.error('Contact form could not be send', err)
+        });
+      }
     }
-  }
-  else{
-    if (pressedBasket.value === false) {
-      useBasketProductsStore().pushProduct(product);
-      pressedBasket.value = true;
+    else{
+      if (pressedBasket.value === false) {
+        useBasketProductsStore().pushProduct(product);
+        pressedBasket.value = true;
+      }
     }
   }
 };

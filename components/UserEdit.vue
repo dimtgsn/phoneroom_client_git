@@ -1,20 +1,24 @@
 <template>
   <Teleport to="body" >
     <Transition name="fade" >
-      <section v-if="open" class="modal-section" >
-        <div class="modal">
-          <div class="modal-top">
-            <div class="modal_titles">
-              <h2 class="city_title">Редактировать профиль</h2>
+      <section v-if="open" class="modal-section" @click="closeModalCity">
+        <focus-trap @click.stop="open=true" v-model:active="open">
+          <modal-dialog>
+            <div class="modal">
+              <div class="modal-top">
+                <div class="modal_titles">
+                  <h2 class="city_title">Редактировать профиль</h2>
+                </div>
+                <div class="modal_close" @click="closeModalCity"></div>
+              </div>
+              <div class="modal-body">
+                <div class="form">
+                  <FormUserEdit @openFormUserEdit="openFormUserEdit" />
+                </div>
+              </div>
             </div>
-            <div class="modal_close" @click="closeUserEdit"></div>
-          </div>
-          <div class="modal-body">
-            <div class="form">
-              <FormUserEdit @openFormUserEdit="openFormUserEdit" />
-            </div>
-          </div>
-        </div>
+          </modal-dialog>
+        </focus-trap>
       </section>
     </Transition>
   </Teleport>
@@ -27,14 +31,16 @@ const open = ref(true);
 
 const emit = defineEmits(['openUserEdit',]);
 
-const closeUserEdit = () => {
-  open.value = false;
-  // emit('openUserEdit');
-};
 console.log('UserEdit');
 const openFormUserEdit = () => {
   open.value = false;
   emit('openUserEdit');
+};
+
+const closeModalCity = () => {
+  open.value = false;
+  document.querySelector('body').classList.remove('lock')
+  window.scrollTo(0,document.querySelector('body').dataset.scrollY)
 };
 </script>
 
@@ -49,25 +55,21 @@ const openFormUserEdit = () => {
 }
 .modal-section{
   position: fixed;
-  /*width: 1920px;*/
-  /*height: 751px;*/
   display: flex;
   justify-content: center;
-  z-index: 99;
+  z-index: 999;
   left: 0;
-  top: 7.8125rem;
+  top: 0;
   width: 100%;
   height: 100vh;
   background: rgba(26, 26, 37, 0.5);
 }
 .modal{
-  /*position: absolute;*/
-  /*z-index: 99;*/
-  /*top: 20%;*/
-  /*left: 50%;*/
-  margin-top: 1.5rem;
+  margin-top: 30%;
   width: 55.625rem;
+  max-height: 75%;
   height: max-content;
+  overflow-y: auto;
   padding: 1.625rem 2.5rem;
   background-color: #FFFFFF;
   box-shadow: 0 10px 30px rgba(133, 143, 164, 0.1);

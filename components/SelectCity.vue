@@ -30,12 +30,7 @@ const open = ref(true);
 const props = defineProps({
   top: String
 });
-
 const emit = defineEmits(['openCity',]);
-// const getCity = () => {
-//   open.value = false;
-//   emit('openCity');
-// };
 
 const closeModalCity = () => {
   open.value = false;
@@ -50,17 +45,19 @@ const closeModalCity = () => {
   position: fixed;
   display: flex;
   justify-content: center;
-  z-index: 99;
+  z-index: 999;
   left: 0;
-  top: 8.7rem;
+  top: 0;
   width: 100%;
   height: 100vh;
   background: rgba(26, 26, 37, 0.5);
 }
 .modal{
-  margin-top: 1.5rem;
+  margin-top: 30%;
   width: 30.75rem;
   height: max-content;
+  max-height: 75%;
+  overflow-y: auto;
   padding: 1.625rem 2.5rem;
   background-color: #FFFFFF;
   box-shadow: 0 10px 30px rgba(133, 143, 164, 0.1);
@@ -94,9 +91,6 @@ const closeModalCity = () => {
   opacity: .5;
   transition: all .3s ease;
 }
-
-
-
 
 @media (max-width: 768px) {
   .modal-section{

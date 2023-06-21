@@ -294,13 +294,13 @@ const src = ref('catalog.svg');
 const src_path = computed(() => `img/${src.value}`);
 
 const toggleShowCategories = () => {
-  if (src.value === 'close.svg'){
-    src.value = 'catalog.svg';
-    hydrated.value = false;
-  }
-  else{
+  if (src.value === 'catalog.svg'){
     src.value = 'close.svg';
     hydrated.value = true;
+  }
+  else{
+    src.value = 'catalog.svg';
+    hydrated.value = false;
   }
 }
 

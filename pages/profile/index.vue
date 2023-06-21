@@ -179,10 +179,19 @@ const logoutFormRequest = async () => {
 const UserEdit = resolveComponent('UserEdit');
 const userEdit = ref(false);
 
-const showUserEdit = () => {
-  console.log('showUserEdit');
-  userEdit.value = true;
+const getBodyScrollTop = () => {
+  return self.pageYOffset || (document.documentElement && document.documentElement.ScrollTop) || (document.body && document.body.scrollTop);
 }
+
+const showUserEdit = () => {
+  document.querySelector('body').dataset.scrollY = getBodyScrollTop()
+
+  userEdit.value = true;
+
+  document.querySelector('body').classList.add('lock')
+  document.querySelector('body').style.top = `-${document.querySelector('body').dataset.scrollY}px`
+};
+
 const openUserEdit = () => {
   userEdit.value = !userEdit.value;
   sendUserEdit.value = !sendUserEdit.value;

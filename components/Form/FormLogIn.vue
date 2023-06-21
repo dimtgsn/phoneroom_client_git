@@ -35,20 +35,19 @@
       <div class="btn-form">
         <div v-if="disabled_send_count >= 1 && currentTime > 0">
           <Button  @click.prevent="phoneAuth(disabled_send)"
-                   :width_btn="14"
+                   :width_btn="18"
                    :src_btn="btn_code_pending_src"
                    :route_btn="''"
                    :without_padding="true"
                    :disabled_btn="disabled_send=true" >
             {{ !btn_code_pending_src ? 'Получить код' : '' }}
           </Button>
-<!--          <div class="login_error" v-if="phoneAuthError">{{ phoneAuthError }}</div>-->
           <span class="timeout-message" v-if="disabled_send_count >= 6">Кажется использовано слишком много попыток, попробуйте снова позже.</span>
-          <span class="timeout-message" v-if="disabled_send_count >= 1 && disabled_send_count !== 6">До получения нового кода {{ currentTime }}с</span>
+          <span class="timeout-message" v-if="disabled_send_count >= 1 && disabled_send_count < 6">До получения нового кода {{ currentTime }}с</span>
         </div>
         <div v-else>
           <Button  @click.prevent="phoneAuth(disabled_send)"
-                   :width_btn="14"
+                   :width_btn="18"
                    :src_btn="btn_code_pending_src"
                    :route_btn="''"
                    :without_padding="true"
@@ -56,30 +55,19 @@
                                               formData.phone==='')" >
             {{ !btn_code_pending_src ? 'Получить код' : '' }}
           </Button>
-<!--          <div class="login_error" v-if="phoneAuthError">{{ phoneAuthError }}</div>-->
         </div>
       </div>
       <div class="login_error" v-if="loginError">{{ loginError }}</div>
       <div class="login_error" v-else>{{ phoneAuthError }}</div>
       <div class="login-form" >
-<!--        <Button @click.prevent="login(disabled_reg)"-->
-<!--                :width_btn="22"-->
-<!--                :src_btn="btn_pending_src"-->
-<!--                :route_btn="''"-->
-<!--                :disabled_btn="disabled_reg=(v$.phone.$error ||-->
-<!--                               v$.code.$error ||-->
-<!--                               formData.phone==='' ||-->
-<!--                               formData.code==='')">-->
-<!--          {{ !btn_pending_src ? 'Войти' : '' }}-->
-<!--        </Button>-->
         <Button @click.prevent="login(disabled_reg)"
-                :width_btn="22"
                 :src_btn="btn_pending_src"
                 :without_padding="true"
                 :route_btn="''"
                 :disabled_btn="disabled_reg=(v$.phone.$error ||
                                v$.code.$error ||
                                formData.phone==='' ||
+                               formData.code==='' ||
                                btn_pending_src!=='')">
           {{ !btn_pending_src ? 'Войти' : '' }}
         </Button>
@@ -178,7 +166,7 @@ const phoneAuth = (disabled) => {
         }
       }).catch((err) => {
         btn_code_pending_src.value = '';
-        phoneAuthError.value = `Авторизация не удалась, проверьте корректность введённых данных.`;
+        phoneAuthError.value = `Отпрака сообщения не удалась. Проверьте формат номера телефона`;
         console.error('Contact form could not be send', err)
       });
 
@@ -191,7 +179,7 @@ const login = (disabled) => {
     btn_pending_src.value = 'img/835.svg';
     loginError.value = '';
     phoneAuthError.value = '';
-    // if (smsCode.value === formData.code && formData.code !== ''){
+    if (smsCode.value === formData.code && formData.code !== ''){
       loginFormRequest().then((res) => {
         addUser(res);
         getUser();
@@ -203,7 +191,7 @@ const login = (disabled) => {
         loginError.value = `Авторизация не удалась, проверьте корректность введённых данных.`;
         console.error('Contact form could not be send', err)
       });
-    // }
+    }
   }
 };
 
@@ -275,7 +263,7 @@ const bindProps = computed(() => {
   margin-bottom: 1.5rem;
 }
 .form-input_wrapp{
-  width: 22rem;
+  width: 30rem;
   height: 3rem;
   background: #F7F7F7;
   border: 1px solid rgba(133, 143, 164, 0.5);
@@ -323,7 +311,7 @@ const bindProps = computed(() => {
   height: 3rem;
 }
 .tel{
-  width: 22rem;
+  width: 30rem;
   height: auto;
   margin-bottom: 2rem;
 }
@@ -336,11 +324,9 @@ const bindProps = computed(() => {
 .code-wrapp{
   margin-bottom: 2rem;
 }
-.btn-form{
-  /*margin-top: 1rem;*/
-}
 .login-form{
   margin-top: 2rem;
+  margin-bottom: .5rem;
 }
 .login-form_disbled{
   opacity: 0.5;

@@ -51,7 +51,7 @@
       <div class="btn-form">
         <div v-if="disabled_send_count >= 1 && currentTime > 0">
           <Button  @click.prevent="phoneAuth(disabled_send)"
-                   :width_btn="14"
+                   :width_btn="18"
                    :route_btn="''"
                    :without_padding="true"
                    :src_btn="btn_code_pending_src"
@@ -59,11 +59,11 @@
             {{ !btn_code_pending_src ? 'Получить код' : '' }}
           </Button>
           <span class="timeout-message" v-if="disabled_send_count >= 6">Кажется использовано слишком много попыток, попробуйте снова позже.</span>
-          <span class="timeout-message" v-if="disabled_send_count >= 1 && disabled_send_count !== 6">До получения нового кода {{ currentTime }}с</span>
+          <span class="timeout-message" v-if="disabled_send_count >= 1 && disabled_send_count < 6">До получения нового кода {{ currentTime }}с</span>
         </div>
         <div v-else>
           <Button  @click.prevent="phoneAuth(disabled_send)"
-                   :width_btn="14"
+                   :width_btn="18"
                    :route_btn="''"
                    :without_padding="true"
                    :src_btn="btn_code_pending_src"
@@ -79,19 +79,7 @@
       <div class="register_error" v-if="registerError">{{ registerError }}</div>
       <div class="register_error" v-else>{{ phoneAuthError }}</div>
       <div class="login-form" >
-<!--        <Button @click.prevent="register(disabled_reg)"-->
-<!--                :width_btn="22"-->
-<!--                :route_btn="''"-->
-<!--                :disabled_btn="disabled_reg=(v$.name.$error ||-->
-<!--                               v$.phone.$error ||-->
-<!--                               v$.code.$error ||-->
-<!--                               formData.phone==='' ||-->
-<!--                               formData.name==='' ||-->
-<!--                               formData.code==='')">-->
-<!--          Зарегистрироваться-->
-<!--        </Button>-->
         <Button @click.prevent="register(disabled_reg)"
-                :width_btn="22"
                 :route_btn="''"
                 :without_padding="true"
                 :src_btn="btn_pending_src"
@@ -100,6 +88,7 @@
                                v$.code.$error ||
                                formData.phone==='' ||
                                formData.name==='' ||
+                               formData.code==='' ||
                                btn_pending_src!=='')">
           {{ !btn_pending_src ? 'Зарегистрироваться' : '' }}
         </Button>
@@ -199,7 +188,7 @@ const phoneAuth = (disabled) => {
         }
       }).catch((err) => {
         btn_code_pending_src.value = '';
-        registerError.value = `Регистрация не удалась. Проверьте правильность номера телефона`;
+        registerError.value = `Отпрака сообщения не удалась. Проверьте формат номера телефона`;
         console.error('Contact form could not be send', err)
       });
 
@@ -212,7 +201,7 @@ const register = (disabled) => {
     btn_pending_src.value = 'img/835.svg';
     registerError.value = '';
     phoneAuthError.value = '';
-    // if (smsCode.value === formData.code && formData.code !== ''){
+    if (smsCode.value === formData.code && formData.code !== ''){
       registerFormRequest().then((res) => {
         addUser(res);
         getUser();
@@ -224,7 +213,7 @@ const register = (disabled) => {
         registerError.value = `Регистрация не удалась. Данные некоректны или данный номер уже зарегистрирован`;
         console.error('Contact form could not be send', err)
       });
-    // }
+    }
   }
 };
 
@@ -300,7 +289,7 @@ const bindProps = computed(() => {
   margin-bottom: 1.5rem;
 }
 .form-input_wrapp{
-  width: 22rem;
+  width: 30rem;
   height: 3rem;
   background: #F7F7F7;
   border: 1px solid rgba(133, 143, 164, 0.5);
@@ -349,7 +338,7 @@ const bindProps = computed(() => {
   height: 3rem;
 }
 .tel{
-  width: 22rem;
+  width: 30rem;
   height: auto;
   margin-bottom: 2rem;
 }
@@ -362,11 +351,9 @@ const bindProps = computed(() => {
 .code-wrapp{
   margin-bottom: 2rem;
 }
-.btn-form{
-  /*margin-top: 1rem;*/
-}
 .login-form{
   margin-top: 2rem;
+  margin-bottom: .5rem;
 }
 .login-form_disbled{
   opacity: 0.5;

@@ -11,7 +11,6 @@
               <div class="modal-top">
                 <div class="modal_titles">
                   <h2 class="log_in " :class="{'active': logIn}" @click="changeOnLogIn">Войти</h2>
-                  <!--              <h2 class="log_in active">Войти или регистрация</h2>-->
                   <h2 class="register" :class="{'active': register}" @click="changeOnRegister">Регистрация</h2>
                 </div>
                 <div class="modal_close" @click.stop="closeModal"></div>
@@ -74,14 +73,11 @@ const closeModal = () => {
   open.value = false;
 
   document.querySelector('body').classList.remove('lock')
-  window.scrollTo(0,document.querySelector('body').dataset.scrollY)
+  window.scrollTo(0, document.querySelector('body').dataset.scrollY)
 };
 </script>
 
 <style scoped>
-/*html, body{*/
-/*  position: fixed;*/
-/*}*/
 .header_link{
   color: #fff;
   transition: all .3s ease;
@@ -93,27 +89,22 @@ const closeModal = () => {
 }
 .modal-section{
   position: fixed;
-  /*width: 1920px;*/
-  /*height: 751px;*/
   display: flex;
   justify-content: center;
-  z-index: 99;
+  z-index: 9999;
   left: 0;
-  top: 7.8125rem;
+  top: 0;
   width: 100%;
   height: 100vh;
   background: rgba(26, 26, 37, 0.5);
 }
 .modal{
-  /*position: absolute;*/
-  /*z-index: 99;*/
-  /*top: 20%;*/
-  /*left: 50%;*/
-  margin-top: 1.5rem;
-  width: 30.75rem;
-  height: max-content;
+  margin-top: 10%;
+  width: 40.75rem;
+  max-height: 90%;
   padding: 1.625rem 2.5rem;
   background-color: #FFFFFF;
+  overflow-y: auto;
   box-shadow: 0 10px 30px rgba(133, 143, 164, 0.1);
   border-radius: 6px;
 }
