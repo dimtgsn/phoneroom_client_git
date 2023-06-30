@@ -97,15 +97,18 @@
       <div class="edit_error" v-if="userEditError">{{ userEditError }}</div>
       <div class="login-form" >
         <Button @click.prevent="saveChanges()"
+                :src_btn="btn_pending_src"
+                :without_padding="true"
                 :width_btn="22"
                 :route_btn="''"
-                :disabled_btn="disabled_reg=(v$.name.$error || v$.last_name.$error || v$.middle_name.$error || v$.email.$error || v$.address.$error ||
+                :disabled_btn="disabled_reg=(v$.name.$error || v$.last_name.$error || v$.middle_name.$error || v$.email.$error || v$.address.$error || btn_pending_src!=='' ||
                                (formData.middle_name===useUserStore().userInfo.value.middle_name &&
                                formData.last_name===useUserStore().userInfo.value.last_name &&
                                formData.address===useUserStore().userInfo.value.address &&
                                formData.email===useUserStore().userInfo.value.email &&
                                formData.name===useUserStore().user.first_name))">
-          Сохранить изменения</Button>
+          {{ !btn_pending_src ? 'Сохранить изменения' : '' }}
+        </Button>
       </div>
     </form>
   </div>
@@ -119,9 +122,9 @@ import {VueDadata} from "vue-dadata";
 import {computed, reactive, ref} from "vue";
 
 const appConfig = useRuntimeConfig();
+const btn_pending_src = ref('');
 
 const token = appConfig.public.dadataToken;
-console.log('FormUserEdit');
 
 const isDisabledName = ref(true);
 const isNoDisabledName = () => {
@@ -190,6 +193,7 @@ const urlUserUpdate = computed(() => config.public.apiBaseUrl + `users/${useUser
 
 const saveChanges = () => {
   if (!disabled_reg.value){
+    btn_pending_src.value = 'img/835.svg';
     updateFormRequest().then((res) => {
       addUserInfo(res);
       if (formData.name !== useUserStore().getUser().value.first_name){
@@ -200,8 +204,10 @@ const saveChanges = () => {
       }
       console.log(res);
       emit('openFormUserEdit');
+      btn_pending_src.value = '';
     }).catch((err) => {
-      userEditError.value = `Сохранение изменений не удалось. Проверьте корректность данных и повторите отправку формы.`;
+      btn_pending_src.value = '';
+      userEditError.value = `Сохранение не удалось. Проверьте корректность данных и повторите отправку формы.`;
       console.error('Contact form could not be send', err)
     });
   }
@@ -210,11 +216,12 @@ const saveChanges = () => {
 const updateFormRequest = async () => {
   return await $fetch(urlUserUpdate.value , {
     headers: {
-      'Authorization': `Bearer ${useUserStore().getToken().value}`,
       'Accept': 'application/json',
       'Content-Type': 'application/json',
     },
     method: 'POST',
+    withCredentials: true,
+    credentials: 'include',
     params: {
       first_name: formData.name,
       phone: useUserStore().userInfo.value.phone,
@@ -320,7 +327,8 @@ const addUserInfo = (user) => {
   /*margin-top: 1rem;*/
 }
 .login-form{
-  margin-top: 5.25rem;
+  margin-top: 2rem;
+  margin-bottom: .5rem;
 }
 .login-form_disbled{
   opacity: 0.5;

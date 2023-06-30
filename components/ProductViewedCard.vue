@@ -109,15 +109,14 @@ const props = defineProps({
 const user = computed(() => useUserStore().getUser().value);
 const config = useRuntimeConfig();
 
-const pressedFavorite = computed(() => useFavoriteProductStore().checkProduct(props.product_variant))
-const pressedCompare = computed(() => useCompareProductStore().checkProduct(props.product_variant));
-const pressedBasket = computed(() => useBasketProductsStore().checkProduct(props.product_variant));
+const pressedFavorite = computed(() => useFavoriteProductStore().checkProduct(props.product_variant.id))
+const pressedCompare = computed(() => useCompareProductStore().checkProduct(props.product_variant.id));
+const pressedBasket = computed(() => useBasketProductsStore().checkProduct(props.product_variant.id));
 
 const addFavoriteProduct = (product) => {
   if  (user.value){
     if (pressedFavorite.value === false) {
       useFavoriteProductStore().pushProduct(product);
-      pressedFavorite.value = true;
       favoriteCreateFormRequest(user.value.id, product.id)
           .then((res) => {
             console.log(res)
@@ -127,18 +126,16 @@ const addFavoriteProduct = (product) => {
     }
     else{
       useFavoriteProductStore().removeProduct(product);
-      pressedFavorite.value = false;
     }
   }
   else{
     if (!pressedFavorite.value) {
       useFavoriteProductStore().pushProduct(product);
-      pressedFavorite.value = true;
     }
     else{
       useFavoriteProductStore().removeProduct(product);
-      pressedFavorite.value = false;
     }
+    useFavoriteProductStore().needUpdate = true;
   }
 };
 
@@ -146,7 +143,6 @@ const addCompareProduct = (product) => {
   if  (user.value){
     if (pressedCompare.value === false) {
       useCompareProductStore().pushProduct(product);
-      pressedCompare.value = true;
       compareCreateFormRequest(user.value.id, product.id, product.category_id)
           .then((res) => {
             console.log(res)
@@ -156,18 +152,16 @@ const addCompareProduct = (product) => {
     }
     else{
       useCompareProductStore().removeProduct(product);
-      pressedCompare.value = false;
     }
   }
   else{
     if (!pressedCompare.value) {
       useCompareProductStore().pushProduct(product);
-      pressedCompare.value = true;
     }
     else{
       useCompareProductStore().removeProduct(product);
-      pressedCompare.value = false;
     }
+    useCompareProductStore().needUpdate = true;
   }
 
 };
@@ -176,7 +170,6 @@ const addProductToBasket = (product) => {
   if  (user.value){
     if (pressedBasket.value === false) {
       useBasketProductsStore().pushProduct(product);
-      pressedBasket.value = true;
       basketCreateFormRequest(user.value.id, product.id).then((res) => {
         console.log(res)
       }).catch((err) => {
@@ -187,9 +180,8 @@ const addProductToBasket = (product) => {
   else{
     if (pressedBasket.value === false) {
       useBasketProductsStore().pushProduct(product);
-      pressedBasket.value = true;
     }
-
+    useBasketProductsStore().needUpdate = true;
   }
 };
 

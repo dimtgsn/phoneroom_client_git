@@ -4,7 +4,6 @@ export const useUserStore = defineStore('userStore', () => {
     const user = ref();
     const disabled_send_count = ref(0);
     const userCity = ref('');
-    const apiToken = ref('');
     const userInfo = ref('');
     const ipInfoCity = ref('');
     const userCountBasketProducts = ref(0);
@@ -14,6 +13,22 @@ export const useUserStore = defineStore('userStore', () => {
             user.value = JSON.parse(localStorage.getItem('user'));
         }
         return user
+    }
+
+    function getCookie(cname) {
+        let name = cname + "=";
+        let decodedCookie = decodeURIComponent(document.cookie);
+        let ca = decodedCookie.split(';');
+        for(let i = 0; i <ca.length; i++) {
+            let c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return "";
     }
 
     function getUserCity() {
@@ -36,14 +51,6 @@ export const useUserStore = defineStore('userStore', () => {
         }
         return disabled_send_count
     }
-
-    function getToken() {
-        if (localStorage.getItem('apiToken')){
-            apiToken.value = JSON.parse(localStorage.getItem('apiToken'));
-        }
-        return apiToken
-    }
-
 
     function addUser(data) {
         user.value = data;
@@ -70,40 +77,31 @@ export const useUserStore = defineStore('userStore', () => {
         localStorage.setItem('disabled_send_count', JSON.stringify(disabled_send_count.value));
     }
 
-    function addToken(data) {
-        apiToken.value = data;
-        localStorage.setItem('apiToken', JSON.stringify(apiToken.value));
-    }
-
     function removeDis() {
         disabled_send_count.value = 0;
         localStorage.setItem('disabled_send_count', JSON.stringify(disabled_send_count.value));
     }
 
     function removeUser() {
-        user.value = ''
-        apiToken.value = ''
+        user.value = '';
         localStorage.setItem('user', user.value);
-        localStorage.setItem('apiToken', apiToken.value);
     }
 
     return {
         user,
         disabled_send_count,
         userCity,
-        apiToken,
         userInfo,
         userCountBasketProducts,
         addUser,
         addUserInfo,
         addDis,
-        addToken,
         ipInfoCity,
         removeDis,
+        getCookie,
         addUserCountBasketProducts,
         getDis,
         getUserCountBasketProducts,
-        getToken,
         removeUser,
         getUser,
         getUserCity,

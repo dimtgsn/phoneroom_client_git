@@ -1,60 +1,60 @@
 <template>
   <div class="compare-section">
-    <div v-if="0">
-      <div class="container">
-        Loading...
+   <div class="container">
+      <Breadcrumbs :name="{title: 'Сравнение', to: '/comparison'}"/>
+      <div class="title_wrapp">
+        <h1 class="title">Сравнение</h1>
       </div>
     </div>
-    <div v-else>
-      <div class="container">
-        <Breadcrumbs :name="{title: 'Сравнение', to: '/comparison'}"/>
-        <div class="title_wrapp">
-          <h1 class="title">Сравнение</h1>
-        </div>
-      </div>
-      <div class="line"></div>
-      <div class="index-main-wrap">
-        <section class="section-compare">
-          <div class="container container-comparison">
-            <div class="buttons">
-              <div v-for="category in categories">
-                <div @click="addOpenCategory(category)">
-                  <div class="category_btn"
-                       :class="{'category_btn-max': category.length > 20, 'active': openCategory === category}">{{ category }}
-                  </div>
+    <div class="line"></div>
+    <div class="index-main-wrap">
+      <section class="section-compare">
+        <div class="container container-comparison">
+          <div v-if="products.length !== 0" class="buttons">
+            <div v-for="category in categories">
+              <div @click="addOpenCategory(category)">
+                <div class="category_btn"
+                     :class="{'category_btn-max': category.length > 20, 'active': openCategory === category}">{{ category }}
                 </div>
               </div>
             </div>
           </div>
-          <div class="cards-section">
-            <div class="container cards-section-wrapp">
-              <div class="cards" v-if="hasUser" v-for="product in products">
-                <div v-if="pending">
-                  <section class="wrapper-pen">
-                    <article class="article">
-                      <div class="bg">
-                        <div class="icons">
-                          <div class="icon-2 icon-2-2"></div>
-                        </div>
-                      </div>
-                    </article>
-                  </section>
-                </div>
-                <div v-else>
-                  <div v-if="product.published === true && openCategory === product.category">
-                    <ProductCompareCard @deleteUserProduct="updateUserProducts" :product_variant="product" ></ProductCompareCard>
+        </div>
+        <div class="cards-section-wrapp">
+          <div v-if="pending" class="container">
+            <section class="wrapper-pen">
+              <article class="article">
+                <div class="bg">
+                  <div class="icons">
+                    <div class="icon-2 icon-2-2"></div>
                   </div>
                 </div>
+              </article>
+            </section>
+          </div>
+          <div v-else-if="products.length !== 0" class="cards-section-wrapp_white container">
+            <div class="cards" v-for="product in products">
+              <div v-if="hasUser">
+                <div v-if="product.published === true && openCategory === product.category">
+                  <ProductCompareCard @deleteUserProduct="updateUserProducts" :product_variant="product" ></ProductCompareCard>
+                </div>
               </div>
-              <div class="cards" v-else v-for="product in products">
+              <div v-else>
                 <div v-if="product.published === true && (openCategory === product.category_name || openCategory === product.category)">
                   <ProductCompareCard @updateComparison="updateComparison" @deleteUserProduct="updateUserProducts" :product_variant="product" ></ProductCompareCard>
                 </div>
               </div>
             </div>
           </div>
-        </section>
-      </div>
+          <div v-else style="width: 100%; height: 120vh" class="container">
+            <h2 class="no_compares_products">В сравнении нет товаров</h2>
+            <div class="no_products_text">
+              Добавьте интересующие вас товары для сравнения
+            </div>
+            <Button :width_btn="15" :route_btn="'/'">Вернуться на главную</Button>
+          </div>
+        </div>
+      </section>
     </div>
   </div>
 </template>
@@ -63,7 +63,7 @@
 import {useUserStore} from "../stores/UserStore";
 import {useCompareProductStore} from "../stores/CompareProductStore";
 import ProductCompareCard from "../components/ProductCompareCard";
-import {computed, ref, onBeforeUpdate, onBeforeMount} from "vue";
+import {computed, ref, onBeforeUpdate, onBeforeMount, onMounted} from "vue";
 import {useFavoriteProductStore} from "../stores/FavoriteProductStore";
 import {useBasketProductsStore} from "../stores/BasketProductsStore.js";
 
@@ -74,11 +74,11 @@ const hasUser = ref();
 onBeforeMount(() => {
   hasUser.value = useUserStore().getUser().value;
 });
-const products = ref(useCompareProductStore().getCompareProducts().value);
-// const products = computed(() => useCompareProductStore().compareProducts);
-// const products = ref(useCompareProductStore().getCompareProducts().value);
-
+const products_ids = computed(() => useCompareProductStore().getCompareProducts().value);
+const products = ref([]);
+const urlProductsComparison = computed(() => config.public.apiBaseUrl + `products/products`);
 const openCategory = ref();
+
 const pending = ref(true);
 
 const addOpenCategory = (category) => {
@@ -86,7 +86,6 @@ const addOpenCategory = (category) => {
   if (user.value){
     compareGetCategoryFormRequest(openCategory.value).then((res) => {
       products.value = res;
-      console.log(products.value);
       // checkCategory();
     }).catch((err) => {
       console.error('Contact form could not be send', err);
@@ -112,27 +111,36 @@ onBeforeUpdate(() => {
     }
   }
   else{
-    updateComparison();
+    if (useCompareProductStore().needUpdate){
+      pending.value = true;
+      updateComparison();
+    }
   }
 });
 const updateComparison = () => {
-  products.value = useCompareProductStore().getCompareProducts().value;
-  console.log(products.value);
-  for (const product of products.value) {
-    if (product.category_name){
-      if (categories.value.indexOf(product.category_name) === -1){
-        categories.value.push(product.category_name);
+  openCategory.value = categories.value[0] ? categories.value[0]:'';
+  pending.value = true;
+  productsCompareGetFormRequest().then((res) => {
+    products.value = res;
+    for (const product of products.value) {
+      if (product.category_name){
+        if (categories.value.indexOf(product.category_name) === -1){
+          categories.value.push(product.category_name);
+        }
+      }
+      else{
+        if (categories.value.indexOf(product.category) === -1){
+          categories.value.push(product.category);
+        }
       }
     }
-    else{
-      if (categories.value.indexOf(product.category) === -1){
-        categories.value.push(product.category);
-      }
-    }
-  }
-  // addOpenCategory(openCategory.value);
+    pending.value = false;
+  }).catch((err) => {
+    console.error('Contact form could not be send', err);
+  });
+  useCompareProductStore().needUpdate = false;
 };
-onBeforeMount(() => {
+onMounted(() => {
   openCategory.value = '';
   if (user.value){
     pending.value = true;
@@ -146,9 +154,14 @@ onBeforeMount(() => {
     });
   }
   else{
-    products.value = useCompareProductStore().getCompareProducts().value;
-    console.log(products.value);
-    checkCategory();
+    pending.value = true;
+    productsCompareGetFormRequest().then((res) => {
+      products.value = res;
+      checkCategory();
+      pending.value = false;
+    }).catch((err) => {
+      console.error('Contact form could not be send', err);
+    });
   }
 });
 
@@ -217,6 +230,20 @@ const compareGetCategoryFormRequest = async (category_id) => {
     },
   });
 }
+
+const productsCompareGetFormRequest = async () => {
+  return await $fetch(urlProductsComparison.value , {
+      headers: {
+        "Accept": "application/json",
+        'Content-Type': 'application/json',
+      },
+      method: 'GET',
+      params: {
+        'products': JSON.stringify(products_ids.value)
+      },
+    }
+  )
+};
 
 </script>
 
@@ -330,6 +357,11 @@ const compareGetCategoryFormRequest = async (category_id) => {
 .cards-section-wrapp{
   display: flex;
 }
+.cards-section-wrapp_white{
+  background-color: #FFFFFF;
+  display: flex;
+  height: 120vh;
+}
 .cards{
   margin-right: 1.875rem;
   border: none;
@@ -337,33 +369,48 @@ const compareGetCategoryFormRequest = async (category_id) => {
 .cards:last-child{
   margin-right: 0;
 }
+.no_products_text{
+  color: #1A1A25;
+  width: 60%;
+  font-weight: 400;
+  font-size: 1.25rem;
+  line-height: 150%;
+  margin-bottom: 5rem;
+}
+.no_compares_products{
+  color: #384255;
+  font-weight: 700;
+  font-size: 1.625rem;
+  line-height: 120%;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+}
 
 .wrapper-pen{
-  padding: 2rem 0;
   width: 100vh;
 }
 
 .article {
   width: 100%;
-  background: white;
+  background: #F7F7F7;
   padding: 0;
   margin-right: 0;
 }
 .mask{
-  background: white;
+  background: #F7F7F7;
 }
 .icons{
-  border-bottom: solid 10.3125rem white;
+  border-bottom: solid 10.3125rem #F7F7F7;
 }
 .icon-2{
   width: 24.25rem;
   height: 37.625rem;
   border-radius: .625rem;
-  box-shadow: .3125rem .625rem .3125rem .9375rem white, .625rem -.625rem .3125rem white, -.625rem .625rem .3125rem white, -.625rem -.625rem .3125rem white;
+  box-shadow: .3125rem .625rem .3125rem .9375rem #F7F7F7, .625rem -.625rem .3125rem #F7F7F7, -.625rem .625rem .3125rem #F7F7F7, -.625rem -.625rem .3125rem #F7F7F7;
 }
 .icon-2-2{
   width: 100%;
   height: 100vh;
-  box-shadow: .3125rem 2rem .3125rem .9375rem white, .625rem -.625rem .3125rem white, -.625rem 1.625rem .3125rem white, -.625rem -.625rem .3125rem white;
+  box-shadow: .3125rem 2rem .3125rem .9375rem #F7F7F7, .625rem -.625rem .3125rem #F7F7F7, -.625rem 1.625rem .3125rem #F7F7F7, -.625rem -.625rem .3125rem #F7F7F7;
 }
 </style>

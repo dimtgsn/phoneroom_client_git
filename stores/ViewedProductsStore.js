@@ -13,7 +13,7 @@ export const useViewedProductsStore = defineStore('viewedProducts', () => {
     }
 
     function pushProduct(product) {
-        if (!checkProduct(product) && viewedProducts.value.length <= 15){
+        if (!checkProduct(product.id) && viewedProducts.value.length <= 15){
             viewedProducts.value.push(product);
             localStorage.setItem('viewedProducts', JSON.stringify(viewedProducts.value));
         }
@@ -21,7 +21,7 @@ export const useViewedProductsStore = defineStore('viewedProducts', () => {
 
     function checkProduct(product) {
         for (const productViewed of viewedProducts.value) {
-            if(productViewed.id === product.id){
+            if(parseInt(productViewed.id) === parseInt(product)){
                 return true;
             }
         }
@@ -30,7 +30,7 @@ export const useViewedProductsStore = defineStore('viewedProducts', () => {
 
 
     function removeProduct(product) {
-        if (checkProduct(product)){
+        if (checkProduct(product.id)){
             viewedProducts.value.splice(viewedProducts.value.indexOf(product), 1);
             localStorage.setItem('viewedProducts', JSON.stringify(viewedProducts.value));
         }

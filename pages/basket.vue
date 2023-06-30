@@ -36,36 +36,50 @@
                 <div v-else-if="!products || products == 0">
                   <h2 class="no_basket_products">Корзина пуста</h2>
                 </div>
-                <div v-else-if="products && products!=0" class="cards" v-for="product in products">
+                <div v-else-if="products && products!=0" class="cards" v-for="(product, quantity) in products">
                   <div v-if="productsIsUpdated">
                     <div v-if="product.published === true">
-                      <ProductBasketCard @deleteUserProduct="updateUserProducts" @editQuantity="editQuantity"  :product_variant="product" ></ProductBasketCard>
+                      <ProductBasketCard @deleteUserProduct="updateUserProducts" @editQuantity="editQuantity"  :product_variant="product" :product_quantity="parseInt(products_ids[quantity][1])" ></ProductBasketCard>
                     </div>
                   </div>
                   <div v-else>
                     <div v-if="product.published === true">
-                      <ProductBasketCard @deleteUserProduct="updateUserProducts" @editQuantity="editQuantity"  :product_variant="product" ></ProductBasketCard>
+                      <ProductBasketCard @deleteUserProduct="updateUserProducts" @editQuantity="editQuantity"  :product_variant="product" :product_quantity="parseInt(products_ids[quantity][1])" ></ProductBasketCard>
                     </div>
                   </div>
                 </div>
               </div>
               <div v-else>
-                <div v-if="!products || products==0" class="no_basket">
-                  <h2 class="no_basket_products">Корзина пуста</h2>
-                  <div class="no_products_text">
-                    Возможно вы наполняли корзину в прошлом, <AuthModal :link_color="'#E31235'">авторизируйтесь</AuthModal>, чтобы увидеть выбранные товары.
-                  </div>
-                  <Button :width_btn="15" :route_btn="'/'">Вернуться на главную</Button>
+                <div v-if="pending">
+                  <section class="wrapper-pen">
+                    <article class="article">
+                      <div class="bg">
+                        <div class="icons">
+                          <div class="icon-2 icon-2-2"></div>
+                          <div class="mask"></div>
+                        </div>
+                      </div>
+                    </article>
+                  </section>
                 </div>
-                <div v-else-if="products && products!=0" class="cards" v-for="product in products">
-                  <div v-if="productsIsUpdated">
-                    <div v-if="product.published === true">
-                      <ProductBasketCard @delete="updateProducts"  :product_variant="product" ></ProductBasketCard>
+                <div v-else>
+                  <div v-if="!products || products==0" class="no_basket">
+                    <h2 class="no_basket_products">Корзина пуста</h2>
+                    <div class="no_products_text">
+                      Возможно вы наполняли корзину в прошлом, <AuthModal :link_color="'#E31235'">авторизируйтесь</AuthModal>, чтобы увидеть выбранные товары.
                     </div>
+                    <Button :width_btn="15" :route_btn="'/'">Вернуться на главную</Button>
                   </div>
-                  <div v-else>
-                    <div v-if="product.published === true">
-                      <ProductBasketCard @delete="updateProducts"  :product_variant="product" ></ProductBasketCard>
+                  <div v-else-if="products && products!=0" class="cards" v-for="(product, quantity) in products">
+                    <div v-if="productsIsUpdated">
+                      <div v-if="product.published === true">
+                        <ProductBasketCard @delete="updateProducts"  :product_variant="product" :product_quantity="parseInt(products_ids[quantity][1])" ></ProductBasketCard>
+                      </div>
+                    </div>
+                    <div v-else>
+                      <div v-if="product.published === true">
+                        <ProductBasketCard @delete="updateProducts"  :product_variant="product" :product_quantity="parseInt(products_ids[quantity][1])" ></ProductBasketCard>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -75,16 +89,16 @@
           <div class="right-basket">
             <div class="basket-total">
               <div class="basket-total_title">Итого</div>
-              <div class="total">{{priceFormat(totalPrice)}}&nbsp;₽</div>
+              <div class="total">{{priceFormat(isNaN(totalPrice) ? 0 : totalPrice)}}&nbsp;₽</div>
             </div>
             <div class="line basket-line"></div>
             <div class="basket-total_products">
-              <div class="basket-total_products_title">Товары, {{ totalQuantity }}&nbsp;шт.</div>
-              <div class="total total_products">{{ priceFormat(totalPrice) }}&nbsp;₽</div>
+              <div class="basket-total_products_title">Товары, {{ isNaN(totalQuantity) ? 0 : totalQuantity }}&nbsp;шт.</div>
+              <div class="total total_products">{{ priceFormat(isNaN(totalPrice) ? 0 : totalPrice) }}&nbsp;₽</div>
             </div>
             <div class="basket-total_sales">
               <div class="basket-total_products_title basket-total_sales">Скидка</div>
-              <div class="total total_products total_sales">{{priceFormat(totalSalePrice)}}&nbsp;₽</div>
+              <div class="total total_products total_sales">{{priceFormat(isNaN(totalSalePrice) ? 0 : totalSalePrice)}}&nbsp;₽</div>
             </div>
             <div class="line basket-line"></div>
             <div class="total-buttons">
@@ -103,9 +117,10 @@ import {useBasketProductsStore} from "../stores/BasketProductsStore";
 import {useUserStore} from "../stores/UserStore";
 import {useFavoriteProductStore} from "../stores/FavoriteProductStore";
 import {computed, onMounted, ref, onBeforeUpdate, onBeforeMount} from "vue";
+import {useRouter} from "nuxt/app";
 
 const config = useRuntimeConfig();
-
+const router = useRoute();
 const productsIsUpdated = ref(false)
 
 const user = computed(() => useUserStore().getUser().value);
@@ -117,15 +132,16 @@ onBeforeMount(() => {
   hasUser.value = useUserStore().getUser().value;
 });
 
-const products = ref(useBasketProductsStore().getBasketProducts().value);
+const products_ids = computed(() => useBasketProductsStore().getBasketProducts().value);
+const products = ref([]);
 
 const urlBasket = computed(() => config.public.apiBaseUrl + `baskets/${useUserStore().getUser().value.id}`);
+const urlProducts = computed(() => config.public.apiBaseUrl + `products/products`);
 const pending = ref(true);
 
 const totalPrice = ref(0);
 const totalSalePrice = ref(0);
 const totalQuantity = ref(0);
-
 
 onBeforeUpdate(() => {
   if (user.value){
@@ -164,7 +180,17 @@ onBeforeUpdate(() => {
     // useBasketProductsStore().createTotalBasket(item);
   }
   else{
-    products.value = useBasketProductsStore().getBasketProducts().value;
+    if (useBasketProductsStore().needUpdate){
+      pending.value = true;
+      productsGetFormRequest().then((res) => {
+        console.log(res);
+        products.value = res;
+        pending.value = false;
+      }).catch((err) => {
+        console.error('Contact form could not be send', err);
+      });
+      useBasketProductsStore().needUpdate = false;
+    }
     totalPrice.value = 0;
     totalSalePrice.value = 0;
     totalQuantity.value = 0;
@@ -173,17 +199,17 @@ onBeforeUpdate(() => {
       for (const product of products.value) {
         if(parseInt(product.units_in_stock) > 0){
           totalPrice.value = totalPrice.value + parseInt(product.price);
-          totalPrice.value = totalPrice.value * parseInt(product.quantity);
-          totalQuantity.value = totalQuantity.value + parseInt(product.quantity);
+          totalQuantity.value = totalQuantity.value + parseInt(useBasketProductsStore().checkProduct(product.id)[1]);
+          totalPrice.value = totalPrice.value * parseInt(totalQuantity.value);
           detailProducts.push({
             id: product.id,
             product_name: product.product_name ? product.product_name : product.name,
             image: product.image,
-            quantity: product.quantity,
+            quantity: totalQuantity.value,
           });
           if (product.old_price){
             totalSalePrice.value = totalSalePrice.value + (parseInt(product.price)-parseInt(product.old_price));
-            totalSalePrice.value = totalSalePrice.value * parseInt(product.quantity);
+            totalSalePrice.value = totalSalePrice.value * parseInt(totalQuantity.value);
           }
         }
       }
@@ -202,7 +228,6 @@ onBeforeUpdate(() => {
 onMounted(() => {
   if (user.value){
     pending.value = true;
-    console.log(125000)
     basketGetFormRequest().then((res) => {
       console.log(res);
       pending.value = false;
@@ -213,7 +238,14 @@ onMounted(() => {
     });
   }
   else{
-    products.value = useBasketProductsStore().getBasketProducts().value;
+    pending.value = true;
+    productsGetFormRequest().then((res) => {
+      console.log(res);
+      products.value = res;
+      pending.value = false;
+    }).catch((err) => {
+      console.error('Contact form could not be send', err);
+    });
     totalPrice.value = 0;
     totalSalePrice.value = 0;
     let detailProducts = [];
@@ -221,17 +253,17 @@ onMounted(() => {
       for (const product of products.value) {
         if(parseInt(product.units_in_stock) > 0){
           totalPrice.value = totalPrice.value + parseInt(product.price);
-          totalPrice.value = totalPrice.value * parseInt(product.quantity);
-          totalQuantity.value = totalQuantity.value + parseInt(product.quantity);
+          totalQuantity.value = totalQuantity.value + parseInt(useBasketProductsStore().checkProduct(product.id)[1]);
+          totalPrice.value = totalPrice.value * parseInt(totalQuantity.value);
           detailProducts.push({
             id: product.id,
             product_name: product.product_name ? product.product_name : product.name,
             image: product.image,
-            quantity: product.quantity,
+            quantity: totalQuantity.value,
           });
           if (product.old_price){
             totalSalePrice.value = totalSalePrice.value + (parseInt(product.price)-parseInt(product.old_price));
-            totalSalePrice.value = totalSalePrice.value * parseInt(product.quantity);
+            totalSalePrice.value = totalSalePrice.value * parseInt(totalQuantity.value);
           }
         }
       }
@@ -245,9 +277,17 @@ onMounted(() => {
     useBasketProductsStore().createTotalBasket(item);
   }
 });
+
 const updateProducts = () => {
   if (!user.value){
-    products.value = useBasketProductsStore().getBasketProducts().value;
+    pending.value = true;
+    productsGetFormRequest().then((res) => {
+      console.log(res);
+      products.value = res;
+      pending.value = false;
+    }).catch((err) => {
+      console.error('Contact form could not be send', err);
+    });
   }
   productsIsUpdated.value = !productsIsUpdated.value;
 };
@@ -300,7 +340,6 @@ const editQuantity = () => {
     }
   }
   else {
-    products.value = useBasketProductsStore().getBasketProducts().value;
     pending.value = false;
     productsIsUpdated.value = !productsIsUpdated.value;
     totalPrice.value = 0;
@@ -310,16 +349,17 @@ const editQuantity = () => {
       for (const product of products.value) {
         if(parseInt(product.units_in_stock) > 0){
           totalPrice.value = totalPrice.value + parseInt(product.price);
-          totalPrice.value = totalPrice.value * parseInt(product.quantity);
+          totalQuantity.value = totalQuantity.value + parseInt(useBasketProductsStore().checkProduct(product.id)[1]);
+          totalPrice.value = totalPrice.value * parseInt(totalQuantity.value);
           detailProducts.push({
             id: product.id,
             product_name: product.product_name ? product.product_name : product.name,
             image: product.image,
-            quantity: product.quantity,
+            quantity: totalQuantity.value,
           });
           if (product.old_price){
             totalSalePrice.value = totalSalePrice.value + (parseInt(product.price)-parseInt(product.old_price));
-            totalSalePrice.value = totalSalePrice.value * parseInt(product.quantity);
+            totalSalePrice.value = totalSalePrice.value * parseInt(totalQuantity.value);
           }
         }
       }
@@ -332,7 +372,6 @@ const editQuantity = () => {
     };
     useBasketProductsStore().createTotalBasket(item);
   }
-
 };
 const basketGetFormRequest = async () => {
   return await $fetch(urlBasket.value , {
@@ -342,6 +381,19 @@ const basketGetFormRequest = async () => {
         'Content-Type': 'application/json',
       },
       method: 'GET',
+    }
+  )
+};
+const productsGetFormRequest = async () => {
+  return await $fetch(urlProducts.value , {
+      headers: {
+        "Accept": "application/json",
+        'Content-Type': 'application/json',
+      },
+      method: 'GET',
+      params: {
+        'products': JSON.stringify(products_ids.value)
+      },
     }
   )
 };

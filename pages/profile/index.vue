@@ -36,19 +36,15 @@
                 </div>
                 <div class="prodile-info info">
                   <h2 class="info_name">Имя: {{ user.first_name }} {{ user.middle_name ? user.middle_name: ''}} {{ user.last_name ? user.last_name: '' }}</h2>
-                  <h3 class="info_email">Email: {{ user.email }}</h3>
-                  <h3 class="info_phone">Телефон: {{ user.phone }}</h3>
+                  <h3 class="info_email">Email: {{ user.email ? user.email: '' }}</h3>
+                  <h3 class="info_phone">Телефон: {{ user.phone ? user.phone: '' }}</h3>
                 </div>
-                <div class="user-logout" v-if="windowWidth > 360">
+                <div class="user-logout">
                   <nuxt-link to="/">
-                    <h3 class="logout_title" @click.prevent="logout">Выйти</h3>
+                    <h3 class="logout_title" v-if="!btn_pending" @click.prevent="logout">Выйти</h3>
+                    <h3 class="logout_title" v-else><img src="img/833.svg" alt=""></h3>
                   </nuxt-link>
                 </div>
-              </div>
-              <div class="user-logout" v-if="windowWidth <= 360">
-                <nuxt-link to="/">
-                  <h3 class="logout_title" @click.prevent="removeUser">Выйти</h3>
-                </nuxt-link>
               </div>
               <div class="right-profile">
                 <div class="right-profile_l">
@@ -56,8 +52,8 @@
                     <div class="l-top_title item-title">Профиль</div>
                     <div class="l-top_info">
                       <h3 class="name">{{ user.first_name }} {{ user.middle_name ? user.middle_name: ''}} {{ user.last_name ? user.last_name: '' }}</h3>
-                      <h3 class="phone"><span class="name">тел: </span>{{ user.phone }}</h3>
-                      <h3 class="address"><span class="name">Адрес: {{ user.address }}</span></h3>
+                      <h3 class="phone"><span class="name">тел: </span>{{ user.phone ? user.phone: '' }}</h3>
+                      <h3 class="address"><span class="name">Адрес: {{ user.address ? user.address: ''  }}</span></h3>
                       <h3 class="profile-edit" @click="showUserEdit">Редактировать профиль</h3>
                       <Transition name="fade">
                         <component  @openUserEdit="openUserEdit" :is="userEdit ? UserEdit : 'div'" />
@@ -147,6 +143,7 @@ const config = useRuntimeConfig();
 
 const sendMessage = ref(false);
 const sendUserEdit = ref(false);
+const btn_pending = ref(false);
 
 definePageMeta({
   middleware: 'auth'
@@ -154,28 +151,34 @@ definePageMeta({
 const removeUser = () => {
   useUserStore().removeUser();
 };
-const urlLogout = computed(() => config.public.apiBaseUrl + `users/logout/${useUserStore().getUser().value.id}`);
+// const urlLogout = computed(() => config.public.apiBaseUrl + `users/logout/${useUserStore().getUser().value.id}`);
+const urlLogout = computed(() => config.public.baseUrl + `users/logout`);
 
 const logout = () => {
+  btn_pending.value = true;
   logoutFormRequest().then((res) => {
     removeUser();
+    navigateTo('/');
+    btn_pending.value = false;
     console.log(res);
   }).catch((err) => {
+    btn_pending.value = false;
     console.error('Contact form could not be send', err)
   });
 };
 
-
 const logoutFormRequest = async () => {
   return await $fetch(urlLogout.value , {
     headers: {
-      'Authorization': `Bearer ${useUserStore().getToken().value}`,
       "Accept": "application/json",
       'Content-Type': 'application/json',
     },
-    method: 'GET',
+    method: 'POST',
+    withCredentials: true,
+    credentials: 'include',
   });
 };
+
 const UserEdit = resolveComponent('UserEdit');
 const userEdit = ref(false);
 
@@ -213,7 +216,6 @@ const { pending, data: user } = await useLazyAsyncData(
     "user",
     () => $fetch(urlUserInfo.value, {
       headers: {
-          'Authorization': `Bearer ${useUserStore().getToken().value}`,
           "Accept": "application/json",
           'Content-Type': 'application/json',
         },
@@ -226,9 +228,6 @@ const { pending, data: user } = await useLazyAsyncData(
     }
 );
 useUserStore().addUserInfo(user);
-console.log(user);
-
-// console.log(user.value.messages);
 
 const windowWidth = ref(0);
 const updateWidth = () => {
@@ -246,8 +245,9 @@ onMounted(()=>{
   margin-top: 3.5rem;
   background: #F7F7F7;
   border-radius: 25px 25px 0 0;
-  padding-top: 3.5rem;
+  padding-top: 4.5rem;
   min-height: 84vh;
+  padding-bottom: 12rem;
 }
 .container-profile{
   display: flex;

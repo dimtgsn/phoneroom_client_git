@@ -82,7 +82,7 @@
         </div>
         <Transition name="fade" v-if="windowWidth > 640" mode="out-in" appear>
           <div class="card_btn" v-if="!pressedBasket">
-            <Button @click="addProductToBasket(props.product_variant)" :width_btn="7.9375" :disabled_btn="src==='img/835.svg'" :src_btn="src">В корзину</Button>
+            <Button @click="addProductToBasket(props.product_variant)" :width_btn="7.9375" :src_btn="src">В корзину</Button>
           </div>
           <div class="card_btn-outline" v-else>
             <ButtonRedOutline :basket_btn="true" :route_btn="''" :width_btn="6" >
@@ -92,7 +92,7 @@
         </Transition>
         <Transition name="fade" v-if="windowWidth <= 640" mode="out-in" appear>
           <div class="card_btn" v-if="!pressedBasket">
-            <Button @click="addProductToBasket(props.product_variant)" :width_btn="6" :disabled_btn="src==='img/835.svg'" :without_padding="true" :src_btn="src"></Button>
+            <Button @click="addProductToBasket(props.product_variant)" :width_btn="6" :without_padding="true" :src_btn="src"></Button>
           </div>
           <div class="card_btn-outline" v-else>
             <ButtonRedOutline :basket_btn="true" :route_btn="''" :width_btn="6" >
@@ -118,7 +118,7 @@ import {computed, onMounted, ref} from "vue";
 const user = computed(() => useUserStore().getUser().value);
 const config = useRuntimeConfig();
 
-const emit = defineEmits(['deleteUserProduct', ]);
+const emit = defineEmits(['deleteUserProduct', 'deleteFavoriteProduct']);
 
 
 const src = ref('img/basket.svg');
@@ -127,21 +127,19 @@ const props = defineProps({
   product_variant: Object
 });
 
-const pressedFavorite = computed(() => useFavoriteProductStore().checkProduct(props.product_variant))
-// const pressedFavorite = ref(useFavoriteProductStore().checkProduct(props.product_variant))
-const pressedCompare = computed(() => useCompareProductStore().checkProduct(props.product_variant));
-const pressedBasket = computed(() => useBasketProductsStore().checkProduct(props.product_variant));
+const pressedFavorite = computed(() => useFavoriteProductStore().checkProduct(props.product_variant.id));
+// const pressedFavorite = ref(useFavoriteProductStore().checkProduct(props.product_variant.id))
+const pressedCompare = computed(() => useCompareProductStore().checkProduct(props.product_variant.id));
+const pressedBasket = computed(() => useBasketProductsStore().checkProduct(props.product_variant.id));
 
 const addFavoriteProduct = (product) => {
   if  (user.value){
     if (pressedFavorite.value === false) {
-      pressedFavorite.value = true;
       favoriteCreateFormRequest(product.id).then((res) => {
         useFavoriteProductStore().pushProduct(product);
         useFavoriteProductStore().needUpdate = true;
         console.log(res)
       }).catch((err) => {
-        pressedFavorite.value = false;
         console.error('Contact form could not be send', err)
       });
     }
@@ -149,7 +147,6 @@ const addFavoriteProduct = (product) => {
       favoriteDeleteFormRequest(product.id).then((res) => {
         console.log(res);
         useFavoriteProductStore().removeProduct(product);
-        pressedFavorite.value = false;
         emit('deleteUserProduct');
       }).catch((err) => {
         console.error('Contact form could not be send', err);
@@ -159,11 +156,11 @@ const addFavoriteProduct = (product) => {
   else{
     if (!pressedFavorite.value) {
       useFavoriteProductStore().pushProduct(product);
-      pressedFavorite.value = true;
+      useFavoriteProductStore().needUpdate = true;
     }
     else{
       useFavoriteProductStore().removeProduct(product);
-      pressedFavorite.value = false;
+      emit('deleteFavoriteProduct');
     }
   }
 };
@@ -171,13 +168,11 @@ const addFavoriteProduct = (product) => {
 const addCompareProduct = (product) => {
   if  (user.value){
     if (pressedCompare.value === false) {
-      pressedCompare.value = true;
       compareCreateFormRequest(product.id, product.category_id).then((res) => {
         console.log(res)
         useCompareProductStore().pushProduct(product);
         useCompareProductStore().needUpdate = true;
       }).catch((err) => {
-        pressedCompare.value = false;
         console.error('Contact form could not be send', err)
       });
     }
@@ -196,29 +191,24 @@ const addCompareProduct = (product) => {
   else{
     if (!pressedCompare.value) {
       useCompareProductStore().pushProduct(product);
-      pressedCompare.value = true;
     }
     else{
       useCompareProductStore().removeProduct(product);
-      pressedCompare.value = false;
     }
+    useCompareProductStore().needUpdate = true;
   }
 
 };
 
 const addProductToBasket = (product) => {
   if (src.value === 'img/basket.svg'){
-    src.value = 'img/835.svg';
     if  (user.value){
       if (pressedBasket.value === false) {
-        pressedBasket.value = true;
         basketCreateFormRequest(product.id).then((res) => {
           useBasketProductsStore().pushProduct(product);
           useBasketProductsStore().needUpdate = true;
           console.log(res)
         }).catch((err) => {
-          pressedBasket.value = false;
-          src.value = 'img/basket.svg';
           console.error('Contact form could not be send', err)
         });
       }
@@ -226,7 +216,7 @@ const addProductToBasket = (product) => {
     else{
       if (pressedBasket.value === false) {
         useBasketProductsStore().pushProduct(product);
-        pressedBasket.value = true;
+        useBasketProductsStore().needUpdate = true;
       }
     }
   }

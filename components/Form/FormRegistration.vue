@@ -88,7 +88,7 @@
                                v$.code.$error ||
                                formData.phone==='' ||
                                formData.name==='' ||
-                               formData.code==='' ||
+                               // formData.code==='' ||
                                btn_pending_src!=='')">
           {{ !btn_pending_src ? 'Зарегистрироваться' : '' }}
         </Button>
@@ -103,7 +103,7 @@ import { required, minLength, maxLength, helpers, sameAs } from '@vuelidate/vali
 import { VueTelInput } from 'vue-tel-input';
 
 import {useUserStore} from "../../stores/UserStore";
-import {computed, reactive, ref} from "vue";
+import {computed, onBeforeUpdate, reactive, ref} from "vue";
 const userStore = useUserStore();
 
 const btn_pending_src = ref('');
@@ -145,11 +145,11 @@ const rules = computed(() => {
 const v$ = useVuelidate(rules, formData);
 
 const urlPhoneAuth = computed(() => config.public.apiBaseUrl + 'users/phone_auth');
-const urlRegister = computed(() => config.public.apiBaseUrl + 'users/register');
+const urlRegister = computed(() => config.public.baseUrl + 'users/register');
+const sanctumUrl = computed(() => config.public.baseUrl + 'sanctum/csrf-cookie');
 
 const registerError = ref('');
 const phoneAuthError = ref('');
-const authToken = ref('');
 
 const currentTime = ref(0);
 let timer = null;
@@ -196,13 +196,19 @@ const phoneAuth = (disabled) => {
   }
 };
 
+const token = ref('');
+// TODO убрать закоментированные строки регистрации
 const register = (disabled) => {
   if (!disabled){
     btn_pending_src.value = 'img/835.svg';
     registerError.value = '';
     phoneAuthError.value = '';
-    if (smsCode.value === formData.code && formData.code !== ''){
-      registerFormRequest().then((res) => {
+    formData.phone = formData.phone.replace(/[^\d]/g, '');
+    token.value = userStore.getCookie('XSRF-TOKEN');
+    // if (smsCode.value === formData.code && formData.code !== ''){
+    sanctumCookies().then(() => {
+      token.value = userStore.getCookie('XSRF-TOKEN');
+      registerFormRequest(token.value).then((res) => {
         addUser(res);
         getUser();
         btn_pending_src.value = '';
@@ -211,9 +217,13 @@ const register = (disabled) => {
       }).catch((err) => {
         btn_pending_src.value = '';
         registerError.value = `Регистрация не удалась. Данные некоректны или данный номер уже зарегистрирован`;
-        console.error('Contact form could not be send', err)
+        console.error('Register not be send', err)
       });
-    }
+    }).catch((err) => {
+      btn_pending_src.value = '';
+      console.error('Sanctum not be send', err)
+    });
+    // }
   }
 };
 
@@ -232,28 +242,46 @@ const phoneAuthFormRequest = async () => {
   });
 }
 
-const registerFormRequest = async () => {
+const sanctumCookies = async () => {
+  return await $fetch(sanctumUrl.value , {
+    headers: {
+      "Accept": "application/json",
+      'Content-Type': 'application/json',
+    },
+    withCredentials: true,
+    credentials: 'include',
+    method: 'GET',
+  });
+}
+
+const registerFormRequest = async (token) => {
   return await $fetch(urlRegister.value , {
     headers: {
       "Accept": "application/json",
       'Content-Type': 'application/json',
     },
+    withCredentials: true,
+    credentials: 'include',
     method: 'POST',
     params: {
-      first_name: formData.name,
+      first_name: formData.name[0].toUpperCase()
+          + formData.name.slice(1),
+      password: '$$spa_client$$'
+          + formData.phone.slice(formData.phone.length/2+1)
+          + '$$'
+          + formData.phone.slice(1, formData.phone.length/2+1)
+          + '$$',
       phone: formData.phone,
-    },
+    }
   });
 }
 
 const addUser = (user) => {
   userStore.addUser(user.data);
-  userStore.addToken(user.token);
 };
 
 const getUser = () => {
   user.value =  userStore.getUser().value;
-  authToken.value = userStore.getToken().value;
 };
 
 const bindProps = computed(() => {
@@ -271,6 +299,7 @@ const bindProps = computed(() => {
       disabled: true,
     },
     validCharactersOnly: true,
+    mode: 'international',
   }
 });
 </script>

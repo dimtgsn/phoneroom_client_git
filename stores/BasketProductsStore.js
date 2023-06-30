@@ -19,9 +19,9 @@ export const useBasketProductsStore = defineStore('basketProductsStore', () => {
         return totalBasket;
     }
 
-    function pushProduct(product) {
-        if (!checkProduct(product)){
-            basketProducts.value.push(product);
+    function pushProduct(product, quantity=1) {
+        if (!checkProduct(product.id)){
+            basketProducts.value.push([product.id, quantity]);
             localStorage.setItem('basketProducts', JSON.stringify(basketProducts.value));
         }
 
@@ -45,20 +45,16 @@ export const useBasketProductsStore = defineStore('basketProductsStore', () => {
 
     function checkProduct(product) {
         for (const productBasket of basketProducts.value) {
-            if(productBasket.id === product.id){
-                return true;
+            if(parseInt(productBasket[0]) === parseInt(product)){
+                return productBasket;
             }
         }
         return false;
     }
 
     function removeProduct(product) {
-        if (checkProduct(product)){
-            for (const productBasket of basketProducts.value) {
-                if(productBasket.id === product.id){
-                    basketProducts.value.splice(basketProducts.value.indexOf(productBasket), 1);
-                }
-            }
+        if (checkProduct(product.id)){
+            basketProducts.value.splice(basketProducts.value.indexOf(checkProduct(product.id)), 1);
             localStorage.setItem('basketProducts', JSON.stringify(basketProducts.value));
         }
     }

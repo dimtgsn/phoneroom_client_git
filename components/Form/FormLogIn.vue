@@ -1,7 +1,7 @@
 <template>
   <div class="form_title">Введите ваши данные</div>
   <div class="form-section">
-    <form action="" >
+    <form action="" method="post">
       <div class="tel">
         <vue-tel-input class="form_input form_input_tel"
                        :class="{
@@ -67,7 +67,7 @@
                 :disabled_btn="disabled_reg=(v$.phone.$error ||
                                v$.code.$error ||
                                formData.phone==='' ||
-                               formData.code==='' ||
+                               // formData.code==='' ||
                                btn_pending_src!=='')">
           {{ !btn_pending_src ? 'Войти' : '' }}
         </Button>
@@ -93,7 +93,6 @@ const emit = defineEmits(['login,']);
 
 const loginError = ref('');
 const phoneAuthError = ref('');
-const authToken = ref('');
 
 const config = useRuntimeConfig();
 
@@ -126,7 +125,6 @@ const rules = computed(() => {
 const v$ = useVuelidate(rules, formData);
 
 const urlPhoneAuth = computed(() => config.public.apiBaseUrl + 'users/phone_auth');
-const urlLogin = computed(() => config.public.apiBaseUrl + 'users/login');
 
 const currentTime = ref(0);
 let timer = null;
@@ -173,27 +171,70 @@ const phoneAuth = (disabled) => {
     }
   }
 };
-
+// TODO убрать закоментированные строки входа
 const login = (disabled) => {
   if (!disabled){
     btn_pending_src.value = 'img/835.svg';
     loginError.value = '';
     phoneAuthError.value = '';
-    if (smsCode.value === formData.code && formData.code !== ''){
-      loginFormRequest().then((res) => {
-        addUser(res);
-        getUser();
-        btn_pending_src.value = '';
-        emit('login');
-        userStore.removeDis();
+    formData.phone = formData.phone.replace(/[^\d]/g, '');
+    // if (smsCode.value === formData.code && formData.code !== ''){
+      sanctumCookies().then(() => {
+        loginFormRequest().then((res) => {
+          addUser(res);
+          getUser();
+          btn_pending_src.value = '';
+          emit('login');
+          userStore.removeDis();
+        }).catch((err) => {
+          btn_pending_src.value = '';
+          loginError.value = `Авторизация не удалась, проверьте корректность введённых данных.`;
+          console.error('Login not be send', err)
+        });
       }).catch((err) => {
         btn_pending_src.value = '';
-        loginError.value = `Авторизация не удалась, проверьте корректность введённых данных.`;
-        console.error('Contact form could not be send', err)
+        console.error('Sanctum not be send', err)
       });
-    }
+    // }
   }
 };
+
+const sanctumUrl = computed(() => config.public.baseUrl + 'sanctum/csrf-cookie');
+const urlLogin = computed(() => config.public.baseUrl + 'users/login');
+
+const loginFormRequest = async () => {
+  return await $fetch(urlLogin.value , {
+    headers: {
+      "Accept": "application/json",
+      'Content-Type': 'application/json',
+    },
+    withCredentials: true,
+    credentials: 'include',
+    method: 'POST',
+    params: {
+      // first_name: formData.name[0].toUpperCase()
+      //     + formData.name.slice(1),
+      password: '$$spa_client$$'
+          + formData.phone.slice(formData.phone.length/2+1)
+          + '$$'
+          + formData.phone.slice(1, formData.phone.length/2+1)
+          + '$$',
+      phone: formData.phone,
+    }
+  });
+}
+
+const sanctumCookies = async () => {
+  return await $fetch(sanctumUrl.value , {
+    headers: {
+      "Accept": "application/json",
+      'Content-Type': 'application/json',
+    },
+    withCredentials: true,
+    credentials: 'include',
+    method: 'GET',
+  });
+}
 
 const phoneAuthFormRequest = async () => {
   return await $fetch(urlPhoneAuth.value , {
@@ -209,24 +250,12 @@ const phoneAuthFormRequest = async () => {
   });
 }
 
-const loginFormRequest = async () => {
-  return await $fetch(urlLogin.value+`/${formData.phone}` , {
-    headers: {
-      "Accept": "application/json",
-      'Content-Type': 'application/json',
-    },
-    method: 'POST'
-  });
-}
-
 const addUser = (user) => {
   userStore.addUser(user.data);
-  userStore.addToken(user.token);
 };
 
 const getUser = () => {
   user.value =  userStore.getUser().value;
-  authToken.value = userStore.getToken().value;
 };
 
 const bindProps = computed(() => {

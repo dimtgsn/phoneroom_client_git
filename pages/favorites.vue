@@ -1,40 +1,50 @@
 <template>
   <div class="favorites-section">
-    <div v-if="0">
-      <div class="container">
-        Loading...
+    <div class="container">
+      <Breadcrumbs :name="{title: 'Избранное', to: '/favorites'}"/>
+      <div class="title_wrapp">
+        <h1 class="title">Избранное</h1>
       </div>
     </div>
-    <div v-else>
-      <div class="container">
-        <Breadcrumbs :name="{title: 'Избранное', to: '/favorites'}"/>
-        <div class="title_wrapp">
-          <h1 class="title">Избранное</h1>
-        </div>
-      </div>
-      <div class="line"></div>
-      <div class="index-main-wrap">
-        <section class="section-favorites">
-          <div class="container container-favorities">
-            <div class="buttons">
-              <nuxt-link to="/favorites">
-                <Button :width_btn="7" :height_btn="2.5">Избранное</Button>
-              </nuxt-link>
-              <nuxt-link to="/basket">
-                <div class="basket_to_favorites">Товары в корзине</div>
-              </nuxt-link>
+    <div class="line"></div>
+    <div class="index-main-wrap">
+      <section class="section-favorites">
+        <div class="container container-favorities">
+          <div class="buttons">
+            <nuxt-link to="/favorites">
+              <Button :width_btn="7" :height_btn="2.5">Избранное</Button>
+            </nuxt-link>
+            <nuxt-link to="/basket">
+              <div class="basket_to_favorites">Товары в корзине</div>
+            </nuxt-link>
+          </div>
+          <div class="cards-section">
+            <div v-if="pending">
+              <section class="wrapper-pen">
+                <article class="article">
+                  <div class="bg">
+                    <div class="icons">
+                      <div class="icon-2 icon-2-2"></div>
+                    </div>
+                  </div>
+                </article>
+              </section>
             </div>
-            <div class="cards-section">
-              <div class="cards" v-for="product in products">
-                <div v-if="product.published === true">
-                  <ProductCard @deleteUserProduct="updateUserProducts" :product_variant="product" ></ProductCard>
-                </div>
+            <div v-else-if="products.length !== 0" class="cards" v-for="product in products">
+              <div v-if="product.published === true">
+                <ProductCard @deleteFavoriteProduct="deleteFavoriteProduct" @deleteUserProduct="updateUserProducts" :product_variant="product" ></ProductCard>
               </div>
             </div>
+            <div v-else style="height: 100vh;">
+              <h2 class="no_compares_products">В избранном нет товаров</h2>
+              <div class="no_products_text" style="width: 100%">
+                Добавьте интересующие вас товары
+              </div>
+              <Button :width_btn="15" :route_btn="'/'">Вернуться на главную</Button>
+            </div>
           </div>
-
-        </section>
-      </div>
+        </div>
+      </section>
     </div>
   </div>
 </template>
@@ -44,19 +54,22 @@ import {useUserStore} from "../stores/UserStore";
 import {useFavoriteProductStore} from "../stores/FavoriteProductStore";
 import {useBasketProductsStore} from "../stores/BasketProductsStore";
 import {computed, onMounted, ref, onBeforeUpdate} from "vue";
+import {useCompareProductStore} from "../stores/CompareProductStore.js";
 
 const config = useRuntimeConfig();
 
 const user = computed(() => useUserStore().getUser().value);
-const products = computed(() => useFavoriteProductStore().favoriteProducts);
-// const products = ref(useFavoriteProductStore().getFavoriteProducts().value);
+const products_ids = computed(() => useFavoriteProductStore().getFavoriteProducts().value);
+
+const products = ref([]);
 const urlFavorite = computed(() => config.public.apiBaseUrl + `favorites/${useUserStore().getUser().value.id}`);
+const urlProductsFavorite = computed(() => config.public.apiBaseUrl + `products/products`);
+
 const pending = ref(true);
 
 onBeforeUpdate(() => {
   if (user.value){
     if (useFavoriteProductStore().needUpdate){
-      console.log(132);
       pending.value = true;
       favoriteGetFormRequest().then((res) => {
         pending.value = false;
@@ -65,6 +78,19 @@ onBeforeUpdate(() => {
         console.error('Contact form could not be send', err);
       });
       useFavoriteProductStore().needUpdate = false;
+    }
+  }
+  else{
+    if (useFavoriteProductStore().needUpdate){
+      console.log(12);
+      pending.value = true;
+      productsFavoriteGetFormRequest().then((res) => {
+        products.value = res;
+        pending.value = false;
+        useFavoriteProductStore().needUpdate = false;
+      }).catch((err) => {
+        console.error('Contact form could not be send', err);
+      });
     }
   }
 });
@@ -80,10 +106,29 @@ onMounted(() => {
     });
   }
   else{
-    products.value = useFavoriteProductStore().getFavoriteProducts().value;
+    // if (useFavoriteProductStore().needUpdate){
+      console.log(14)
+      pending.value = true;
+      productsFavoriteGetFormRequest().then((res) => {
+        products.value = res;
+        pending.value = false;
+        useFavoriteProductStore().needUpdate = false;
+      }).catch((err) => {
+        console.error('Contact form could not be send', err);
+      });
+    // }
   }
 });
 
+const deleteFavoriteProduct = () => {
+  pending.value = true;
+  productsFavoriteGetFormRequest().then((res) => {
+    products.value = res;
+    pending.value = false;
+  }).catch((err) => {
+    console.error('Contact form could not be send', err);
+  });
+};
 const updateUserProducts = () => {
   pending.value = true;
   favoriteGetFormRequest().then((res) => {
@@ -105,6 +150,21 @@ const favoriteGetFormRequest = async () => {
     }
   )
 };
+
+const productsFavoriteGetFormRequest = async () => {
+  return await $fetch(urlProductsFavorite.value , {
+      headers: {
+        "Accept": "application/json",
+        'Content-Type': 'application/json',
+      },
+      method: 'GET',
+      params: {
+        'products': JSON.stringify(products_ids.value)
+      },
+    }
+  )
+};
+
 </script>
 
 <style scoped>
@@ -155,6 +215,45 @@ const favoriteGetFormRequest = async () => {
   margin-bottom: 1.25rem;
   margin-right: 1.625rem;
 }
+
+.no_products_text{
+  color: #1A1A25;
+  width: 60%;
+  font-weight: 400;
+  font-size: 1.25rem;
+  line-height: 150%;
+  margin-bottom: 5rem;
+}
+.no_compares_products{
+  color: #384255;
+  font-weight: 700;
+  font-size: 1.625rem;
+  line-height: 120%;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+}
+
+.wrapper-pen{
+  width: 100vh;
+}
+.article {
+  width: 100%;
+  background: white;
+  padding: 0;
+  margin-right: 0;
+}
+.icon-2{
+  width: 14.25rem;
+  height: 27.625rem;
+  border-radius: .625rem;
+  box-shadow: .3125rem .625rem .3125rem .9375rem #F7F7F7, .625rem -.625rem .3125rem #F7F7F7, -.625rem .625rem .3125rem #F7F7F7, -.625rem -.625rem .3125rem #F7F7F7;
+}
+.icon-2-2{
+  width: 100%;
+  height: 100vh;
+  box-shadow: .3125rem 2rem .3125rem .9375rem #F7F7F7, .625rem -.625rem .3125rem #F7F7F7, -.625rem 1.625rem .3125rem #F7F7F7, -.625rem -.625rem .3125rem #F7F7F7;
+}
+
 
 @media (max-width: 690px) {
   .cards{

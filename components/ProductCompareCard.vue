@@ -25,21 +25,21 @@
         </div>
         <Transition name="fade" v-if="windowWidth > 640" mode="out-in" appear>
           <div class="card_btn" v-if="!pressedBasket">
-            <Button @click="addProductToBasket(props.product_variant)" :width_btn="11.9375" :disabled_btn="src==='img/835.svg'" :src_btn="src">В корзину</Button>
+            <Button @click="addProductToBasket(props.product_variant)" :src_btn="src">В корзину</Button>
           </div>
           <div class="card_btn-outline" v-else>
-            <ButtonRedOutline :basket_btn="true" :route_btn="''" :width_btn="6" >
+            <ButtonRedOutline :basket_btn="true" :route_btn="''" :width_btn="15">
               <nuxt-img class="btn-svg" sizes="xxl:100vw xl:100vw lg:100vw md:100vw sm:150vw xs:50vw" :src="'img/basket-red.svg'" alt="btn-svg" loading="lazy"/>
             </ButtonRedOutline>
           </div>
         </Transition>
         <Transition name="fade" v-if="windowWidth <= 640" mode="out-in" appear>
           <div class="card_btn" v-if="!pressedBasket">
-            <Button @click="addProductToBasket(props.product_variant)" :width_btn="10" :disabled_btn="src==='img/835.svg'" :without_padding="true" :src_btn="src"></Button>
+            <Button @click="addProductToBasket(props.product_variant)" :without_padding="true" :src_btn="src"></Button>
           </div>
           <div class="card_btn-outline" v-else>
-            <ButtonRedOutline :basket_btn="true" :route_btn="''" :width_btn="6" >
-              <nuxt-img class="btn-svg" sizes="xxl:100vw xl:100vw lg:100vw md:110vw sm:180vw xs:300vw" :src="'img/basket-red.svg'" alt="btn-svg" loading="lazy"/>
+            <ButtonRedOutline :basket_btn="true" :route_btn="''" :width_btn="15">
+              <nuxt-img class="btn-svg" sizes="xxl:100vw xl:100vw lg:100vw md:110vw sm:300vw xs:400vw" :src="'img/basket-red.svg'" alt="btn-svg" loading="lazy"/>
             </ButtonRedOutline>
           </div>
         </Transition>
@@ -77,14 +77,13 @@ const props = defineProps({
   product_variant: Object
 });
 
-const pressedFavorite = computed(() => useFavoriteProductStore().checkProduct(props.product_variant))
-const pressedCompare = computed(() => useCompareProductStore().checkProduct(props.product_variant));
-const pressedBasket = computed(() => useBasketProductsStore().checkProduct(props.product_variant));
+const pressedFavorite = computed(() => useFavoriteProductStore().checkProduct(props.product_variant.id))
+const pressedCompare = computed(() => useCompareProductStore().checkProduct(props.product_variant.id));
+const pressedBasket = computed(() => useBasketProductsStore().checkProduct(props.product_variant.id));
 
 const addFavoriteProduct = (product) => {
   if  (user.value){
     if (pressedFavorite.value === false) {
-      pressedFavorite.value = true;
       favoriteCreateFormRequest(product.id).then((res) => {
         useFavoriteProductStore().pushProduct(product);
         useFavoriteProductStore().needUpdate = true;
@@ -98,7 +97,6 @@ const addFavoriteProduct = (product) => {
       favoriteDeleteFormRequest(product.id).then((res) => {
         console.log(res);
         useFavoriteProductStore().removeProduct(product);
-        pressedFavorite.value = false;
         emit('deleteUserProduct');
       }).catch((err) => {
         console.error('Contact form could not be send', err);
@@ -108,19 +106,17 @@ const addFavoriteProduct = (product) => {
   else{
     if (!pressedFavorite.value) {
       useFavoriteProductStore().pushProduct(product);
-      pressedFavorite.value = true;
     }
     else{
       useFavoriteProductStore().removeProduct(product);
-      pressedFavorite.value = false;
     }
+    useFavoriteProductStore().needUpdate = true;
   }
 };
 
 const addCompareProduct = (product) => {
   if  (user.value){
     if (pressedCompare.value === false) {
-      pressedCompare.value = true;
       compareCreateFormRequest(product.id, product.category_id).then((res) => {
         console.log(res)
         useCompareProductStore().pushProduct(product);
@@ -131,7 +127,6 @@ const addCompareProduct = (product) => {
       });
     }
     else{
-      pressedCompare.value = false;
       compareDeleteFormRequest(product.id, product.category_id).then((res) => {
         console.log(res);
         useCompareProductStore().removeProduct(product);
@@ -145,29 +140,24 @@ const addCompareProduct = (product) => {
   else{
     if (!pressedCompare.value) {
       useCompareProductStore().pushProduct(product);
-      pressedCompare.value = true;
     }
     else{
       useCompareProductStore().removeProduct(product);
-      pressedCompare.value = false;
     }
+    emit('updateComparison');
   }
 
 };
 
 const addProductToBasket = (product) => {
   if (src.value === 'img/basket.svg'){
-    src.value = 'img/835.svg';
     if  (user.value){
       if (pressedBasket.value === false) {
-        pressedBasket.value = true;
         basketCreateFormRequest(product.id).then((res) => {
           useBasketProductsStore().pushProduct(product);
           useBasketProductsStore().needUpdate = true;
           console.log(res)
         }).catch((err) => {
-          pressedBasket.value = false;
-          src.value = 'img/basket.svg'
           console.error('Contact form could not be send', err)
         });
       }
@@ -175,7 +165,7 @@ const addProductToBasket = (product) => {
     else{
       if (pressedBasket.value === false) {
         useBasketProductsStore().pushProduct(product);
-        pressedBasket.value = true;
+        useBasketProductsStore().needUpdate = true;
       }
     }
   }

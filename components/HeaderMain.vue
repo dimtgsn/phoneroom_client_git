@@ -245,9 +245,9 @@ onMounted(() => {
       console.error('Contact form could not be send', err);
     });
   }
-  // favoriteProducts.value = useFavoriteProductStore().getFavoriteProducts();
-  // compareProducts.value = useCompareProductStore().getCompareProducts();
-  // basketProducts.value = useBasketProductsStore().getBasketProducts();
+  favoriteProducts.value = useFavoriteProductStore().getFavoriteProducts();
+  compareProducts.value = useCompareProductStore().getCompareProducts();
+  basketProducts.value = useBasketProductsStore().getBasketProducts();
   userCity.value = useUserStore().getUserCity();
 });
 

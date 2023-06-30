@@ -1,6 +1,6 @@
 <template>
 <!--  <div>-->
-    <nuxt-link :to="props.route_btn || '/'" :style="{ 'width': props.width_btn+'rem'}" :class="{'basket_btn': basket_btn, 'button-outline': !basket_btn}">
+    <nuxt-link :to="props.route_btn || ''" :style="{ 'width': props.width_btn+'rem'}" :class="{'basket_btn': basket_btn, 'button-outline': !basket_btn}">
       <h2 class="btn-red-outline_title">
         <slot/>
       </h2>

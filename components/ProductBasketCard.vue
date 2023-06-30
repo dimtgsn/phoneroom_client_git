@@ -114,12 +114,13 @@ import {computed, ref, onMounted} from "vue";
 const config = useRuntimeConfig();
 
 const props = defineProps({
-  product_variant: Object
+  product_variant: Object,
+  product_quantity: Number
 });
 let productVariant = props.product_variant;
 // const pressedFavorite = computed(() => useFavoriteProductStore().getFavoriteProducts().value.indexOf(props.productVariant.id) !== -1);
 // const pressedFavorite = ref(useFavoriteProductStore().getFavoriteProducts().value.indexOf(productVariant.id) !== -1);
-const pressedFavorite = computed(() => useFavoriteProductStore().checkProduct(props.product_variant))
+const pressedFavorite = computed(() => useFavoriteProductStore().checkProduct(props.product_variant.id))
 
 const urlBasket = computed(() => config.public.apiBaseUrl + `baskets/${useUserStore().getUser().value.id}`);
 const urlFavorite = computed(() => config.public.apiBaseUrl + `favorites/${useUserStore().getUser().value.id}`);
@@ -130,7 +131,6 @@ const emit = defineEmits(['delete', 'editQuantity', 'deleteUserProduct']);
 const addFavoriteProduct = (product) => {
   if  (useUserStore().getUser().value){
     if (pressedFavorite.value === false) {
-      pressedFavorite.value = true;
       favoriteCreateFormRequest(product.id).then((res) => {
         useFavoriteProductStore().pushProduct(product);
         useFavoriteProductStore().needUpdate = true;
@@ -142,7 +142,6 @@ const addFavoriteProduct = (product) => {
     else{
       favoriteDeleteFormRequest(product.id).then((res) => {
         useFavoriteProductStore().removeProduct(product);
-        pressedFavorite.value = false;
         // emit('deleteUserProduct');
       }).catch((err) => {
         console.error('Contact form could not be send', err);
@@ -152,12 +151,11 @@ const addFavoriteProduct = (product) => {
   else{
     if (!pressedFavorite.value) {
       useFavoriteProductStore().pushProduct(product);
-      pressedFavorite.value = true;
     }
     else{
       useFavoriteProductStore().removeProduct(product);
-      pressedFavorite.value = false;
     }
+    useFavoriteProductStore().needUpdate = true;
   }
 };
 
@@ -177,7 +175,7 @@ const removeProduct = (product) => {
   }
 };
 
-const quantity = ref(props.product_variant.quantity);
+const quantity = ref(props.product_quantity);
 
 const increaseQuantity = (product) =>{
   if (parseInt(product.units_in_stock) > 0){
@@ -193,8 +191,8 @@ const increaseQuantity = (product) =>{
     }
     else {
       useBasketProductsStore().removeProduct(product);
-      product.quantity = quantity.value;
-      useBasketProductsStore().pushProduct(product);
+      // product.quantity = quantity.value;
+      useBasketProductsStore().pushProduct(product, quantity.value);
       emit('editQuantity');
     }
   }
@@ -214,8 +212,8 @@ const reduceQuantity = (product) =>{
       }
       else {
         useBasketProductsStore().removeProduct(product);
-        product.quantity = quantity.value;
-        useBasketProductsStore().pushProduct(product);
+        // product.quantity = quantity.value;
+        useBasketProductsStore().pushProduct(product, quantity.value);
         emit('editQuantity');
       }
     }

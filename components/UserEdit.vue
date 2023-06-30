@@ -1,7 +1,7 @@
 <template>
   <Teleport to="body" >
     <Transition name="fade" >
-      <section v-if="open" class="modal-section" @click="closeModalCity">
+      <section v-if="open" class="modal-section" @click="closeModalEdit">
         <focus-trap @click.stop="open=true" v-model:active="open">
           <modal-dialog>
             <div class="modal">
@@ -9,11 +9,11 @@
                 <div class="modal_titles">
                   <h2 class="city_title">Редактировать профиль</h2>
                 </div>
-                <div class="modal_close" @click="closeModalCity"></div>
+                <div class="modal_close" @click="closeModalEdit"></div>
               </div>
               <div class="modal-body">
                 <div class="form">
-                  <FormUserEdit @openFormUserEdit="openFormUserEdit" />
+                  <FormUserEdit @openFormUserEdit="closeModalEdit" />
                 </div>
               </div>
             </div>
@@ -31,14 +31,9 @@ const open = ref(true);
 
 const emit = defineEmits(['openUserEdit',]);
 
-console.log('UserEdit');
-const openFormUserEdit = () => {
+const closeModalEdit = () => {
   open.value = false;
   emit('openUserEdit');
-};
-
-const closeModalCity = () => {
-  open.value = false;
   document.querySelector('body').classList.remove('lock')
   window.scrollTo(0,document.querySelector('body').dataset.scrollY)
 };
@@ -65,7 +60,7 @@ const closeModalCity = () => {
   background: rgba(26, 26, 37, 0.5);
 }
 .modal{
-  margin-top: 30%;
+  margin-top: 17%;
   width: 55.625rem;
   max-height: 75%;
   height: max-content;

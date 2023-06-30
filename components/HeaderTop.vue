@@ -46,13 +46,13 @@
       <div class="header_right">
         <div class="dropdown" v-if="user">
           <button @mouseenter="showDropDown" class="dropbtn">{{ user.first_name }}</button>
-
           <div id="myDropdown" @mouseleave="unShowDropDown" class="dropdown-content" :class="{'show': show}">
             <div class="content_rec"></div>
             <span>
               <nuxt-link :to="`/profile`" class="link_profile">Личный кабинет</nuxt-link>
             </span>
-            <span @click.prevent="logout">Выйти</span>
+            <span v-if="!btn_pending" @click.prevent="logout">Выйти</span>
+            <span v-else style="text-align: center"><img src="img/834.svg" alt=""></span>
           </div>
           <nuxt-img class="header_right_profile" sizes="xxl:100vw xl:100vw lg:110vw md:100vw sm:100vw xs:100vw" src="img/profile-user.svg" alt="user-profile" loading="lazy" />
         </div>
@@ -75,13 +75,17 @@
 
 <script setup>
 import {useUserStore} from "../stores/UserStore";
-import {computed, onMounted} from "vue";
+import {computed, onMounted, ref} from "vue";
+
+const config = useRuntimeConfig();
 
 const user = computed(() => useUserStore().getUser().value);
 const pending = ref(true);
+
+const btn_pending = ref(false);
+
 onMounted(() => {
   user.value = useUserStore().getUser();
-  useUserStore().getToken();
   pending.value = false;
 })
 
@@ -94,13 +98,17 @@ const unShowDropDown = () => {
   show.value = false;
 };
 
-const urlLogout = computed(() => config.public.apiBaseUrl + `users/logout/${useUserStore().getUser().value.id}`);
+// const urlLogout = computed(() => config.public.apiBaseUrl + `users/logout/${useUserStore().getUser().value.id}`);
+const urlLogout = computed(() => config.public.baseUrl + `users/logout`);
 
 const logout = () => {
+  btn_pending.value = true;
   logoutFormRequest().then((res) => {
     removeUser();
+    btn_pending.value = false;
     console.log(res);
   }).catch((err) => {
+    btn_pending.value = false;
     console.error('Contact form could not be send', err)
   });
 };
@@ -109,11 +117,12 @@ const logout = () => {
 const logoutFormRequest = async () => {
   return await $fetch(urlLogout.value , {
     headers: {
-      'Authorization': `Bearer ${useUserStore().getToken().value}`,
       "Accept": "application/json",
       'Content-Type': 'application/json',
     },
-    method: 'GET',
+    method: 'POST',
+    withCredentials: true,
+    credentials: 'include',
   });
 };
 

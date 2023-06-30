@@ -14,24 +14,24 @@ export const useFavoriteProductStore = defineStore('favoriteProductStore', () =>
     }
 
     function pushProduct(product) {
-        if (!checkProduct(product)){
-            favoriteProducts.value.push(product);
+        if (!checkProduct(product.id)){
+            favoriteProducts.value.push(product.id);
             localStorage.setItem('favoriteProducts', JSON.stringify(favoriteProducts.value));
         }
     }
 
     function checkProduct(product) {
         for (const productFavorite of favoriteProducts.value) {
-            if (productFavorite.id === product.id){
-                return true;
+            if (parseInt(productFavorite) === parseInt(product)){
+                return product;
             }
         }
         return false;
     }
 
     function removeProduct(product) {
-        if (checkProduct(product)){
-            favoriteProducts.value.splice(favoriteProducts.value.indexOf(product), 1);
+        if (checkProduct(product.id)){
+            favoriteProducts.value.splice(favoriteProducts.value.indexOf(product.id), 1);
             localStorage.setItem('favoriteProducts', JSON.stringify(favoriteProducts.value));
         }
     }

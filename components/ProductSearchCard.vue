@@ -223,14 +223,13 @@ const props = defineProps({
 });
 
 
-const pressedFavorite = computed(() => useFavoriteProductStore().checkProduct(props.product_variant))
-const pressedCompare = computed(() => useCompareProductStore().checkProduct(props.product_variant));
-const pressedBasket = computed(() => useBasketProductsStore().checkProduct(props.product_variant));
+const pressedFavorite = computed(() => useFavoriteProductStore().checkProduct(props.product_variant.id))
+const pressedCompare = computed(() => useCompareProductStore().checkProduct(props.product_variant.id));
+const pressedBasket = computed(() => useBasketProductsStore().checkProduct(props.product_variant.id));
 
 const addFavoriteProduct = (product) => {
   if  (user.value){
     if (pressedFavorite.value === false) {
-      pressedFavorite.value = true;
       favoriteCreateFormRequest(product.id).then((res) => {
         useFavoriteProductStore().pushProduct(product);
         useFavoriteProductStore().needUpdate = true;
@@ -244,7 +243,6 @@ const addFavoriteProduct = (product) => {
       favoriteDeleteFormRequest(product.id).then((res) => {
         console.log(res);
         useFavoriteProductStore().removeProduct(product);
-        pressedFavorite.value = false;
         emit('deleteUserProduct');
       }).catch((err) => {
         console.error('Contact form could not be send', err);
@@ -254,25 +252,22 @@ const addFavoriteProduct = (product) => {
   else{
     if (pressedFavorite.value === false) {
       useFavoriteProductStore().pushProduct(product);
-      pressedFavorite.value = true;
     }
     else{
       useFavoriteProductStore().removeProduct(product);
-      pressedFavorite.value = false;
     }
+    useFavoriteProductStore().needUpdate = true;
   }
 };
 
 const addCompareProduct = (product) => {
   if  (user.value){
     if (pressedCompare.value === false) {
-      pressedCompare.value = true;
       compareCreateFormRequest(product.id, product.category_id).then((res) => {
         console.log(res)
         useCompareProductStore().pushProduct(product);
         useCompareProductStore().needUpdate = true;
       }).catch((err) => {
-        pressedCompare.value = false;
         console.error('Contact form could not be send', err)
       });
     }
@@ -283,7 +278,6 @@ const addCompareProduct = (product) => {
         useCompareProductStore().removeProduct(product);
         emit('deleteUserProduct');
       }).catch((err) => {
-        pressedCompare.value = true;
         console.error('Contact form could not be send', err);
       });
     }
@@ -291,12 +285,11 @@ const addCompareProduct = (product) => {
   else{
     if (pressedCompare.value === false) {
       useCompareProductStore().pushProduct(product);
-      pressedCompare.value = true;
     }
     else{
       useCompareProductStore().removeProduct(product);
-      pressedCompare.value = false;
     }
+    useCompareProductStore().needUpdate = true;
   }
 
 };
@@ -306,13 +299,11 @@ const addProductToBasket = (product) => {
     src.value = 'img/835.svg';
     if  (user.value){
       if (pressedBasket.value === false) {
-        pressedBasket.value = true;
         basketCreateFormRequest(product.id).then((res) => {
           useBasketProductsStore().pushProduct(product);
           useBasketProductsStore().needUpdate = true;
           console.log(res)
         }).catch((err) => {
-          pressedBasket.value = false;
           src.value = 'img/basket.svg'
           console.error('Contact form could not be send', err)
         });
@@ -321,7 +312,7 @@ const addProductToBasket = (product) => {
     else{
       if (pressedBasket.value === false) {
         useBasketProductsStore().pushProduct(product);
-        pressedBasket.value = true;
+        useBasketProductsStore().needUpdate = true;
       }
     }
   }

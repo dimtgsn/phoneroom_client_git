@@ -981,17 +981,15 @@ import {useUserStore} from "../../../stores/UserStore";
 import CommentsPage from "../../../components/CommentsPage";
 import {computed, ref, onMounted} from "vue";
 
-const pressedFavorite = computed(() => useFavoriteProductStore().checkProduct(product.value))
-const pressedCompare = computed(() => useCompareProductStore().checkProduct(product.value));
-const pressedBasket = computed(() => useBasketProductsStore().checkProduct(product.value));
+const pressedFavorite = computed(() => useFavoriteProductStore().checkProduct(product.value.id))
+const pressedCompare = computed(() => useCompareProductStore().checkProduct(product.value.id));
+const pressedBasket = computed(() => useBasketProductsStore().checkProduct(product.value.id));
 
 const description_page = ref(true);
 const properties_page = ref(false);
 const comments_page = ref(false);
 
 const user = computed(() => useUserStore().getUser().value);
-const pos = 1;
-
 const config = useRuntimeConfig();
 
 const properties = ref(null);
@@ -1070,7 +1068,6 @@ const addFavoriteProduct = (product) => {
         useFavoriteProductStore().pushProduct(product);
         useFavoriteProductStore().needUpdate = true;
         console.log(res)
-        pressedFavorite.value = true;
       }).catch((err) => {
         console.error('Contact form could not be send', err)
       });
@@ -1079,7 +1076,6 @@ const addFavoriteProduct = (product) => {
       favoriteDeleteFormRequest(product.id).then((res) => {
         console.log(res);
         useFavoriteProductStore().removeProduct(product);
-        pressedFavorite.value = false;
         emit('deleteUserProduct');
       }).catch((err) => {
         console.error('Contact form could not be send', err);
@@ -1089,12 +1085,11 @@ const addFavoriteProduct = (product) => {
   else{
     if (pressedFavorite.value === false) {
       useFavoriteProductStore().pushProduct(product);
-      pressedFavorite.value = true;
     }
     else{
       useFavoriteProductStore().removeProduct(product);
-      pressedFavorite.value = false;
     }
+    useFavoriteProductStore().needUpdate = true;
   }
 };
 
@@ -1106,7 +1101,6 @@ const addCompareProduct = (product) => {
         console.log(res)
         useCompareProductStore().pushProduct(product);
         useCompareProductStore().needUpdate = true;
-        pressedCompare.value = true;
       }).catch((err) => {
         console.error('Contact form could not be send', err)
       });
@@ -1115,8 +1109,6 @@ const addCompareProduct = (product) => {
       compareDeleteFormRequest(product.id, product.category_id).then((res) => {
         console.log(res);
         useCompareProductStore().removeProduct(product);
-        pressedCompare.value = false;
-        // emit('deleteUserProduct');
       }).catch((err) => {
         console.error('Contact form could not be send', err);
       });
@@ -1125,12 +1117,11 @@ const addCompareProduct = (product) => {
   else{
     if (pressedCompare.value === false) {
       useCompareProductStore().pushProduct(product);
-      pressedCompare.value = true;
     }
     else{
       useCompareProductStore().removeProduct(product);
-      pressedCompare.value = false;
     }
+    useCompareProductStore().needUpdate = true;
   }
 
 };
@@ -1144,7 +1135,6 @@ const addProductToBasket = (product) => {
           useBasketProductsStore().pushProduct(product);
           useBasketProductsStore().needUpdate = true;
           console.log(res)
-          pressedBasket.value = true;
         }).catch((err) => {
           src.value = 'img/basket.svg';
           console.error('Contact form could not be send', err)
@@ -1155,7 +1145,7 @@ const addProductToBasket = (product) => {
       if (pressedBasket.value === false) {
         product.quantity = quantity.value;
         useBasketProductsStore().pushProduct(product);
-        pressedBasket.value = true;
+        useBasketProductsStore().needUpdate = true;
       }
     }
   }
