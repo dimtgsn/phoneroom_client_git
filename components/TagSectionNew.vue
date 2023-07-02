@@ -426,10 +426,12 @@ const config = useRuntimeConfig();
 const props = defineProps({
   slug: String,
 });
+// TODO разобраться со всеми фетчами
 const url = computed(() => config.public.apiBaseUrl + `tags/${props.slug}`);
-
+console.log('New');
 const { data: tag, pending } = await useLazyAsyncData("tag", () => $fetch(url.value));
-console.log(tag.value);
+// const { data: tag, pending } = useFetch(url.value);
+
 function shuffle(arr){
   let j, temp;
   for(let i = arr.length - 1; i > 0; i--){

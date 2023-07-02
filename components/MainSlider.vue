@@ -47,11 +47,19 @@
 
 <script setup>
 import {onMounted} from "vue";
-
+// TODO разобраться со всеми фетчами
 const config = useRuntimeConfig();
 const urlMainImages = config.public.apiBaseUrl + "main_images/";
-const {pending, data: mainImages} = await useLazyAsyncData("mainImages", () => $fetch(urlMainImages));
-
+// const {pending, data: mainImages} = await useLazyAsyncData("mainImages", () => $fetch(urlMainImages));
+// const {pending, data: mainImages} = useFetch(
+//     urlMainImages,
+//     {
+//       suspense: true,
+//       onError: (error) => console.log("error", error),
+//     }
+// );
+const {pending, data: mainImages} = useFetch(urlMainImages);
+// const mainImages = await $fetch(urlMainImages).catch((error) => error.data)
 const windowWidth = ref(0);
 const updateWidth = () => {
   windowWidth.value = window.innerWidth;

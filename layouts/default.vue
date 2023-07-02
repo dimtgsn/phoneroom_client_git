@@ -30,6 +30,9 @@
       </transition>
     </header>
     <main class="main">
+      <Transition v-if="!agree_on_cookie" name="fade" mode="out-in" appear>
+        <AgreeOnCookie @close_agree="useUserStore().SetAgreeOnCookie()" />
+      </Transition>
       <Transition name="fade" mode="out-in" appear>
         <NuxtPage keepalive />
       </Transition>
@@ -124,10 +127,10 @@ import {useUserStore} from "../stores/UserStore";
 
 const favoriteProducts = computed(() => useFavoriteProductStore().favoriteProducts);
 const compareProducts = computed(() => useCompareProductStore().compareProducts);
+const agree_on_cookie = computed(() => useUserStore().agree_on_cookie);
 const user = computed(() => useUserStore().user);
 
 const MobileCatalog = resolveComponent('MobileCatalog');
-
 const pending = ref(true);
 
 useHead({

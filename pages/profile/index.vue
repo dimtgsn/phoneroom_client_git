@@ -42,7 +42,7 @@
                 <div class="user-logout">
                   <nuxt-link to="/">
                     <h3 class="logout_title" v-if="!btn_pending" @click.prevent="logout">Выйти</h3>
-                    <h3 class="logout_title" v-else><img src="img/833.svg" alt=""></h3>
+                    <h3 class="logout_title" v-else><img src="/img/833.svg" alt=""></h3>
                   </nuxt-link>
                 </div>
               </div>

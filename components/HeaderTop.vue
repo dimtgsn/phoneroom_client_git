@@ -52,7 +52,7 @@
               <nuxt-link :to="`/profile`" class="link_profile">Личный кабинет</nuxt-link>
             </span>
             <span v-if="!btn_pending" @click.prevent="logout">Выйти</span>
-            <span v-else style="text-align: center"><img src="img/834.svg" alt=""></span>
+            <span v-else style="text-align: center"><img src="/img/834.svg" alt=""></span>
           </div>
           <nuxt-img class="header_right_profile" sizes="xxl:100vw xl:100vw lg:110vw md:100vw sm:100vw xs:100vw" src="img/profile-user.svg" alt="user-profile" loading="lazy" />
         </div>

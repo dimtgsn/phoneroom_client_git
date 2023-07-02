@@ -146,10 +146,12 @@
 
 <script setup>
 import {onMounted} from "vue";
+// TODO разобраться со всеми фетчами
 
 const config = useRuntimeConfig();
 const urlPromotionImages = config.public.apiBaseUrl + "promotion_images/";
-const {pending, data: promotionImages} = await useLazyAsyncData("promotionImages", () => $fetch(urlPromotionImages));
+// const {pending, data: promotionImages} = await useLazyAsyncData("promotionImages", () => $fetch(urlPromotionImages));
+const {pending, data: promotionImages} = useFetch(urlPromotionImages);
 
 
 const windowWidth = ref(0);

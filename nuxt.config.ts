@@ -18,6 +18,7 @@ export default defineNuxtConfig({
             'vuetify',
         ]
     },
+    // ssr: true,
     modules: [
         'nuxt-swiper',
         'nuxt-lazy-hydrate',

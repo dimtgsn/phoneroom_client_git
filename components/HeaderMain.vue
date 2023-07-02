@@ -3,10 +3,11 @@
     <div v-if="pending">
       <div class="container" style="display: flex">
         <div class="header-main_logo logo">
-          <LogoImage />
-          <LogoTitle />
+          <LogoImage/>
+          <LogoTitle/>
         </div>
-        <section v-if="windowWidth > 768" class="wrapper-pen" style="display: flex; width: 100%; justify-content: space-between">
+        <section v-if="windowWidth > 768" class="wrapper-pen"
+                 style="display: flex; width: 100%; justify-content: space-between">
           <article class="article" style="flex: 15% 0 1">
             <div class="bg">
               <div class="icons icons_1">
@@ -63,36 +64,36 @@
     </div>
     <div v-else class="container header-main_container">
       <div class="header-main_logo logo">
-        <LogoImage />
-        <LogoTitle />
+        <LogoImage/>
+        <LogoTitle/>
       </div>
       <div v-if="windowWidth > 768" class="header-main_city city">
         <h2 class="city_title" v-if="userCity" @click="openModalCity">{{ userCity }}</h2>
         <h2 class="city_title" v-if="ipInfoCity && !userCity" @click="openModalCity">{{ ipInfoCity }}</h2>
         <h2 class="city_title" v-if="!ipInfoCity && !userCity" @click="openModalCity">Выбрать город</h2>
         <Transition name="fade">
-          <component  @openCity="isOpenCity" :is="choiceCity ? SelectCity : 'div'" />
+          <component @openCity="isOpenCity" :is="choiceCity ? SelectCity : 'div'"/>
         </Transition>
-        <nuxt-img class="city_icon" src="img/city_icon.svg" alt="city_icon"  loading="lazy"/>
+        <nuxt-img class="city_icon" src="img/city_icon.svg" alt="city_icon" loading="lazy"/>
       </div>
       <div v-if="windowWidth > 768" class="header-main_btn btn-catalog">
         <Button @click="toggleShowCategories" :width_btn="7.9375" :src_btn="src_path">Каталог</Button>
         <Transition name="fade" mode="out-in" appear>
-          <component  @open="isOpen" :is="hydrated ? Catalog : 'div'" />
+          <component @open="isOpen" :is="hydrated ? Catalog : 'div'"/>
         </Transition>
       </div>
       <div v-if="windowWidth > 768" class="header-main_search">
-        <Search />
+        <Search/>
       </div>
       <div v-if="windowWidth > 768" class="header_icons-wrapp">
-        <div class="header-icons" >
+        <div class="header-icons">
           <nuxt-link v-if="compareProducts && compareProducts.length !== 0" to="/comparison/" class="icons_put">
             <div class="icons compare">
               <div class="icons_count" v-if="compareProducts && compareProducts.length !== 0">
                 <HeaderIconsCount>{{ compareProducts.length }}</HeaderIconsCount>
               </div>
               <div class="icons_icon">
-                <HeaderIconsCompareIcon />
+                <HeaderIconsCompareIcon/>
               </div>
               <div class="icons_title">
                 <HeaderIconsTitle>Сравнение</HeaderIconsTitle>
@@ -105,7 +106,7 @@
                 <HeaderIconsCount>{{ compareProducts.length }}</HeaderIconsCount>
               </div>
               <div class="icons_icon">
-                <HeaderIconsCompareIcon />
+                <HeaderIconsCompareIcon/>
               </div>
               <div class="icons_title">
                 <HeaderIconsTitle>Сравнение</HeaderIconsTitle>
@@ -119,7 +120,7 @@
                 <HeaderIconsCount>{{ favoriteProducts.length }}</HeaderIconsCount>
               </div>
               <div class="icons_icon">
-                <HeaderIconsHeartIcon />
+                <HeaderIconsHeartIcon/>
               </div>
               <div class="icons_title">
                 <HeaderIconsTitle>Избранное</HeaderIconsTitle>
@@ -132,7 +133,7 @@
                 <HeaderIconsCount>{{ favoriteProducts.length }}</HeaderIconsCount>
               </div>
               <div class="icons_icon">
-                <HeaderIconsHeartIcon />
+                <HeaderIconsHeartIcon/>
               </div>
               <div class="icons_title">
                 <HeaderIconsTitle>Избранное</HeaderIconsTitle>
@@ -145,7 +146,7 @@
                 <HeaderIconsCount>{{ basketProducts.length }}</HeaderIconsCount>
               </div>
               <div class="icons_icon">
-                <HeaderIconsBasketIcon />
+                <HeaderIconsBasketIcon/>
               </div>
               <div class="icons_title">
                 <HeaderIconsTitle>Корзина</HeaderIconsTitle>
@@ -156,13 +157,14 @@
       </div>
       <div v-if="windowWidth <= 768" class="header-main_right">
 
-        <nuxt-link to="/basket/" prefetch class="cursor_hidden2" :class="{'icons_put': basketProducts && basketProducts.length !== 0}">
+        <nuxt-link to="/basket/" prefetch class="cursor_hidden2"
+                   :class="{'icons_put': basketProducts && basketProducts.length !== 0}">
           <div class="icons basket">
             <div class="icons_count" v-if="basketProducts && basketProducts.length !== 0">
               <HeaderIconsCount>{{ basketProducts.length }}</HeaderIconsCount>
             </div>
             <div class="icons_icon">
-              <HeaderIconsBasketIcon />
+              <HeaderIconsBasketIcon/>
             </div>
             <div class="icons_title">
               <HeaderIconsTitle>Корзина</HeaderIconsTitle>
@@ -171,11 +173,16 @@
         </nuxt-link>
 
         <div class="delimiter"></div>
-        <nuxt-img class="search-mob" v-if="windowWidth > 640" src="img/search.svg" loading="lazy" sizes="md:65vw sm:100vw xs:150vw" alt="search"/>
-        <nuxt-img class="search-mob" v-if="windowWidth <= 640 && windowWidth > 500" src="img/search.svg" loading="lazy" sizes="md:65vw sm:70vw xs:150vw" alt="search"/>
-        <nuxt-img class="search-mob" v-if="windowWidth <= 500 && windowWidth > 440" src="img/search.svg" loading="lazy" sizes="md:65vw sm:100vw xs:150vw" alt="search"/>
-        <nuxt-img class="search-mob" v-if="windowWidth <= 440 && windowWidth > 360" src="img/search.svg" loading="lazy" sizes="md:100vw sm:150vw xs:110vw" alt="search"/>
-        <nuxt-img class="search-mob" v-if="windowWidth <= 360" src="img/search.svg" loading="lazy" sizes="md:0vw sm:1vw xs:0vw" alt="search"/>
+        <nuxt-img class="search-mob" v-if="windowWidth > 640" src="img/search.svg" loading="lazy"
+                  sizes="md:65vw sm:100vw xs:150vw" alt="search"/>
+        <nuxt-img class="search-mob" v-if="windowWidth <= 640 && windowWidth > 500" src="img/search.svg" loading="lazy"
+                  sizes="md:65vw sm:70vw xs:150vw" alt="search"/>
+        <nuxt-img class="search-mob" v-if="windowWidth <= 500 && windowWidth > 440" src="img/search.svg" loading="lazy"
+                  sizes="md:65vw sm:100vw xs:150vw" alt="search"/>
+        <nuxt-img class="search-mob" v-if="windowWidth <= 440 && windowWidth > 360" src="img/search.svg" loading="lazy"
+                  sizes="md:100vw sm:150vw xs:110vw" alt="search"/>
+        <nuxt-img class="search-mob" v-if="windowWidth <= 360" src="img/search.svg" loading="lazy"
+                  sizes="md:0vw sm:1vw xs:0vw" alt="search"/>
         <div @click="showCategoriesMobile" class="menu__icon_wrapper">
           <div class="menu__icon">
             <span></span>
@@ -184,7 +191,7 @@
       </div>
     </div>
     <transition name="slide-fade">
-      <component @closeMobileCatalog="closeCategoriesMobile" :is="hydratedMobile ? MobileCatalog : 'span'" />
+      <component @closeMobileCatalog="closeCategoriesMobile" :is="hydratedMobile ? MobileCatalog : 'span'"/>
     </transition>
 
   </div>
@@ -206,21 +213,28 @@ const userCity = computed(() => useUserStore().userCity);
 const urlBasket = computed(() => config.public.apiBaseUrl + `baskets/${useUserStore().getUser().value.id}`);
 const urlFavorite = computed(() => config.public.apiBaseUrl + `favorites/${useUserStore().getUser().value.id}`);
 const urlCompare = computed(() => config.public.apiBaseUrl + `compares/${useUserStore().getUser().value.id}`);
+// TODO разобраться со всеми фетчами
 
 const config = useRuntimeConfig();
 const urlIp = computed(() => config.public.apiBaseUrl + 'users/userIpInfo');
 // // const { pending, data: ip } = await useLazyAsyncData("ip", () => $fetch(urlIp));
-const { pending, data: ipInfoCityNull } = await useLazyAsyncData("ipInfoCity", () => $fetch(urlIp.value));
-const ipInfoCity = ref();
-onBeforeMount(() => {
-  ipInfoCity.value = ipInfoCityNull.value;
-});
-useUserStore().ipInfoCity = ipInfoCity.value;
+// const { pending, data: ipInfoCityNull } = await useLazyAsyncData("ipInfoCity", () => $fetch(urlIp.value));
+// TODO SetTimeout
+setTimeout( () => {
+  const {pending, data: ipInfoCityNull} = useFetch(urlIp.value);
+
+  const ipInfoCity = ref();
+  onBeforeMount(() => {
+    ipInfoCity.value = ipInfoCityNull.value;
+  });
+  useUserStore().ipInfoCity = ipInfoCity.value;}
+,10000);
+
 onMounted(() => {
-  if (useUserStore().getUser().value){
+  if (useUserStore().getUser().value) {
     basketGetFormRequest().then((res) => {
       for (const r of res) {
-         useBasketProductsStore().pushProduct(r);
+        useBasketProductsStore().pushProduct(r);
       }
       basketProducts.value = useBasketProductsStore().getBasketProducts().value;
     }).catch((err) => {
@@ -238,7 +252,7 @@ onMounted(() => {
 
     compareGetFormRequest().then((res) => {
       for (const r of res) {
-         useCompareProductStore().pushProduct(r);
+        useCompareProductStore().pushProduct(r);
       }
       compareProducts.value = useCompareProductStore().getCompareProducts().value;
     }).catch((err) => {
@@ -252,7 +266,7 @@ onMounted(() => {
 });
 
 const basketGetFormRequest = async () => {
-  return await $fetch(urlBasket.value , {
+  return await $fetch(urlBasket.value, {
     headers: {
       'Authorization': `Bearer ${useUserStore().getToken().value}`,
       "Accept": "application/json",
@@ -263,7 +277,7 @@ const basketGetFormRequest = async () => {
 };
 
 const favoriteGetFormRequest = async () => {
-  return await $fetch(urlFavorite.value , {
+  return await $fetch(urlFavorite.value, {
     headers: {
       'Authorization': `Bearer ${useUserStore().getToken().value}`,
       "Accept": "application/json",
@@ -274,7 +288,7 @@ const favoriteGetFormRequest = async () => {
 };
 
 const compareGetFormRequest = async () => {
-  return await $fetch(urlCompare.value , {
+  return await $fetch(urlCompare.value, {
     headers: {
       'Authorization': `Bearer ${useUserStore().getToken().value}`,
       "Accept": "application/json",
@@ -294,11 +308,10 @@ const src = ref('catalog.svg');
 const src_path = computed(() => `img/${src.value}`);
 
 const toggleShowCategories = () => {
-  if (src.value === 'catalog.svg'){
+  if (src.value === 'catalog.svg') {
     src.value = 'close.svg';
     hydrated.value = true;
-  }
-  else{
+  } else {
     src.value = 'catalog.svg';
     hydrated.value = false;
   }
@@ -321,7 +334,7 @@ const windowWidth = ref(0);
 const updateWidth = () => {
   windowWidth.value = window.innerWidth;
 };
-onMounted(()=>{
+onMounted(() => {
   updateWidth();
   window.addEventListener('resize', updateWidth);
 });
@@ -353,30 +366,32 @@ const isOpenCity = () => {
 
 <style scoped>
 
-.header-main{
+.header-main {
   height: 6.25rem;
   color: #fff;
   font-family: 'Inter', sans-serif;
 }
 
-.header-main_container{
+.header-main_container {
   height: 100%;
   display: flex;
   align-items: center;
 }
-.logo{
+
+.logo {
   display: flex;
   align-items: center;
   cursor: pointer;
 }
-.city{
+
+.city {
   display: flex;
   align-items: center;
   cursor: pointer;
   /*visibility: hidden;*/
 }
 
-.city_title{
+.city_title {
   font-weight: 400;
   font-size: 0.875rem;
   color: #858FA4;
@@ -386,54 +401,64 @@ const isOpenCity = () => {
   padding-bottom: 1px;
   cursor: pointer;
 }
-.btn-catalog{
+
+.btn-catalog {
   margin-left: 1.875rem;
 }
-.header-main_search{
+
+.header-main_search {
   margin-left: 1.25rem;
 }
-.header-icons{
+
+.header-icons {
   display: flex;
   align-items: baseline;
   justify-content: end;
   position: relative;
 }
-.cursor_hidden{
+
+.cursor_hidden {
   opacity: .6;
   cursor: default;
 }
-.cursor_hidden2{
+
+.cursor_hidden2 {
   cursor: default;
   opacity: .9;
 }
-.icons{
+
+.icons {
   display: flex;
   flex-direction: column;
   align-items: center;
   /*cursor: pointer;*/
 }
-.icons_put{
+
+.icons_put {
   opacity: 1;
   cursor: pointer;
   transition: all .3s ease;
 }
-.icons_put:hover{
+
+.icons_put:hover {
   opacity: .8;
   transition: all .3s ease;
 }
-.icons_count{
+
+.icons_count {
   z-index: 2;
   position: absolute;
   top: 0;
   padding-left: 7%;
 }
-.heart{
+
+.heart {
   padding: 0 1.25rem;
 }
-.header_icons-wrapp{
+
+.header_icons-wrapp {
   width: 100%;
 }
-
 
 
 .article {
@@ -443,34 +468,41 @@ const isOpenCity = () => {
   /*margin-top: 1rem;*/
   margin-right: 0;
 }
+
 .icons_1,
 .icons_2,
 .icons_3 {
   border-top: solid 1.625rem #1A1A25;
   border-bottom: solid 1.625rem #1A1A25;
 }
-.icons_1{
+
+.icons_1 {
   border-left: solid 1.875rem #1A1A25;
 }
-.icon-1{
+
+.icon-1 {
   width: 100%;
   height: 3rem;
   border-radius: .625rem;
   box-shadow: .3125rem .625rem .3125rem .9375rem #1A1A25, .625rem -.625rem .3125rem #1A1A25, -.625rem .625rem .3125rem #1A1A25, -.625rem -.625rem .3125rem #1A1A25;
 }
-.icons_2{
+
+.icons_2 {
   /*border-left: solid 1.25rem #1A1A25;*/
 }
-.icon-2{
+
+.icon-2 {
   width: 100%;
   height: 3rem;
   border-radius: .625rem;
   box-shadow: .3125rem .625rem .3125rem .9375rem #1A1A25, .625rem -.625rem .3125rem #1A1A25, -.625rem .625rem .3125rem #1A1A25, -.625rem -.625rem .3125rem #1A1A25;
 }
-.icons_3{
+
+.icons_3 {
   border-left: solid 3.25rem #1A1A25;
 }
-.icon-3{
+
+.icon-3 {
   width: 100%;
   height: 3rem;
   border-radius: .625rem;
@@ -507,21 +539,25 @@ const isOpenCity = () => {
     cursor: pointer;
     transition: all 0.3s ease 0s;
   }
+
   .menu__icon::before, .menu__icon::after {
     content: "";
   }
+
   .menu__icon::before {
     top: 0;
     transition: all 0.3s ease 0s;
     cursor: pointer;
 
   }
+
   .menu__icon::after {
     bottom: 0;
     transition: all 0.3s ease 0s;
     cursor: pointer;
 
   }
+
   .menu__icon span, .menu__icon::before, .menu__icon::after {
     left: 100%;
     position: absolute;
@@ -530,20 +566,21 @@ const isOpenCity = () => {
     transition: all 0.3s ease 0s;
     background-color: #fff;
   }
+
   .menu__icon span {
     top: 50%;
-    transform: scale(1) translate(0px,-50%);
+    transform: scale(1) translate(0px, -50%);
     transition: all 0.3s ease 0s;
     cursor: pointer;
 
   }
 
-  .header-main_container{
+  .header-main_container {
     justify-content: space-between;
     padding-right: 3.833rem;
   }
 
-  .delimiter{
+  .delimiter {
     width: .5px;
     height: 2.6825rem;
     background: rgba(133, 143, 164, 0.15);
@@ -552,29 +589,32 @@ const isOpenCity = () => {
     /*margin-right: -10px;*/
   }
 
-  .header-main_right{
+  .header-main_right {
     display: flex;
     align-items: center;
     justify-content: end;
   }
-  .search-mob{
+
+  .search-mob {
     margin-right: -10px;
   }
 
-  .icons_count{
+  .icons_count {
     top: 31%;
     padding-left: 2%;
   }
 }
 
 @media (max-width: 400px) {
-  .delimiter{
+  .delimiter {
     margin: 0 .875rem;
   }
-  .search-mob{
+
+  .search-mob {
     margin-right: -15px;;
   }
-  .menu__icon{
+
+  .menu__icon {
     width: 2.25rem;
     height: 1.25rem;
   }
@@ -584,7 +624,8 @@ const isOpenCity = () => {
   .delimiter {
     margin: 0 .5rem;
   }
-  .search-mob{
+
+  .search-mob {
     margin-right: -18px;;
   }
 }

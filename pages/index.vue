@@ -205,6 +205,7 @@ const showViewedProducts = ref(false);
 //
 // });
 
+// TODO разобраться с обсервером
 
 onMounted(()=>{
   updateWidth();
@@ -213,7 +214,7 @@ onMounted(()=>{
   const observerNew = new IntersectionObserver((entries) => {
     showTagSectionNew.value = true;
   },{
-    rootMargin: '50px',
+    rootMargin: '5px',
   });
 
   const observerBrand = new IntersectionObserver((entries) => {

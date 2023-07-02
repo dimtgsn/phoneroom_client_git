@@ -331,7 +331,7 @@
         <div class="user-container data_body">
           <div class="left-user">
             <div id="not_access_block" style="display: none" :class="{not_access_block: btn_pending}">
-              <img src="img/295.svg" alt="">
+              <img src="/img/295.svg" alt="">
             </div>
             <div v-if="pending">....</div>
             <div v-else class="form-section">
@@ -893,7 +893,7 @@ const getBodyScrollTop = () => {
 
 const openButtonPending = () => {
   btn_pending.value = true;
-  btn_pending_src.value = 'img/835.svg';
+  btn_pending_src.value = '/img/835.svg';
 
   document.querySelector('body').dataset.scrollY = getBodyScrollTop()
 

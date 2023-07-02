@@ -7,6 +7,16 @@ export const useUserStore = defineStore('userStore', () => {
     const userInfo = ref('');
     const ipInfoCity = ref('');
     const userCountBasketProducts = ref(0);
+    const agree_on_cookie = ref(JSON.parse(localStorage.getItem('agree_on_cookie')));
+
+    if (!agree_on_cookie.value) {
+        localStorage.setItem('agree_on_cookie', JSON.stringify(false));
+    }
+
+    function SetAgreeOnCookie() {
+        agree_on_cookie.value = true;
+        localStorage.setItem('agree_on_cookie', JSON.stringify(true));
+    }
 
     function getUser() {
         if (localStorage.getItem('user')){
@@ -98,6 +108,8 @@ export const useUserStore = defineStore('userStore', () => {
         addDis,
         ipInfoCity,
         removeDis,
+        agree_on_cookie,
+        SetAgreeOnCookie,
         getCookie,
         addUserCountBasketProducts,
         getDis,
