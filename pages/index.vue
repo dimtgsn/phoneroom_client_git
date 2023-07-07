@@ -186,7 +186,6 @@ const windowWidth = ref(0);
 const updateWidth = () => {
   windowWidth.value = window.innerWidth;
 };
-
 const TagSectionNew = resolveComponent('TagSectionNew');
 const BrandSection = resolveComponent('BrandSection');
 const TagSectionRecommend = resolveComponent('TagSectionRecommend');

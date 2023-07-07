@@ -117,7 +117,7 @@
 <script setup>
 import { useVuelidate } from '@vuelidate/core'
 import { required, minLength, maxLength, helpers, sameAs, email } from '@vuelidate/validators'
-import {useUserStore} from "../stores/UserStore";
+import {useUserStore} from "../../stores/UserStore.js";
 import {VueDadata} from "vue-dadata";
 import {computed, reactive, ref} from "vue";
 
@@ -219,7 +219,7 @@ const updateFormRequest = async () => {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
     },
-    method: 'POST',
+    method: 'PATCH',
     withCredentials: true,
     credentials: 'include',
     params: {

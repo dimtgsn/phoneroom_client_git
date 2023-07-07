@@ -2,7 +2,7 @@
   <button :style="{color: props.link_color}" class="header_link" @click="openModal">
     <slot />
   </button>
-  <Teleport to="body" @login="isLogin">
+  <Teleport to="body" @login="closeModal">
     <Transition name="fade">
       <section v-if="open" class="modal-section" @click="closeModal" :style="{top: props.top+'rem'}" >
         <focus-trap @click.stop="open=true" v-model:active="open">
@@ -52,10 +52,6 @@ const changeOnLogIn = () => {
   logIn.value = true;
 };
 
-const isLogin = () => {
-  open.value = false;
-};
-
 const getBodyScrollTop = () => {
   return self.pageYOffset || (document.documentElement && document.documentElement.ScrollTop) || (document.body && document.body.scrollTop);
 }
@@ -70,10 +66,9 @@ const openModal = () => {
 };
 
 const closeModal = () => {
-  open.value = false;
-
   document.querySelector('body').classList.remove('lock')
   window.scrollTo(0, document.querySelector('body').dataset.scrollY)
+  open.value = false;
 };
 </script>
 

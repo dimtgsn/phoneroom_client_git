@@ -577,7 +577,7 @@
       </div>
       <div class="product_content">
         <div class="container">
-          <header class="content_header">
+          <header id="content_header" class="content_header">
             <h2 class="content_title"  @click="description_page=true;properties_page=false;comments_page=false" :class="{'active': description_page}">Описание</h2>
             <h2 class="content_title" @click="description_page=false;properties_page=true;comments_page=false" :class="{'active': properties_page}">Характеристики</h2>
             <h2 class="content_title" @click="description_page=false;properties_page=false;comments_page=true" :class="{'active': comments_page}">Отзывы</h2>
@@ -588,7 +588,17 @@
             <PropertiesPage :properties="product.properties" />
           </div>
           <div v-else-if="comments_page">
-            <CommentsPage :rating="product.rating" />
+            <CommentsPage
+                :product_id="parseInt(product.id)"
+                :rating="product.rating"
+                :user="user"
+                :comments_count="product.comments_count"
+                :comments_count_5="product.comments_count_5"
+                :comments_count_4="product.comments_count_4"
+                :comments_count_3="product.comments_count_3"
+                :comments_count_2="product.comments_count_2"
+                :comments_count_1="product.comments_count_1"
+            />
           </div>
           <div v-else-if="description_page">
             <h2 class="current_title title tag_title">Описание</h2>
@@ -641,7 +651,7 @@
                             <star-rating :star-size="12"
                                          :rating="product.rating"
                                          :read-only="true"
-                                         :increment="0.5"
+                                         :increment="0.01"
                                          :padding="2"
                                          :show-rating="false"
                                          :round-start-rating="1"
@@ -657,7 +667,7 @@
                             <star-rating :star-size="10"
                                          :rating="product.rating"
                                          :read-only="true"
-                                         :increment="0.5"
+                                         :increment="0.01"
                                          :padding="2"
                                          :show-rating="false"
                                          :round-start-rating="1"
@@ -673,7 +683,7 @@
                             <star-rating :star-size="8"
                                          :rating="product.rating"
                                          :read-only="true"
-                                         :increment="0.5"
+                                         :increment="0.01"
                                          :padding="2"
                                          :show-rating="false"
                                          :round-start-rating="1"
@@ -685,7 +695,12 @@
                           </ClientOnly>
                         </div>
                       </div>
-                      <div class="total">0 отзывов</div>
+                      <div class="total">
+                        {{ product.comments_count  }}
+                        {{ product.comments_count % 10 === 1 ? 'отзыв':'' }}
+                        {{ product.comments_count % 10 === 2 || product.comments_count % 10 === 3 || product.comments_count % 10 === 4  ? 'отзыва':'' }}
+                        {{ product.comments_count % 10 >= 5 || product.comments_count % 10 === 0 ? 'отзывов':'' }}
+                      </div>
                     </div>
                     <div class="review_right">
                       <div class="ratings">
@@ -695,7 +710,6 @@
                               <star-rating :star-size="12"
                                            :rating="5"
                                            :read-only="true"
-                                           :increment="0.5"
                                            :padding="2"
                                            :show-rating="false"
                                            :round-start-rating="1"
@@ -711,7 +725,6 @@
                               <star-rating :star-size="10"
                                            :rating="5"
                                            :read-only="true"
-                                           :increment="0.5"
                                            :padding="2"
                                            :show-rating="false"
                                            :round-start-rating="1"
@@ -727,7 +740,6 @@
                               <star-rating :star-size="8"
                                            :rating="5"
                                            :read-only="true"
-                                           :increment="0.5"
                                            :padding="2"
                                            :show-rating="false"
                                            :round-start-rating="1"
@@ -738,7 +750,12 @@
                                            :star-points="[23,2, 14,17, 0,19, 10,34, 7,50, 23,43, 38,50, 36,34, 46,19, 31,17]"></star-rating>
                             </ClientOnly>
                           </div>
-                          <h4 class="total label_star">(0) отзывов</h4>
+                          <h4 class="total label_star">
+                            ({{ product.comments_count_5  }})
+                            {{ product.comments_count_5 % 10 === 1 ? 'отзыв':'' }}
+                            {{ product.comments_count_5 % 10 === 2 || product.comments_count_5 % 10 === 3 || product.comments_count_5 % 10 === 4  ? 'отзыва':'' }}
+                            {{ product.comments_count_5 % 10 >= 5 || product.comments_count_5 % 10 === 0 ? 'отзывов':'' }}
+                          </h4>
                         </div>
                         <div class="rating-item">
                           <div class="rating_body" v-if="windowWidth >= 1280">
@@ -746,7 +763,6 @@
                               <star-rating :star-size="12"
                                            :rating="4"
                                            :read-only="true"
-                                           :increment="0.5"
                                            :padding="2"
                                            :show-rating="false"
                                            :round-start-rating="1"
@@ -762,7 +778,6 @@
                               <star-rating :star-size="10"
                                            :rating="4"
                                            :read-only="true"
-                                           :increment="0.5"
                                            :padding="2"
                                            :show-rating="false"
                                            :round-start-rating="1"
@@ -778,7 +793,6 @@
                               <star-rating :star-size="8"
                                            :rating="4"
                                            :read-only="true"
-                                           :increment="0.5"
                                            :padding="2"
                                            :show-rating="false"
                                            :round-start-rating="1"
@@ -789,7 +803,12 @@
                                            :star-points="[23,2, 14,17, 0,19, 10,34, 7,50, 23,43, 38,50, 36,34, 46,19, 31,17]"></star-rating>
                             </ClientOnly>
                           </div>
-                          <h4 class="total label_star">(0) отзывов</h4>
+                          <h4 class="total label_star">
+                            ({{ product.comments_count_4  }})
+                            {{ product.comments_count_4 % 10 === 1 ? 'отзыв':'' }}
+                            {{ product.comments_count_4 % 10 === 2 || product.comments_count_4 % 10 === 3 || product.comments_count_4 % 10 === 4  ? 'отзыва':'' }}
+                            {{ product.comments_count_4 % 10 >= 5 || product.comments_count_4 % 10 === 0 ? 'отзывов':'' }}
+                          </h4>
                         </div>
                         <div class="rating-item">
                           <div class="rating_body" v-if="windowWidth >= 1280">
@@ -797,7 +816,6 @@
                               <star-rating :star-size="12"
                                            :rating="3"
                                            :read-only="true"
-                                           :increment="0.5"
                                            :padding="2"
                                            :show-rating="false"
                                            :round-start-rating="1"
@@ -813,7 +831,6 @@
                               <star-rating :star-size="10"
                                            :rating="3"
                                            :read-only="true"
-                                           :increment="0.5"
                                            :padding="2"
                                            :show-rating="false"
                                            :round-start-rating="1"
@@ -829,7 +846,6 @@
                               <star-rating :star-size="8"
                                            :rating="3"
                                            :read-only="true"
-                                           :increment="0.5"
                                            :padding="2"
                                            :show-rating="false"
                                            :round-start-rating="1"
@@ -840,7 +856,12 @@
                                            :star-points="[23,2, 14,17, 0,19, 10,34, 7,50, 23,43, 38,50, 36,34, 46,19, 31,17]"></star-rating>
                             </ClientOnly>
                           </div>
-                          <h4 class="total label_star">(0) отзывов</h4>
+                          <h4 class="total label_star">
+                            ({{ product.comments_count_3  }})
+                            {{ product.comments_count_3 % 10 === 1 ? 'отзыв':'' }}
+                            {{ product.comments_count_3 % 10 === 2 || product.comments_count_3 % 10 === 3 || product.comments_count_3 % 10 === 4  ? 'отзыва':'' }}
+                            {{ product.comments_count_3 % 10 >= 5 || product.comments_count_3 % 10 === 0 ? 'отзывов':'' }}
+                          </h4>
                         </div>
                         <div class="rating-item">
                           <div class="rating_body" v-if="windowWidth >= 1280">
@@ -848,7 +869,6 @@
                               <star-rating :star-size="12"
                                            :rating="2"
                                            :read-only="true"
-                                           :increment="0.5"
                                            :padding="2"
                                            :show-rating="false"
                                            :round-start-rating="1"
@@ -864,7 +884,6 @@
                               <star-rating :star-size="10"
                                            :rating="2"
                                            :read-only="true"
-                                           :increment="0.5"
                                            :padding="2"
                                            :show-rating="false"
                                            :round-start-rating="1"
@@ -880,7 +899,6 @@
                               <star-rating :star-size="8"
                                            :rating="2"
                                            :read-only="true"
-                                           :increment="0.5"
                                            :padding="2"
                                            :show-rating="false"
                                            :round-start-rating="1"
@@ -891,7 +909,12 @@
                                            :star-points="[23,2, 14,17, 0,19, 10,34, 7,50, 23,43, 38,50, 36,34, 46,19, 31,17]"></star-rating>
                             </ClientOnly>
                           </div>
-                          <h4 class="total label_star">(0) отзывов</h4>
+                          <h4 class="total label_star">
+                            ({{ product.comments_count_2  }})
+                            {{ product.comments_count_2 % 10 === 1 ? 'отзыв':'' }}
+                            {{ product.comments_count_2 % 10 === 2 || product.comments_count_2 % 10 === 3 || product.comments_count_2 % 10 === 4  ? 'отзыва':'' }}
+                            {{ product.comments_count_2 % 10 >= 5 || product.comments_count_2 % 10 === 0 ? 'отзывов':'' }}
+                          </h4>
                         </div>
                         <div class="rating-item">
                           <div class="rating_body" v-if="windowWidth >= 1280">
@@ -899,7 +922,6 @@
                               <star-rating :star-size="12"
                                            :rating="1"
                                            :read-only="true"
-                                           :increment="0.5"
                                            :padding="2"
                                            :show-rating="false"
                                            :round-start-rating="1"
@@ -915,7 +937,6 @@
                               <star-rating :star-size="10"
                                            :rating="1"
                                            :read-only="true"
-                                           :increment="0.5"
                                            :padding="2"
                                            :show-rating="false"
                                            :round-start-rating="1"
@@ -931,7 +952,6 @@
                               <star-rating :star-size="8"
                                            :rating="1"
                                            :read-only="true"
-                                           :increment="0.5"
                                            :padding="2"
                                            :show-rating="false"
                                            :round-start-rating="1"
@@ -942,7 +962,12 @@
                                            :star-points="[23,2, 14,17, 0,19, 10,34, 7,50, 23,43, 38,50, 36,34, 46,19, 31,17]"></star-rating>
                             </ClientOnly>
                           </div>
-                          <h4 class="total label_star">(0) отзывов</h4>
+                          <h4 class="total label_star">
+                            ({{ product.comments_count_1  }})
+                            {{ product.comments_count_1 % 10 === 1 ? 'отзыв':'' }}
+                            {{ product.comments_count_1 % 10 === 2 || product.comments_count_1 % 10 === 3 || product.comments_count_1 % 10 === 4  ? 'отзыва':'' }}
+                            {{ product.comments_count_1 % 10 >= 5 || product.comments_count_1 % 10 === 0 ? 'отзывов':'' }}
+                          </h4>
                         </div>
                       </div>
 
@@ -950,12 +975,42 @@
 
                   </div>
                 </div>
-                <div class="write_review">
-                  <h2 class="first_review">Будьте первым(ой)! Поделитесь своим мнением об этом товаре</h2>
+                <div class="write_review" v-if="product.comments_count === 0">
+                  <h2 class="first_review">Будьте первым! Поделитесь своим мнением об этом товаре</h2>
                   <Button @click="description_page=false;properties_page=false;comments_page=true" :route_btn="''" :width_btn="12">Оставить отзыв</Button>
                 </div>
+                <div class="comments-section" v-else>
+                  <div v-if="pending2">
+                    <section class="wrapper-pen">
+                      <article class="article_2">
+                        <div class="bg">
+                          <div class="icons">
+                            <div class="icon-2_2 icon-2-2_2"></div>
+                            <div class="mask mask_2"></div>
+                          </div>
+                        </div>
+                      </article>
+                    </section>
+                  </div>
+                  <section v-else class="comments-wrap">
+                    <div class="comment" v-for="comment in comments.comments">
+                      <div class="comment-header">
+                        <div class="rating_circle">{{ comment.rating }}<span style="font-size: 1rem;">&#9733;</span></div>
+                        <div class="comment_info">
+                          <h3 class="comment_user">{{ comment.user }}</h3>
+                          <h3 class="comment_date">{{ comment.created_at }}</h3>
+                        </div>
+                      </div>
+                      <div class="comment_body">
+                        <div class="comment_comment text_block">
+                          <div class="comment_text">{{ comment.comment }}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </section>
+                </div>
               </div>
-              <ButtonRedOutline :route_btn="`${product.slug}`" @click="description_page=false;properties_page=false;comments_page=true">Все отзывы</ButtonRedOutline>
+              <ButtonRedOutline :route_btn="`#reviews`" @click="description_page=false;properties_page=false;comments_page=true">Все отзывы</ButtonRedOutline>
             </div>
           </div>
           <div class="line"></div>
@@ -991,7 +1046,7 @@ const comments_page = ref(false);
 
 const user = computed(() => useUserStore().getUser().value);
 const config = useRuntimeConfig();
-
+const pending2 = ref(false);
 const properties = ref(null);
 const countShowProperty = ref(5);
 
@@ -1151,6 +1206,32 @@ const addProductToBasket = (product) => {
   }
 };
 
+const urlComments = computed(() => config.public.apiBaseUrl + 'comments/');
+const commentsGetFormRequest = async () => {
+  return await $fetch(urlComments.value , {
+    headers: {
+      "Accept": "application/json",
+      'Content-Type': 'application/json',
+    },
+    method: 'GET',
+    params: {
+      product_id: parseInt(product.value.id),
+      limit: 2,
+    },
+  });
+}
+
+const comments = ref([]);
+setTimeout(() => {
+  pending2.value = true;
+  commentsGetFormRequest().then((res) => {
+    console.log(res);
+    comments.value = res;
+    pending2.value = false;
+  }).catch((err) => {
+    console.error('Contact form could not be send', err);
+  });
+}, 3500)
 const favoriteCreateFormRequest = async (product_id) => {
   return await $fetch(urlFavorite.value , {
     headers: {
@@ -1316,7 +1397,7 @@ onMounted(()=>{
 .title{
   font-family: 'Inter', sans-serif;
   font-weight: 700;
-  font-size: 2.375rem;
+  /*font-size: 2.375rem;*/
   line-height: 140%;
   color: #1A1A25;
 }
@@ -1816,6 +1897,72 @@ onMounted(()=>{
   padding-bottom: 1.875rem;
 }
 
+.comments-section{
+  margin-left: 1.5rem;
+  max-width: 60rem;
+}
+.comments-wrap{
+  display: flex;
+}
+.comment{
+  /*max-width: 50%;*/
+  min-height: 12.5rem;
+  min-width: 50%;
+  display: flex;
+  flex-direction: column;
+  margin-right: 1.5rem;
+  background-color: #FFFFFF;
+  border-radius: 10px;
+  padding: 1.5rem;
+}
+.comment:last-child{
+  margin-right: 0;
+}
+.comment-header{
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.rating_circle{
+  width: 2.8rem;
+  height: 2.8rem;
+  background-color: #BD0F2C;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.375rem;
+  font-weight: 500;
+  border-radius: 50%;
+  color: #FFFFFF;
+}
+.comment_info{
+  padding-left: .75rem;
+  /*display: flex;*/
+  /*flex-direction: column;*/
+}
+.comment_user{
+  color: #1A1A25;
+  font-size: 1rem;
+  font-weight: 700;
+  width: 100%;
+  line-height: 140%;
+}
+.comment_date{
+  color: rgba(0, 0, 0, 0.50);
+  font-size: 0.875rem;
+  line-height: 130%;
+}
+.comment_body{
+  margin-top: .75rem;
+}
+.comment_text{
+  color: #384255;
+  font-size: 1rem;
+  line-height: 150%;
+}
+
+
 /*pending*/
 .img-count-w{
   display: flex;
@@ -1917,6 +2064,30 @@ onMounted(()=>{
 .disabled{
   opacity: 0.5;
 }
+
+
+.article_2 {
+  width: 100%;
+  background: #F7F7F7;
+  padding: 0;
+  margin-right: 0;
+}
+.mask_2{
+  background: #F7F7F7;
+}
+.icon-2_2{
+  width: 24.25rem;
+  height: 37.625rem;
+  border-radius: .625rem;
+  box-shadow: .3125rem .625rem .3125rem .9375rem #F7F7F7, .625rem -.625rem .3125rem #F7F7F7, -.625rem .625rem .3125rem #F7F7F7, -.625rem -.625rem .3125rem #F7F7F7;
+}
+.icon-2-2_2{
+  width: 59vh;
+  height: 12.5rem;
+  box-shadow: .3125rem 2rem .3125rem .9375rem #F7F7F7, .625rem -.625rem .3125rem #F7F7F7, -.625rem 1.625rem .3125rem #F7F7F7, -.625rem -.625rem .3125rem #F7F7F7;
+}
+
+
 @media (max-width: 940px) {
   .img-pen{
     width: 20.5rem;
@@ -1926,6 +2097,13 @@ onMounted(()=>{
   }
   .icon-3{
     width: 20rem;
+  }
+  .comment{
+    margin-right: 1rem;
+  }
+  .comments-section{
+    max-width: 56rem;
+    margin-left: 1rem;
   }
 }
 
@@ -1953,6 +2131,14 @@ onMounted(()=>{
   .compare-svg-wrap{
     margin-left: -5px;
   }
+  .comment{
+    padding: 1.5rem;
+    margin-right: 1rem;
+  }
+  .comments-section{
+    max-width: 51rem;
+    margin-left: 1rem;
+  }
 }
 
 @media (max-width: 850px) {
@@ -1974,6 +2160,9 @@ onMounted(()=>{
   }
   .img-pen-brand{
     width: 16.5rem;
+  }
+  .comments-section{
+    max-width: 48rem;
   }
 }
 
@@ -2015,6 +2204,9 @@ onMounted(()=>{
   }
   .img-pen-brand{
     width: 14.5rem;
+  }
+  .comments-section{
+    max-width: 43rem;
   }
 }
 
@@ -2080,8 +2272,24 @@ onMounted(()=>{
     border-right: solid 4rem white;
     border-bottom: none;
   }
-  .icon-3{
-    /*width: 15rem;*/
+  .comments-wrap{
+    flex-direction: column;
+  }
+  .comment{
+    max-width: 100%;
+    margin-right: 0;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+  }
+  .comment:last-child{
+    margin-bottom: 0;
+  }
+  .review-body{
+    flex-direction: column;
+  }
+  .comments-section{
+    margin-left: 0;
+    margin-top: 2rem;
   }
 }
 @media (max-width: 740px) {
@@ -2091,6 +2299,9 @@ onMounted(()=>{
   }
   .thumb-images{
     max-width: 31.8rem;
+  }
+  .icon-2-2_2{
+    width: 50vh;
   }
 }
 @media (max-width: 700px) {
@@ -2126,11 +2337,16 @@ onMounted(()=>{
   .title_pen{
     width: 41rem;
   }
-
+  .icon-2-2_2{
+    width: 45vh;
+  }
 }
 @media (max-width: 660px) {
   .review_total{
     width: 80%;
+  }
+  .icon-2-2_2{
+    width: 38vh;
   }
 }
 @media (max-width: 640px) {
@@ -2231,6 +2447,12 @@ onMounted(()=>{
     margin-left: 0;
     align-self: flex-start;
   }
+  .comments-section {
+    margin-left: 0;
+  }
+  .icon-2-2_2{
+    width: 75vh;
+  }
 }
 
 @media (max-width: 530px) {
@@ -2256,6 +2478,9 @@ onMounted(()=>{
     flex: 50% 0 1;
     margin-right: 1rem;
   }
+  .icon-2-2_2{
+    width: 65vh;
+  }
 }
 @media (max-width: 460px) {
   .data_subinfo{
@@ -2277,6 +2502,9 @@ onMounted(()=>{
   .body-pen{
     border-left: solid 0rem white;
     border-right: solid 0rem white;
+  }
+  .icon-2-2_2{
+    width: 70vh;
   }
 }
 @media (max-width: 400px) {

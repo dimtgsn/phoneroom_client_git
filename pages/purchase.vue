@@ -725,7 +725,7 @@ let timer = null;
 //     }
 //   }
 // };
-
+// TODO включить отправку смс кодов и протестировать их
 const payment = (disabled) => {
   if (!disabled){
     // if (smsCode.value === formData.code && formData.code !== ''){
@@ -744,6 +744,7 @@ const payment = (disabled) => {
       if (res){
         useBasketProductsStore().destroyBasketProducts();
         useBasketProductsStore().destroyTotalBasket();
+        closeButtonPending();
         navigateTo(`/success-page/${res}`);
       }
     }).catch((err) => {
@@ -917,20 +918,6 @@ const closeButtonPending = () => {
   display: flex;
   justify-content: space-between;
 }
-.not_access_block{
-  width: 100%;
-  height: 100%;
-  position: fixed;
-  top: 0;
-  left: 0;
-  display: flex !important;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-  background-color: transparent;
-  backdrop-filter: blur(1px);
-}
-
 .purchase-section {
   margin-top: 3rem;
 }

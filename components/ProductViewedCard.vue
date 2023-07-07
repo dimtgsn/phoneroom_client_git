@@ -35,9 +35,9 @@
             <div class="rating_body" v-if="windowWidth > 1280">
               <ClientOnly>
                 <star-rating :star-size="12"
-                             :rating="parseInt(props.product_variant.rating)"
+                             :rating="props.product_variant.rating"
                              :read-only="true"
-                             :increment="0.5"
+                             :increment="0.01"
                              :padding="2"
                              :show-rating="false"
                              :round-start-rating="true"
@@ -51,9 +51,9 @@
             <div class="rating_body" v-if="windowWidth <= 1280 && windowWidth > 1020">
               <ClientOnly>
                 <star-rating :star-size="10"
-                             :rating="parseInt(props.product_variant.rating)"
+                             :rating="props.product_variant.rating"
                              :read-only="true"
-                             :increment="0.5"
+                             :increment="0.01"
                              :padding="2"
                              :show-rating="false"
                              :round-start-rating="true"
@@ -67,9 +67,9 @@
             <div class="rating_body" v-if="windowWidth <= 1020">
               <ClientOnly>
                 <star-rating :star-size="8"
-                             :rating="parseInt(props.product_variant.rating)"
+                             :rating="props.product_variant.rating"
                              :read-only="true"
-                             :increment="0.5"
+                             :increment="0.01"
                              :padding="2"
                              :show-rating="false"
                              :round-start-rating="true"

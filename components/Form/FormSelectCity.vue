@@ -45,7 +45,7 @@
 </template>
 
 <script setup>
-import {useUserStore} from "../stores/UserStore";
+import {useUserStore} from "../../stores/UserStore.js";
 const city = ref();
 
 

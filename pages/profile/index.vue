@@ -31,10 +31,10 @@
           <Transition name="fade" v-if="profile_page===false && message_page===false && orders_page===false">
             <div class="container container-profile">
               <div class="left-profile">
-                <div class="prodile-svg">
-                  <nuxt-img class="profile_img" sizes="xxl:100vw xl:110vw lg:100vw md:100vw sm:100vw xs:50vw" src="img/profile.svg" alt="user-profile" loading="lazy" />
+                <div class="profile-svg">
+                  <nuxt-img class="profile_img" sizes="xxl:100vw xl:100vw lg:100vw md:100vw sm:100vw xs:50vw" src="img/profile.svg" alt="user-profile" loading="lazy" />
                 </div>
-                <div class="prodile-info info">
+                <div class="profile-info info">
                   <h2 class="info_name">Имя: {{ user.first_name }} {{ user.middle_name ? user.middle_name: ''}} {{ user.last_name ? user.last_name: '' }}</h2>
                   <h3 class="info_email">Email: {{ user.email ? user.email: '' }}</h3>
                   <h3 class="info_phone">Телефон: {{ user.phone ? user.phone: '' }}</h3>
@@ -71,12 +71,29 @@
                 <div class="right-profile_r">
                   <div class="item-title">Заказы</div>
                   <div class="profile_orders">
-                    <div class="last_order"></div>
+                    <div class="last_order">
+                      <div class="order_last_data">
+                        <div class="order_id_and_date">№&nbsp;{{ user.orders[0].id + 1234 }} от
+                          {{ new Date(user.orders[0].created_at).toLocaleString("ru", options) }}
+                        </div>
+                        <div class="order_status">{{ user.orders[0].status.name }}</div>
+                      </div>
+                    </div>
                     <div class="line"></div>
                     <div class="past_orders">
                       <h3 class="past_orders_title">Прошлые заказы:</h3>
-                      <div class="orders">
+                      <div v-if="user.orders.length === 0" class="orders">
                         <h3 class="no-orders_title">Нет заказов</h3>
+                      </div>
+                      <div v-else>
+                        <div class="orders">
+                          <div class="order" v-for="order in user.orders.slice(1)">
+                            <div class="order_data">
+                              <div class="order_date">{{ new Date(order.created_at).toLocaleString("ru", options) }}</div>
+                              <div class="order_id">№&nbsp;{{ order.id + 1234 }}</div>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                       <h3 @click="orders_page=true" class="all_orders">Все заказы</h3>
                     </div>
@@ -92,13 +109,7 @@
               <div @click="profile_page=false;message_page=false;orders_page=true" :class="{'activePage': orders_page}" class="profile_to_pages">Заказы</div>
             </div>
             <Transition name="fade" >
-              <section class="section-orders" v-if="orders_page===true">
-                <h2 class="section-no-orders-title">Нет заказов</h2>
-                <div class="no_orders_text">
-                  К сожалению, на данные момент история заказов пуста. <br> Перейдите в каталог и выберите нужные товары. <br> Акции и горячие предложения на главной старнице помогут вам в выборе.
-                </div>
-                <Button :width_btn="15" :route_btn="'/'">Вернуться на главную</Button>
-              </section>
+              <component :is="orders_page ? UserOrders : 'div'" />
             </Transition>
             <Transition name="fade">
               <section class="section-messages" v-if="message_page===true">
@@ -145,13 +156,18 @@ const sendMessage = ref(false);
 const sendUserEdit = ref(false);
 const btn_pending = ref(false);
 
+const UserOrders = resolveComponent('UserOrders');
+const options = {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+};
 definePageMeta({
   middleware: 'auth'
 });
 const removeUser = () => {
   useUserStore().removeUser();
 };
-// const urlLogout = computed(() => config.public.apiBaseUrl + `users/logout/${useUserStore().getUser().value.id}`);
 const urlLogout = computed(() => config.public.baseUrl + `users/logout`);
 
 const logout = () => {
@@ -211,7 +227,6 @@ const getNewMessage = () => {
 };
 
 const urlUserInfo = computed(() => config.public.apiBaseUrl + `users/user/${useUserStore().getUser().value.id}`);
-
 const { pending, data: user } = await useLazyAsyncData(
     "user",
     () => $fetch(urlUserInfo.value, {
@@ -259,7 +274,7 @@ onMounted(()=>{
   align-items: center;
   padding: .5rem 0;
 }
-.prodile-svg{
+.profile-svg{
   width: 12.5rem;
   height: 12.5rem;
   border-radius: 100%;
@@ -268,7 +283,7 @@ onMounted(()=>{
   align-self: center;
   justify-content: center;
 }
-.prodile-info{
+.profile-info{
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -347,7 +362,7 @@ onMounted(()=>{
   font-weight: 800;
   font-size: 1.5rem;
   line-height: 120%;
-  color: #1A1A25;
+  color: #384255;
   margin-bottom: .625rem;
 }
 .l-top_title{
@@ -443,6 +458,36 @@ onMounted(()=>{
   line-height: 150%;
   color: #384255;
 }
+.order{
+  margin-bottom: .5rem;
+}
+.order:last-child{
+  margin-bottom: 0;
+}
+.order_data{
+  display: flex;
+  justify-content: space-between;
+}
+.order_last_data{
+  display: flex;
+  flex-direction: column;
+}
+.order_id{
+  color: #384255;
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 150%;
+}
+.order_date,
+.order_id_and_date,
+.order_status{
+  color: #384255;
+  font-size: 1rem;
+  line-height: 150%;
+}
+.order_status{
+  opacity: .5;
+}
 .all_orders{
   font-weight: 700;
   font-size: .875rem;
@@ -496,7 +541,6 @@ onMounted(()=>{
   opacity: 1;
 }
 
-.section-no-orders-title,
 .section-messages-title{
   color: #384255;
   font-weight: 700;
@@ -504,14 +548,6 @@ onMounted(()=>{
   line-height: 120%;
   margin-top: 3.125rem;
   margin-bottom: 2rem;
-}
-.no_orders_text{
-  color: #1A1A25;
-  width: 90%;
-  font-weight: 400;
-  font-size: 1.25rem;
-  line-height: 150%;
-  margin-bottom: 5rem;
 }
 .messages-wrapp{
   margin-top: 5rem;
@@ -668,7 +704,7 @@ onMounted(()=>{
   .right-profile{
     margin-left: 0;
   }
-  .prodile-info{
+  .profile-info{
     align-items: flex-start;
     width: 50%;
   }
@@ -728,22 +764,26 @@ onMounted(()=>{
   .info{
     padding: 0 1rem 0 1.625rem;
   }
+  .profile-svg{
+    width: 9.5rem;
+    height: 9.5rem;
+  }
 }
 
 @media (max-width: 375px) {
-  .prodile-svg{
-    width: 11.5rem;
-    height: 11.5rem;
+  .profile-svg{
+    width: 9rem;
+    height: 9rem;
   }
 }
 
 @media (max-width: 360px) {
-  .prodile-svg{
-    width: 10.5rem;
-    height: 10.5rem;
+  .profile-svg{
+    width: 8rem;
+    height: 8rem;
   }
   .info{
-    padding: 0;
+    padding: 0 0 0 1rem;
   }
   .left-profile{
     justify-content: space-between;
@@ -764,6 +804,12 @@ onMounted(()=>{
   }
   .icon-1{
     height: 30vh;
+  }
+}
+@media (max-width: 330px) {
+  .profile-svg{
+    width: 7rem;
+    height: 7rem;
   }
 }
 </style>

@@ -85,7 +85,7 @@ const pending = ref(true);
 const btn_pending = ref(false);
 
 onMounted(() => {
-  user.value = useUserStore().getUser();
+  // user.value = useUserStore().getUser();
   pending.value = false;
 })
 

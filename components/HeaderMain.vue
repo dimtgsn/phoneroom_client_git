@@ -268,33 +268,36 @@ onMounted(() => {
 const basketGetFormRequest = async () => {
   return await $fetch(urlBasket.value, {
     headers: {
-      'Authorization': `Bearer ${useUserStore().getToken().value}`,
       "Accept": "application/json",
       'Content-Type': 'application/json',
     },
     method: 'GET',
+    withCredentials: true,
+    credentials: 'include'
   })
 };
 
 const favoriteGetFormRequest = async () => {
   return await $fetch(urlFavorite.value, {
     headers: {
-      'Authorization': `Bearer ${useUserStore().getToken().value}`,
       "Accept": "application/json",
       'Content-Type': 'application/json',
     },
     method: 'GET',
+    withCredentials: true,
+    credentials: 'include'
   })
 };
 
 const compareGetFormRequest = async () => {
   return await $fetch(urlCompare.value, {
     headers: {
-      'Authorization': `Bearer ${useUserStore().getToken().value}`,
       "Accept": "application/json",
       'Content-Type': 'application/json',
     },
-    method: 'GET'
+    method: 'GET',
+    withCredentials: true,
+    credentials: 'include'
   });
 }
 

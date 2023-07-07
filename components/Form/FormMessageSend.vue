@@ -56,7 +56,7 @@
 <script setup>
 import { useVuelidate } from '@vuelidate/core'
 import { required, minLength, maxLength, helpers, sameAs, email } from '@vuelidate/validators'
-import {useUserStore} from "../stores/UserStore";
+import {useUserStore} from "../../stores/UserStore.js";
 import {computed, reactive} from "vue";
 
 const disabled_reg = ref(true);
