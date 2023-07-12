@@ -140,6 +140,9 @@ const addFavoriteProduct = (product) => {
         useFavoriteProductStore().needUpdate = true;
         console.log(res)
       }).catch((err) => {
+        if(err.status === 401){
+          useUserStore().removeUser();
+        }
         console.error('Contact form could not be send', err)
       });
     }
@@ -149,6 +152,9 @@ const addFavoriteProduct = (product) => {
         useFavoriteProductStore().removeProduct(product);
         emit('deleteUserProduct');
       }).catch((err) => {
+        if(err.status === 401){
+          useUserStore().removeUser();
+        }
         console.error('Contact form could not be send', err);
       });
     }
@@ -173,6 +179,9 @@ const addCompareProduct = (product) => {
         useCompareProductStore().pushProduct(product);
         useCompareProductStore().needUpdate = true;
       }).catch((err) => {
+        if(err.status === 401){
+          useUserStore().removeUser();
+        }
         console.error('Contact form could not be send', err)
       });
     }
@@ -183,6 +192,9 @@ const addCompareProduct = (product) => {
         useCompareProductStore().removeProduct(product);
         emit('deleteUserProduct');
       }).catch((err) => {
+        if(err.status === 401){
+          useUserStore().removeUser();
+        }
         pressedCompare.value = true;
         console.error('Contact form could not be send', err);
       });
@@ -209,6 +221,9 @@ const addProductToBasket = (product) => {
           useBasketProductsStore().needUpdate = true;
           console.log(res)
         }).catch((err) => {
+          if(err.status === 401){
+            useUserStore().removeUser();
+          }
           console.error('Contact form could not be send', err)
         });
       }

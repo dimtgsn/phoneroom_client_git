@@ -150,6 +150,9 @@ onMounted(() => {
       checkCategoryUser();
       addOpenCategory(openCategory.value);
     }).catch((err) => {
+      if(err.status === 401){
+        useUserStore().removeUser();
+      }
       console.error('Contact form could not be send', err);
     });
   }

@@ -35,7 +35,7 @@
                   <nuxt-img class="profile_img" sizes="xxl:100vw xl:100vw lg:100vw md:100vw sm:100vw xs:50vw" src="img/profile.svg" alt="user-profile" loading="lazy" />
                 </div>
                 <div class="profile-info info">
-                  <h2 class="info_name">Имя: {{ user.first_name }} {{ user.middle_name ? user.middle_name: ''}} {{ user.last_name ? user.last_name: '' }}</h2>
+                  <h2 class="info_name">Имя: {{ user.first_name ? user.first_name : removeUser }} {{ user.middle_name ? user.middle_name: ''}} {{ user.last_name ? user.last_name: '' }}</h2>
                   <h3 class="info_email">Email: {{ user.email ? user.email: '' }}</h3>
                   <h3 class="info_phone">Телефон: {{ user.phone ? user.phone: '' }}</h3>
                 </div>
@@ -71,12 +71,12 @@
                 <div class="right-profile_r">
                   <div class="item-title">Заказы</div>
                   <div class="profile_orders">
-                    <div class="last_order">
+                    <div class="last_order" v-if="user.orders.length !== 0">
                       <div class="order_last_data">
                         <div class="order_id_and_date">№&nbsp;{{ user.orders[0].id + 1234 }} от
                           {{ new Date(user.orders[0].created_at).toLocaleString("ru", options) }}
                         </div>
-                        <div class="order_status">{{ user.orders[0].status.name }}</div>
+                        <div class="order_status">{{ user.orders[0].status.id === 5 ? 'В обработке' : user.orders[0].status.name }}</div>
                       </div>
                     </div>
                     <div class="line"></div>
@@ -167,6 +167,7 @@ definePageMeta({
 });
 const removeUser = () => {
   useUserStore().removeUser();
+  navigateTo('/');
 };
 const urlLogout = computed(() => config.public.baseUrl + `users/logout`);
 
@@ -174,7 +175,6 @@ const logout = () => {
   btn_pending.value = true;
   logoutFormRequest().then((res) => {
     removeUser();
-    navigateTo('/');
     btn_pending.value = false;
     console.log(res);
   }).catch((err) => {
@@ -236,9 +236,10 @@ const { pending, data: user } = await useLazyAsyncData(
         },
         method: 'GET',
         withCredentials: true,
-        credentials: 'include',
+        credentials: 'include'
       }
-    ), {
+    ),
+    {
       watch: [sendMessage, sendUserEdit]
     }
 );
@@ -252,7 +253,6 @@ onMounted(()=>{
   updateWidth();
   window.addEventListener('resize', updateWidth);
 });
-
 </script>
 
 <style scoped>

@@ -18,6 +18,11 @@ export default defineNuxtConfig({
             'vuetify',
         ]
     },
+    vue: {
+        compilerOptions: {
+            isCustomElement: (tag) => ['modal-dialog'].includes(tag),
+        }
+    },
     // ssr: true,
     modules: [
         'nuxt-swiper',

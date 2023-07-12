@@ -263,7 +263,7 @@ const bindProps = computed(() => {
     autoFormat: true,
     inputOptions: {
       maxlength: 14,
-      placeholder: "Номер телефона",
+      placeholder: "Номер телефона*",
       type: "tel",
       showDialCode: false,
     },

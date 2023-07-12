@@ -222,7 +222,6 @@ onBeforeUpdate(() => {
     };
     useBasketProductsStore().createTotalBasket(item);
   }
-
 });
 
 onMounted(() => {
@@ -234,6 +233,9 @@ onMounted(() => {
       products.value = res;
       console.log(products.value);
     }).catch((err) => {
+      if(err.status === 401){
+        useUserStore().removeUser();
+      }
       console.error('Contact form could not be send', err);
     });
   }
@@ -376,7 +378,6 @@ const editQuantity = () => {
 const basketGetFormRequest = async () => {
   return await $fetch(urlBasket.value , {
       headers: {
-        'Authorization': `Bearer ${useUserStore().getToken().value}`,
         "Accept": "application/json",
         'Content-Type': 'application/json',
       },

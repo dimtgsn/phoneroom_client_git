@@ -48,6 +48,7 @@
     </div>
   </div>
   <div class="container-fluid">
+<!--    TODO подумать над keep-alive-->
     <MainSlider />
     <div class="index_links" v-if="windowWidth <= 576 && windowWidth > 375">
       <ul class="index_links_ul">

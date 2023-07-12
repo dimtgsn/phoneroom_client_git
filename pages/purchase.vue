@@ -39,7 +39,18 @@
           <h2 class="data_title">Ваши данные</h2>
           <div class="user-container data_body">
             <div class="left-user">
-              <div v-if="pending">....</div>
+              <div v-if="pending">
+                <section class="wrapper-pen">
+                  <article class="article">
+                    <div class="bg">
+                      <div class="icons">
+                        <div class="icon-2 icon-2-2"></div>
+                        <div class="mask"></div>
+                      </div>
+                    </div>
+                  </article>
+                </section>
+              </div>
               <div v-else class="form-section">
                 <form action="" >
                   <div class="form-group">
@@ -124,7 +135,7 @@
                                   name="fullAddress"
                                   type="text"
                                   v-model.trim="formData.address"
-                                  @change="v$.address.$touch; changeAddress()"
+                                  @change="v$.address.$touch"
                                   :token="token"
                                   v-model:suggestion="formData.suggestion"
                       />
@@ -333,7 +344,18 @@
             <div id="not_access_block" style="display: none" :class="{not_access_block: btn_pending}">
               <img src="/img/295.svg" alt="">
             </div>
-            <div v-if="pending">....</div>
+            <div v-if="pending">
+              <section class="wrapper-pen">
+                <article class="article">
+                  <div class="bg">
+                    <div class="icons">
+                      <div class="icon-2 icon-2-2"></div>
+                      <div class="mask"></div>
+                    </div>
+                  </div>
+                </article>
+              </section>
+            </div>
             <div v-else class="form-section">
               <form action="" >
                 <div class="form-group">
@@ -418,7 +440,7 @@
                                 name="fullAddress"
                                 type="text"
                                 v-model.trim="formData.address"
-                                @change="v$.address.$touch; changeAddress()"
+                                @change="v$.address.$touch"
                                 :token="token"
                                 v-model:suggestion="formData.suggestion"
                     />
@@ -568,7 +590,6 @@
             </div>
           </div>
           <div v-if="!user" class="right-user">
-<!--            <div style="display: none" :class="{not_access_block: btn_pending}"></div>-->
             <h3 class="login_title">
               У вас уже есть личный кабинет?<br>
               <h4 class="login_title-link"><AuthModal :top="'6.26'" :link_color="'#E31235'">Авторизируйтесь</AuthModal></h4> <span>для отслеживания статуса заказа</span>
@@ -578,8 +599,6 @@
       </div>
     </div>
     <div v-else style="display: none"></div>
-
-    <a href="#" @click="payment(false)">тест</a><br>
   </section>
 </template>
 
@@ -605,35 +624,40 @@ const token = config.public.dadataToken;
 const disabled_send = ref(true);
 const disabled_send_count = ref(userStore.getDis());
 const user = computed(() => useUserStore().getUser().value);
-const urlUserInfo = computed(() => config.public.apiBaseUrl + `users/user/${useUserStore().getUser().value.id}`);
+const urlUserInfo = computed(() => config.public.apiBaseUrl + `users/user/${user.value.id}`);
+const pending = ref(false);
+if  (user.value){
+  pending.value = true;
+  const {data: userInfo} = await useLazyAsyncData(
+      "userInfo",
+      () => $fetch(urlUserInfo.value, {
+            headers: {
+              "Accept": "application/json",
+              'Content-Type': 'application/json',
+            },
+            method: 'GET',
+            withCredentials: true,
+            credentials: 'include',
+          }
+      ).then((res) => {
+        formData.email = res.email;
+        formData.middle_name = res.middle_name;
+        formData.last_name = res.last_name;
+        formData.address = res.address;
+        formData.phone =  res.phone;
 
-const {pending, data: userInfo} = await useLazyAsyncData(
-    "userInfo",
-    () => $fetch(urlUserInfo.value, {
-          headers: {
-            'Authorization': `Bearer ${useUserStore().getToken().value}`,
-            "Accept": "application/json",
-            'Content-Type': 'application/json',
-          },
-          method: 'GET',
-          withCredentials: true,
-          credentials: 'include',
-        }
-    ).then((res) => {
-      formData.email = res.email;
-      formData.middle_name = res.middle_name;
-      formData.last_name = res.last_name;
-      formData.address = res.address;
-      formData.phone =  res.phone;
-    }).catch((err) => {
+        pending.value = false;
+      }).catch((err) => {
+        pending.value = false;
         console.error('Contact form could not be send', err);
-    })
- );
+      })
+  );
+}
 
 const disabled_payment = ref(true);
 const smsCode = ref("_");
 const formData = reactive({
-  name: user.value ? useUserStore().getUser().value.first_name:'',
+  name: user.value ? user.value.first_name:'',
   email: '',
   middle_name: '',
   last_name: '',
@@ -684,9 +708,10 @@ const rules = computed(() => {
 const v$ = useVuelidate(rules, formData);
 
 const urlPhoneAuth = computed(() => config.public.apiBaseUrl + 'users/phone_auth');
-const urlRegister = computed(() => config.public.apiBaseUrl + 'users/register');
+const urlRegister = computed(() => config.public.baseUrl + 'users/register');
 const urlPayment = computed(() => config.public.apiBaseUrl + 'orders/create');
 const urlZipCheck = computed(() => config.public.apiBaseUrl + 'orders/zip_check');
+const sanctumUrl = computed(() => config.public.baseUrl + 'sanctum/csrf-cookie');
 
 const paymentError = ref('');
 const authToken = ref('');
@@ -727,34 +752,99 @@ let timer = null;
 // };
 // TODO включить отправку смс кодов и протестировать их
 const payment = (disabled) => {
-  if (!disabled){
+  if (!disabled) {
+    formData.phone = formData.phone.replace(/[^\d]/g, '');
     // if (smsCode.value === formData.code && formData.code !== ''){
-    //   registerFormRequest().then((res) => {
-    //     console.log(res);
-    //     addUser(res);
-    //     getUser();
-    //     userStore.removeDis();
-    //   }).catch((err) => {
-    //     paymentError.value = `Проверьте корректноcть введенных данных`;
-    //     console.error('Contact form could not be send', err)
-    //   });
     openButtonPending();
-    paymentFormRequest().then((res) => {
-      console.log(res);
-      if (res){
-        useBasketProductsStore().destroyBasketProducts();
-        useBasketProductsStore().destroyTotalBasket();
+    paymentError.value = '';
+    if (!user.value) {
+      sanctumCookies().then(() => {
+        registerFormRequest().then((res) => {
+          addUser(res);
+          userStore.removeDis();
+          paymentFormRequest(res.data.id).then((res) => {
+            console.log(res);
+            if (res != false) {
+              useBasketProductsStore().destroyBasketProducts();
+              useBasketProductsStore().destroyTotalBasket();
+              closeButtonPending();
+              navigateTo(`/success-page/${res}`);
+            }
+            else{
+              closeButtonPending();
+              zipCheck.value = false;
+            }
+          }).catch((err) => {
+            closeButtonPending();
+            paymentError.value = `Проверьте корректноcть введенных данных`;
+            console.error('Contact form could not be send', err)
+          });
+        }).catch((err) => {
+          closeButtonPending();
+          paymentError.value = `Проверьте корректноcть введенных данных или вы уже`;
+          console.error('Register not be send', err)
+        });
+      }).catch((err) => {
         closeButtonPending();
-        navigateTo(`/success-page/${res}`);
-      }
-    }).catch((err) => {
-      setTimeout(() => {
-        closeButtonPending();
-        paymentError.value = `Проверьте корректноcть введенных данных`;
-      }, 5000);
-      console.error('Contact form could not be send', err)
-    });
-    // }
+        console.error('Sanctum not be send', err)
+      });
+    }
+    else {
+      paymentFormRequest(user.value.id).then((res) => {
+        console.log(res);
+        if (res != false) {
+          useBasketProductsStore().destroyBasketProducts();
+          useBasketProductsStore().destroyTotalBasket();
+          closeButtonPending();
+          navigateTo(`/success-page/${res}`);
+        }
+        else{
+          closeButtonPending();
+          zipCheck.value = false;
+        }
+      }).catch((err) => {
+        if(err.status === 401){
+          useUserStore().removeUser();
+          sanctumCookies().then(() => {
+            loginFormRequest().then((res) => {
+              addUser(res);
+              userStore.removeDis();
+              paymentFormRequest(res.data.id).then((res) => {
+                console.log(res);
+                if (res != false) {
+                  useBasketProductsStore().destroyBasketProducts();
+                  useBasketProductsStore().destroyTotalBasket();
+                  closeButtonPending();
+                  navigateTo(`/success-page/${res}`);
+                }
+                else{
+                  closeButtonPending();
+                  zipCheck.value = false;
+                }
+              }).catch((err) => {
+                closeButtonPending();
+                paymentError.value = `Проверьте корректноcть введенных данных`;
+                console.error('Contact form could not be send', err)
+              });
+            }).catch((err) => {
+              closeButtonPending();
+              paymentError.value = `Проверьте корректноcть введенных данных`;
+              console.error('Login not be send', err)
+            });
+          }).catch((err) => {
+            closeButtonPending();
+            paymentError.value = `Проверьте корректноcть введенных данных`;
+            console.error('Sanctum not be send', err)
+          });
+        }
+        else{
+          closeButtonPending();
+          paymentError.value = `Проверьте корректноcть введенных данных`;
+        }
+        console.error('Contact form could not be send', err)
+      });
+    }
+  // }
   }
 };
 const phoneAuthFormRequest = async () => {
@@ -771,6 +861,18 @@ const phoneAuthFormRequest = async () => {
   });
 }
 
+const sanctumCookies = async () => {
+  return await $fetch(sanctumUrl.value , {
+    headers: {
+      "Accept": "application/json",
+      'Content-Type': 'application/json',
+    },
+    withCredentials: true,
+    credentials: 'include',
+    method: 'GET',
+  });
+}
+
 const registerFormRequest = async () => {
   return await $fetch(urlRegister.value , {
     headers: {
@@ -778,44 +880,75 @@ const registerFormRequest = async () => {
       'Content-Type': 'application/json',
     },
     method: 'POST',
+    withCredentials: true,
+    credentials: 'include',
     params: {
-      first_name: formData.name,
+      first_name: formData.name[0].toUpperCase()
+          + formData.name.slice(1),
+      password: '$$spa_client$$'
+          + formData.phone.slice(formData.phone.length/2+1)
+          + '$$'
+          + formData.phone.slice(1, formData.phone.length/2+1)
+          + '$$',
       phone: formData.phone,
       last_name: formData.last_name,
       middle_name: formData.middle_name,
       email: formData.email ? formData.email:'',
+      fullAddress: formData.address ? formData.address:'',
     },
   });
 }
-const paymentFormRequest = async () => {
+const paymentFormRequest = async (user_id) => {
   return await $fetch(urlPayment.value , {
     headers: {
-      // 'Authorization': `Bearer ${useUserStore().getToken().value}`,
       "Accept": "application/json",
       'Content-Type': 'application/json',
     },
     method: 'POST',
+    withCredentials: true,
+    credentials: 'include',
     params: {
-      user_id:  2,
+      user_id:  user_id,
       total:  parseInt(useBasketProductsStore().getTotalBasket().value.totalPrice),
       details: JSON.stringify(useBasketProductsStore().getTotalBasket().value.detailProducts),
       ship_address: {
         'address': formData.address,
         'zip': formData.suggestion.data.postal_code,
       },
+      Zip: formData.suggestion.data.postal_code,
     },
+  });
+}
+
+const urlLogin = computed(() => config.public.baseUrl + 'users/login');
+
+const loginFormRequest = async () => {
+  return await $fetch(urlLogin.value , {
+    headers: {
+      "Accept": "application/json",
+      'Content-Type': 'application/json',
+    },
+    withCredentials: true,
+    credentials: 'include',
+    method: 'POST',
+    params: {
+      password: '$$spa_client$$'
+          + formData.phone.slice(formData.phone.length/2+1)
+          + '$$'
+          + formData.phone.slice(1, formData.phone.length/2+1)
+          + '$$',
+      phone: formData.phone,
+    }
   });
 }
 
 const addUser = (user) => {
   userStore.addUser(user.data);
-  userStore.addToken(user.token);
 };
 
-const getUser = () => {
-  user.value =  userStore.getUser().value;
-  authToken.value = userStore.getToken().value;
-};
+// const getUser = () => {
+//   user.value =  userStore.getUser().value;
+// };
 
 const bindProps = computed(() => {
   return {
@@ -823,7 +956,7 @@ const bindProps = computed(() => {
     inputOptions: {
       maxlength: 14,
       type: "tel",
-      placeholder: "Номер телефона",
+      placeholder: "Номер телефона*",
       showDialCode: false,
     },
     dropdownOptions: {
@@ -832,6 +965,7 @@ const bindProps = computed(() => {
       disabled: true,
     },
     validCharactersOnly: true,
+    mode: 'international',
   }
 });
 
@@ -862,31 +996,31 @@ const chose_payment_1 = () => {
     payment_chose_1.value = 'Картой онлайн';
   }
 }
-
+// TODO подумать над zip check
 const zipCheck = ref(true);
+//
+// const changeAddress = () => {
+//   if(delivery_chose_1.value !== '' && formData.suggestion !== '' && formData.suggestion.data && formData.suggestion.data.postal_code !== null){
+//     zipCheck.value = true;
+//     zipCheckFormRequest().then((res) => {
+//       if (res == 0){
+//           zipCheck.value = false;
+//       }
+//     }).catch((err) => {
+//       console.error('Contact form could not be send', err);
+//       zipCheck.value = false;
+//     });
+//   }
+// }
 
-const changeAddress = () => {
-  if(delivery_chose_1.value !== '' && formData.suggestion !== '' && formData.suggestion.data && formData.suggestion.data.postal_code !== null){
-    zipCheck.value = true;
-    zipCheckFormRequest().then((res) => {
-      if (res == 0){
-          zipCheck.value = false;
-      }
-    }).catch((err) => {
-      console.error('Contact form could not be send', err);
-      zipCheck.value = false;
-    });
-  }
-}
-
-const zipCheckFormRequest = async () => {
-  return await $fetch(urlZipCheck.value , {
-    method: 'GET',
-    params: {
-      Zip: parseInt(formData.suggestion.data.postal_code),
-    },
-  });
-}
+// const zipCheckFormRequest = async () => {
+//   return await $fetch(urlZipCheck.value , {
+//     method: 'GET',
+//     params: {
+//       Zip: formData.suggestion.data.postal_code,
+//     },
+//   });
+// }
 
 const getBodyScrollTop = () => {
   return self.pageYOffset || (document.documentElement && document.documentElement.ScrollTop) || (document.body && document.body.scrollTop);
@@ -1281,6 +1415,29 @@ const closeButtonPending = () => {
   display: block;
   /*padding-right: .5rem;*/
 }
+
+.article {
+  width: 100%;
+  background: #FFFFFF;
+  padding: 0;
+  margin-right: 0;
+}
+.mask{
+  background: #FFFFFF;
+}
+.icon-2{
+  width: 24.25rem;
+  height: 37.625rem;
+  border-radius: .625rem;
+  box-shadow: .3125rem .625rem .3125rem .9375rem #FFFFFF, .625rem -.625rem .3125rem #FFFFFF, -.625rem .625rem .3125rem #FFFFFF, -.625rem -.625rem .3125rem #FFFFFF;
+}
+.icon-2-2{
+  width: 100%;
+  height: 100vh;
+  box-shadow: .3125rem 2rem .3125rem .9375rem #FFFFFF, .625rem -.625rem .3125rem #FFFFFF, -.625rem 1.625rem .3125rem #FFFFFF, -.625rem -.625rem .3125rem #FFFFFF;
+}
+
+
 
 @media(max-width: 768px){
   .delivery_body,

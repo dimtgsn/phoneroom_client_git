@@ -7,7 +7,7 @@
           <div class="total_content">
             <div class="review_left">
               <div class="total-rating">
-                <h2 class="rating_medium">{{ props.rating }}</h2>
+                <h2 class="rating_medium">{{ parseFloat(props.rating) }}</h2>
                 <div class="rating_body main-rating" v-if="windowWidth >= 1280">
                   <ClientOnly>
                     <star-rating :star-size="12"
@@ -16,7 +16,7 @@
                                  :increment="0.01"
                                  :padding="2"
                                  :show-rating="false"
-                                 :round-start-rating="1"
+                                 :round-start-rating="true"
                                  :inline="true"
                                  :rounded-corners="false"
                                  inactive-color="#909CB5"
@@ -32,7 +32,7 @@
                                  :increment="0.01"
                                  :padding="2"
                                  :show-rating="false"
-                                 :round-start-rating="1"
+                                 :round-start-rating="true"
                                  :inline="true"
                                  :rounded-corners="false"
                                  inactive-color="#909CB5"
@@ -48,7 +48,7 @@
                                  :increment="0.01"
                                  :padding="2"
                                  :show-rating="false"
-                                 :round-start-rating="1"
+                                 :round-start-rating="true"
                                  :inline="true"
                                  :rounded-corners="false"
                                  inactive-color="#909CB5"
@@ -78,7 +78,7 @@
                                    :read-only="true"
                                    :padding="2"
                                    :show-rating="false"
-                                   :round-start-rating="1"
+                                   :round-start-rating="true"
                                    :inline="true"
                                    :rounded-corners="false"
                                    inactive-color="#909CB5"
@@ -93,7 +93,7 @@
                                    :read-only="true"
                                    :padding="2"
                                    :show-rating="false"
-                                   :round-start-rating="1"
+                                   :round-start-rating="true"
                                    :inline="true"
                                    :rounded-corners="false"
                                    inactive-color="#909CB5"
@@ -108,7 +108,7 @@
                                    :read-only="true"
                                    :padding="2"
                                    :show-rating="false"
-                                   :round-start-rating="1"
+                                   :round-start-rating="true"
                                    :inline="true"
                                    :rounded-corners="false"
                                    inactive-color="#909CB5"
@@ -131,7 +131,7 @@
                                    :read-only="true"
                                    :padding="2"
                                    :show-rating="false"
-                                   :round-start-rating="1"
+                                   :round-start-rating="true"
                                    :inline="true"
                                    :rounded-corners="false"
                                    inactive-color="#909CB5"
@@ -146,7 +146,7 @@
                                    :read-only="true"
                                    :padding="2"
                                    :show-rating="false"
-                                   :round-start-rating="1"
+                                   :round-start-rating="true"
                                    :inline="true"
                                    :rounded-corners="false"
                                    inactive-color="#909CB5"
@@ -161,7 +161,7 @@
                                    :read-only="true"
                                    :padding="2"
                                    :show-rating="false"
-                                   :round-start-rating="1"
+                                   :round-start-rating="true"
                                    :inline="true"
                                    :rounded-corners="false"
                                    inactive-color="#909CB5"
@@ -184,7 +184,7 @@
                                    :read-only="true"
                                    :padding="2"
                                    :show-rating="false"
-                                   :round-start-rating="1"
+                                   :round-start-rating="true"
                                    :inline="true"
                                    :rounded-corners="false"
                                    inactive-color="#909CB5"
@@ -199,7 +199,7 @@
                                    :read-only="true"
                                    :padding="2"
                                    :show-rating="false"
-                                   :round-start-rating="1"
+                                   :round-start-rating="true"
                                    :inline="true"
                                    :rounded-corners="false"
                                    inactive-color="#909CB5"
@@ -214,7 +214,7 @@
                                    :read-only="true"
                                    :padding="2"
                                    :show-rating="false"
-                                   :round-start-rating="1"
+                                   :round-start-rating="true"
                                    :inline="true"
                                    :rounded-corners="false"
                                    inactive-color="#909CB5"
@@ -237,7 +237,7 @@
                                    :read-only="true"
                                    :padding="2"
                                    :show-rating="false"
-                                   :round-start-rating="1"
+                                   :round-start-rating="true"
                                    :inline="true"
                                    :rounded-corners="false"
                                    inactive-color="#909CB5"
@@ -252,7 +252,7 @@
                                    :read-only="true"
                                    :padding="2"
                                    :show-rating="false"
-                                   :round-start-rating="1"
+                                   :round-start-rating="true"
                                    :inline="true"
                                    :rounded-corners="false"
                                    inactive-color="#909CB5"
@@ -267,7 +267,7 @@
                                    :read-only="true"
                                    :padding="2"
                                    :show-rating="false"
-                                   :round-start-rating="1"
+                                   :round-start-rating="true"
                                    :inline="true"
                                    :rounded-corners="false"
                                    inactive-color="#909CB5"
@@ -290,7 +290,7 @@
                                    :read-only="true"
                                    :padding="2"
                                    :show-rating="false"
-                                   :round-start-rating="1"
+                                   :round-start-rating="true"
                                    :inline="true"
                                    :rounded-corners="false"
                                    inactive-color="#909CB5"
@@ -305,7 +305,7 @@
                                    :read-only="true"
                                    :padding="2"
                                    :show-rating="false"
-                                   :round-start-rating="1"
+                                   :round-start-rating="true"
                                    :inline="true"
                                    :rounded-corners="false"
                                    inactive-color="#909CB5"
@@ -320,7 +320,7 @@
                                    :read-only="true"
                                    :padding="2"
                                    :show-rating="false"
-                                   :round-start-rating="1"
+                                   :round-start-rating="true"
                                    :inline="true"
                                    :rounded-corners="false"
                                    inactive-color="#909CB5"
@@ -423,8 +423,8 @@
                 <component
                     @addComment="addCommentFunc"
                     :product_id="props.product_id"
-                    :isDisabled="!props.user || dayPassed"
-                    :is="!props.user || dayPassed ? FormCommentCreate : 'div'" />
+                    :isDisabled="!props.user"
+                    :is="!userWritedComment ? FormCommentCreate : 'div'" />
                 <component
                     @updateComment="addCommentFunc"
                     :current_rating="current_rating"
@@ -446,15 +446,15 @@
 import {computed, onMounted, resolveComponent} from "vue";
 import {useUserStore} from "../stores/UserStore.js";
 const props = defineProps({
-  rating: Object,
+  rating: Number,
   product_id: Number,
   user: Object,
-  comments_count: String,
-  comments_count_5: String,
-  comments_count_4: String,
-  comments_count_3: String,
-  comments_count_2: String,
-  comments_count_1: String,
+  comments_count: Number,
+  comments_count_5: Number,
+  comments_count_4: Number,
+  comments_count_3: Number,
+  comments_count_2: Number,
+  comments_count_1: Number,
 });
 const disabledText = ref('Для написания отзыва необходимо войти');
 const userWritedComment = ref(false);

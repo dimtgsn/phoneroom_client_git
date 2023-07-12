@@ -112,15 +112,18 @@ const config = useRuntimeConfig();
 const pressedFavorite = computed(() => useFavoriteProductStore().checkProduct(props.product_variant.id))
 const pressedCompare = computed(() => useCompareProductStore().checkProduct(props.product_variant.id));
 const pressedBasket = computed(() => useBasketProductsStore().checkProduct(props.product_variant.id));
-
+// TODO проверить почему нет метода delete
 const addFavoriteProduct = (product) => {
   if  (user.value){
     if (pressedFavorite.value === false) {
       useFavoriteProductStore().pushProduct(product);
       favoriteCreateFormRequest(user.value.id, product.id)
-          .then((res) => {
-            console.log(res)
-          }).catch((err) => {
+      .then((res) => {
+        console.log(res)
+      }).catch((err) => {
+        if(err.status === 401){
+          useUserStore().removeUser();
+        }
         console.error('Contact form could not be send', err)
       });
     }
@@ -144,9 +147,12 @@ const addCompareProduct = (product) => {
     if (pressedCompare.value === false) {
       useCompareProductStore().pushProduct(product);
       compareCreateFormRequest(user.value.id, product.id, product.category_id)
-          .then((res) => {
-            console.log(res)
-          }).catch((err) => {
+      .then((res) => {
+        console.log(res)
+      }).catch((err) => {
+        if(err.status === 401){
+          useUserStore().removeUser();
+        }
         console.error('Contact form could not be send', err)
       });
     }

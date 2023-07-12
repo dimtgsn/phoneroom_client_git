@@ -204,11 +204,10 @@ const register = (disabled) => {
     registerError.value = '';
     phoneAuthError.value = '';
     formData.phone = formData.phone.replace(/[^\d]/g, '');
-    token.value = userStore.getCookie('XSRF-TOKEN');
+    // token.value = userStore.getCookie('XSRF-TOKEN');
     // if (smsCode.value === formData.code && formData.code !== ''){
     sanctumCookies().then(() => {
-      token.value = userStore.getCookie('XSRF-TOKEN');
-      registerFormRequest(token.value).then((res) => {
+      registerFormRequest().then((res) => {
         addUser(res);
         getUser();
         btn_pending_src.value = '';
@@ -254,7 +253,7 @@ const sanctumCookies = async () => {
   });
 }
 
-const registerFormRequest = async (token) => {
+const registerFormRequest = async () => {
   return await $fetch(urlRegister.value , {
     headers: {
       "Accept": "application/json",
@@ -289,7 +288,7 @@ const bindProps = computed(() => {
     autoFormat: true,
     inputOptions: {
       maxlength: 14,
-      placeholder: "Номер телефона",
+      placeholder: "Номер телефона*",
       type: "tel",
       showDialCode: false,
     },

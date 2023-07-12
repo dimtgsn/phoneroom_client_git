@@ -38,9 +38,9 @@
       </div>
     </header>
     <main class="main">
-      <Transition name="fade" mode="out-in" appear>
-        <NuxtPage keepalive />
-      </Transition>
+<!--      <Transition name="fade" mode="out-in" appear>-->
+        <NuxtPage keepalive/>
+<!--      </Transition>-->
     </main>
 
     <footer class="footer">
@@ -119,10 +119,11 @@ import {useFavoriteProductStore} from "../stores/FavoriteProductStore";
 import {useUserStore} from "../stores/UserStore";
 import {computed, resolveComponent} from "vue";
 
-const favoriteProducts = computed(() => useFavoriteProductStore().favoriteProducts);
-const compareProducts = computed(() => useCompareProductStore().compareProducts);
-const user = computed(() => useUserStore().user);
-const userCity = computed(() => useUserStore().userCity);
+const favoriteProducts = computed(() => useFavoriteProductStore().getFavoriteProducts().value);
+const compareProducts = computed(() => useCompareProductStore().getCompareProducts().value);
+const user = computed(() => useUserStore().getUser().value);
+
+const userCity = computed(() => useUserStore().getUserCity().value);
 
 
 const SelectCity = resolveComponent('SelectCity');
@@ -153,10 +154,9 @@ const updateWidth = () => {
   windowWidth.value = window.innerWidth;
 };
 onMounted(()=>{
-  pending.value = false;
-  userCity.value = useUserStore().getUserCity();
   updateWidth();
   window.addEventListener('resize', updateWidth);
+  pending.value = false;
 });
 
 const choiceCity = ref(false);

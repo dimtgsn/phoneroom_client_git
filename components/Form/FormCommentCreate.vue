@@ -11,7 +11,7 @@
                        :increment="1"
                        :padding="2"
                        :show-rating="true"
-                       :round-start-rating="1"
+                       :round-start-rating="true"
                        :inline="true"
                        :rounded-corners="false"
                        inactive-color="#909CB5"
@@ -90,7 +90,7 @@ const emit = defineEmits(['addComment',]);
 const btn_pending = ref(false);
 const btn_pending_src = ref('');
 // const emit = defineEmits(['newMessage',]);
-const rating = ref('');
+const rating = ref();
 const config = useRuntimeConfig();
 const formData = reactive({
   advantages: '',

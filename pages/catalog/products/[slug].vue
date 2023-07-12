@@ -382,7 +382,7 @@
                         :effect="'fade'">
 
 
-                  <SwiperSlide v-for="slide in product.images" :key="slide">
+                  <SwiperSlide v-for="slide in product.images">
                     <div class="img-slide-wrap">
                       <nuxt-img class="swiper-lazy thumb-img img-slide" :src="config.public.baseUrl+slide.path" loading="lazy"/>
                     </div>
@@ -408,7 +408,7 @@
                         }"
                         :effect="'fade'">
 
-                  <SwiperSlide v-for="slide in product.images" :key="slide">
+                  <SwiperSlide v-for="slide in product.images">
                     <div class="img-slide-wrap thumb-img-wrapp">
                       <nuxt-img class="swiper-lazy thumb-img" :src="config.public.baseUrl+slide.path" loading="lazy"/>
                     </div>
@@ -513,8 +513,8 @@
                             <Button v-if="windowWidth <= 640" @click="addProductToBasket(product)" :without_padding="true" :pressed="pressedBasket" :disabled_btn="src==='img/835.svg'" :width_btn="5.625" :src_btn="src"></Button>
                           </div>
                           <div v-else>
-                            <Button v-if="windowWidth > 640" :pressed="pressedBasket" :disabled_btn="1" :width_btn="10.625" :src_btn="src">В корзину</Button>
-                            <Button v-if="windowWidth <= 640" :without_padding="true" :pressed="pressedBasket" :disabled_btn="1" :width_btn="5.625" :src_btn="src"></Button>
+                            <Button v-if="windowWidth > 640" :pressed="pressedBasket" :disabled_btn="true" :width_btn="10.625" :src_btn="src">В корзину</Button>
+                            <Button v-if="windowWidth <= 640" :without_padding="true" :pressed="pressedBasket" :disabled_btn="true" :width_btn="5.625" :src_btn="src"></Button>
                           </div>
                         </div>
                       </div>
@@ -524,10 +524,10 @@
                     <h2 class="del_title">Способы получения</h2>
                     <div class="line del"></div>
                     <p class="del_text">
-                      <span>Самовывоз</span> из магазинов Телефон.Рум Сегодня и позже, бесплатно
+                      <span>Самовывоз</span> из магазина <span>Телефон.Рум</span> Сегодня или позже, <span>бесплатно</span>
                     </p>
                     <p class="del_text">
-                      <span>Доставка</span> после онлайн-оплаты Курьером до двери, бесплатно
+                      <span>Доставка</span> после онлайн-оплаты Курьером до двери, <span>бесплатно</span>
                     </p>
                   </div>
                 </div>
@@ -645,7 +645,7 @@
                   <div class="total_content">
                     <div class="review_left">
                       <div class="total-rating">
-                        <h2 class="rating_medium">{{ product.rating }}</h2>
+                        <h2 class="rating_medium">{{ parseFloat(product.rating) }}</h2>
                         <div class="rating_body main-rating" v-if="windowWidth >= 1280">
                           <ClientOnly>
                             <star-rating :star-size="12"
@@ -654,7 +654,7 @@
                                          :increment="0.01"
                                          :padding="2"
                                          :show-rating="false"
-                                         :round-start-rating="1"
+                                         :round-start-rating="true"
                                          :inline="true"
                                          :rounded-corners="false"
                                          inactive-color="#909CB5"
@@ -670,7 +670,7 @@
                                          :increment="0.01"
                                          :padding="2"
                                          :show-rating="false"
-                                         :round-start-rating="1"
+                                         :round-start-rating="true"
                                          :inline="true"
                                          :rounded-corners="false"
                                          inactive-color="#909CB5"
@@ -686,7 +686,7 @@
                                          :increment="0.01"
                                          :padding="2"
                                          :show-rating="false"
-                                         :round-start-rating="1"
+                                         :round-start-rating="true"
                                          :inline="true"
                                          :rounded-corners="false"
                                          inactive-color="#909CB5"
@@ -712,7 +712,7 @@
                                            :read-only="true"
                                            :padding="2"
                                            :show-rating="false"
-                                           :round-start-rating="1"
+                                           :round-start-rating="true"
                                            :inline="true"
                                            :rounded-corners="false"
                                            inactive-color="#909CB5"
@@ -727,7 +727,7 @@
                                            :read-only="true"
                                            :padding="2"
                                            :show-rating="false"
-                                           :round-start-rating="1"
+                                           :round-start-rating="true"
                                            :inline="true"
                                            :rounded-corners="false"
                                            inactive-color="#909CB5"
@@ -742,7 +742,7 @@
                                            :read-only="true"
                                            :padding="2"
                                            :show-rating="false"
-                                           :round-start-rating="1"
+                                           :round-start-rating="true"
                                            :inline="true"
                                            :rounded-corners="false"
                                            inactive-color="#909CB5"
@@ -765,7 +765,7 @@
                                            :read-only="true"
                                            :padding="2"
                                            :show-rating="false"
-                                           :round-start-rating="1"
+                                           :round-start-rating="true"
                                            :inline="true"
                                            :rounded-corners="false"
                                            inactive-color="#909CB5"
@@ -780,7 +780,7 @@
                                            :read-only="true"
                                            :padding="2"
                                            :show-rating="false"
-                                           :round-start-rating="1"
+                                           :round-start-rating="true"
                                            :inline="true"
                                            :rounded-corners="false"
                                            inactive-color="#909CB5"
@@ -795,7 +795,7 @@
                                            :read-only="true"
                                            :padding="2"
                                            :show-rating="false"
-                                           :round-start-rating="1"
+                                           :round-start-rating="true"
                                            :inline="true"
                                            :rounded-corners="false"
                                            inactive-color="#909CB5"
@@ -818,7 +818,7 @@
                                            :read-only="true"
                                            :padding="2"
                                            :show-rating="false"
-                                           :round-start-rating="1"
+                                           :round-start-rating="true"
                                            :inline="true"
                                            :rounded-corners="false"
                                            inactive-color="#909CB5"
@@ -833,7 +833,7 @@
                                            :read-only="true"
                                            :padding="2"
                                            :show-rating="false"
-                                           :round-start-rating="1"
+                                           :round-start-rating="true"
                                            :inline="true"
                                            :rounded-corners="false"
                                            inactive-color="#909CB5"
@@ -848,7 +848,7 @@
                                            :read-only="true"
                                            :padding="2"
                                            :show-rating="false"
-                                           :round-start-rating="1"
+                                           :round-start-rating="true"
                                            :inline="true"
                                            :rounded-corners="false"
                                            inactive-color="#909CB5"
@@ -871,7 +871,7 @@
                                            :read-only="true"
                                            :padding="2"
                                            :show-rating="false"
-                                           :round-start-rating="1"
+                                           :round-start-rating="true"
                                            :inline="true"
                                            :rounded-corners="false"
                                            inactive-color="#909CB5"
@@ -886,7 +886,7 @@
                                            :read-only="true"
                                            :padding="2"
                                            :show-rating="false"
-                                           :round-start-rating="1"
+                                           :round-start-rating="true"
                                            :inline="true"
                                            :rounded-corners="false"
                                            inactive-color="#909CB5"
@@ -901,7 +901,7 @@
                                            :read-only="true"
                                            :padding="2"
                                            :show-rating="false"
-                                           :round-start-rating="1"
+                                           :round-start-rating="true"
                                            :inline="true"
                                            :rounded-corners="false"
                                            inactive-color="#909CB5"
@@ -924,7 +924,7 @@
                                            :read-only="true"
                                            :padding="2"
                                            :show-rating="false"
-                                           :round-start-rating="1"
+                                           :round-start-rating="true"
                                            :inline="true"
                                            :rounded-corners="false"
                                            inactive-color="#909CB5"
@@ -939,7 +939,7 @@
                                            :read-only="true"
                                            :padding="2"
                                            :show-rating="false"
-                                           :round-start-rating="1"
+                                           :round-start-rating="true"
                                            :inline="true"
                                            :rounded-corners="false"
                                            inactive-color="#909CB5"
@@ -954,7 +954,7 @@
                                            :read-only="true"
                                            :padding="2"
                                            :show-rating="false"
-                                           :round-start-rating="1"
+                                           :round-start-rating="true"
                                            :inline="true"
                                            :rounded-corners="false"
                                            inactive-color="#909CB5"
@@ -1036,9 +1036,9 @@ import {useUserStore} from "../../../stores/UserStore";
 import CommentsPage from "../../../components/CommentsPage";
 import {computed, ref, onMounted} from "vue";
 
-const pressedFavorite = computed(() => useFavoriteProductStore().checkProduct(product.value.id))
-const pressedCompare = computed(() => useCompareProductStore().checkProduct(product.value.id));
-const pressedBasket = computed(() => useBasketProductsStore().checkProduct(product.value.id));
+const pressedFavorite = computed(() => !!useFavoriteProductStore().checkProduct(product.value.id))
+const pressedCompare = computed(() => !!useCompareProductStore().checkProduct(product.value.id));
+const pressedBasket = computed(() => !!useBasketProductsStore().checkProduct(product.value.id));
 
 const description_page = ref(true);
 const properties_page = ref(false);

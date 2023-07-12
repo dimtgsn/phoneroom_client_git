@@ -1,27 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8c18b85c-df0e-4f3f-88d1-f5da10274c2b" name="Changes" comment="add agree on cookie">
-      <change afterPath="$PROJECT_DIR$/components/Form/FormCommentCreate.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/components/Form/FormCommentEdit.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/components/UserOrders.vue" afterDir="false" />
+    <list default="true" id="8c18b85c-df0e-4f3f-88d1-f5da10274c2b" name="Changes" comment="add comments and ratings, add orders in user lk">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/assets/css/style.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/AuthModal.vue" beforeDir="false" afterPath="$PROJECT_DIR$/components/AuthModal.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/CommentsPage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/components/CommentsPage.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/FormMessageSend.vue" beforeDir="false" afterPath="$PROJECT_DIR$/components/Form/FormMessageSend.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/FormSelectCity.vue" beforeDir="false" afterPath="$PROJECT_DIR$/components/Form/FormSelectCity.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/FormUserEdit.vue" beforeDir="false" afterPath="$PROJECT_DIR$/components/Form/FormUserEdit.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/Form/FormCommentCreate.vue" beforeDir="false" afterPath="$PROJECT_DIR$/components/Form/FormCommentCreate.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/Form/FormLogIn.vue" beforeDir="false" afterPath="$PROJECT_DIR$/components/Form/FormLogIn.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/Form/FormRegistration.vue" beforeDir="false" afterPath="$PROJECT_DIR$/components/Form/FormRegistration.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/HeaderMain.vue" beforeDir="false" afterPath="$PROJECT_DIR$/components/HeaderMain.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/HeaderTop.vue" beforeDir="false" afterPath="$PROJECT_DIR$/components/HeaderTop.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/ProductBasketCard.vue" beforeDir="false" afterPath="$PROJECT_DIR$/components/ProductBasketCard.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/ProductCard.vue" beforeDir="false" afterPath="$PROJECT_DIR$/components/ProductCard.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/ProductSearchCard.vue" beforeDir="false" afterPath="$PROJECT_DIR$/components/ProductSearchCard.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/ProductViewedCard.vue" beforeDir="false" afterPath="$PROJECT_DIR$/components/ProductViewedCard.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/SelectCity.vue" beforeDir="false" afterPath="$PROJECT_DIR$/components/SelectCity.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/UserOrders.vue" beforeDir="false" afterPath="$PROJECT_DIR$/components/UserOrders.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/layouts/default.vue" beforeDir="false" afterPath="$PROJECT_DIR$/layouts/default.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/layouts/purchase.vue" beforeDir="false" afterPath="$PROJECT_DIR$/layouts/purchase.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nuxt.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/nuxt.config.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/basket.vue" beforeDir="false" afterPath="$PROJECT_DIR$/pages/basket.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pages/catalog/products/[slug].vue" beforeDir="false" afterPath="$PROJECT_DIR$/pages/catalog/products/[slug].vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/comparison.vue" beforeDir="false" afterPath="$PROJECT_DIR$/pages/comparison.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/favorites.vue" beforeDir="false" afterPath="$PROJECT_DIR$/pages/favorites.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pages/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/pages/index.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pages/profile/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/pages/profile/index.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pages/purchase.vue" beforeDir="false" afterPath="$PROJECT_DIR$/pages/purchase.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/success-page/[purchase_id].vue" beforeDir="false" afterPath="$PROJECT_DIR$/pages/success-page/[purchase_id].vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -112,7 +115,13 @@
       <workItem from="1688580219110" duration="67000" />
       <workItem from="1688629982570" duration="17267000" />
       <workItem from="1688656374286" duration="7184000" />
-      <workItem from="1688714418178" duration="14677000" />
+      <workItem from="1688714418178" duration="15561000" />
+      <workItem from="1688806535853" duration="1202000" />
+      <workItem from="1688851751220" duration="2572000" />
+      <workItem from="1688886662867" duration="2198000" />
+      <workItem from="1688985861074" duration="14071000" />
+      <workItem from="1689058496617" duration="16015000" />
+      <workItem from="1689169674705" duration="1712000" />
     </task>
     <task id="LOCAL-00001" summary="add success page">
       <created>1687020033516</created>
@@ -170,7 +179,14 @@
       <option name="project" value="LOCAL" />
       <updated>1688290241264</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="add comments and ratings, add orders in user lk">
+      <created>1688731911155</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1688731911155</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -193,6 +209,7 @@
     <MESSAGE value="add all btn loaders" />
     <MESSAGE value="edit basket, favorite, comparison" />
     <MESSAGE value="add agree on cookie" />
-    <option name="LAST_COMMIT_MESSAGE" value="add agree on cookie" />
+    <MESSAGE value="add comments and ratings, add orders in user lk" />
+    <option name="LAST_COMMIT_MESSAGE" value="add comments and ratings, add orders in user lk" />
   </component>
 </project>

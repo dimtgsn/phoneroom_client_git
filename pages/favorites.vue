@@ -82,7 +82,6 @@ onBeforeUpdate(() => {
   }
   else{
     if (useFavoriteProductStore().needUpdate){
-      console.log(12);
       pending.value = true;
       productsFavoriteGetFormRequest().then((res) => {
         products.value = res;
@@ -102,12 +101,14 @@ onMounted(() => {
       pending.value = false;
       products.value = res;
     }).catch((err) => {
+      if(err.status === 401){
+        useUserStore().removeUser();
+      }
       console.error('Contact form could not be send', err);
     });
   }
   else{
     // if (useFavoriteProductStore().needUpdate){
-      console.log(14)
       pending.value = true;
       productsFavoriteGetFormRequest().then((res) => {
         products.value = res;

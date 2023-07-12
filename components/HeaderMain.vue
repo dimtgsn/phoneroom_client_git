@@ -1,68 +1,68 @@
 <template>
   <div class="header-main">
-    <div v-if="pending">
-      <div class="container" style="display: flex">
-        <div class="header-main_logo logo">
-          <LogoImage/>
-          <LogoTitle/>
-        </div>
-        <section v-if="windowWidth > 768" class="wrapper-pen"
-                 style="display: flex; width: 100%; justify-content: space-between">
-          <article class="article" style="flex: 15% 0 1">
-            <div class="bg">
-              <div class="icons icons_1">
-                <div class="icon-1"></div>
-              </div>
-            </div>
-          </article>
-          <article class="article" style="flex: 45% 0 1">
-            <div class="bg bg-2">
-              <div class="icons icons_2">
-                <div class="icon-2"></div>
-              </div>
-            </div>
-          </article>
-          <article class="article" style="flex: 35% 0 1">
-            <div class="bg bg-2">
-              <div class="icons icons_3">
-                <div class="icon-3"></div>
-              </div>
-            </div>
-          </article>
-        </section>
-        <section v-else class="wrapper-pen" style="display: flex; width: 100%; justify-content: end">
-          <article v-if="windowWidth <= 768 && windowWidth > 600" class="article" style="flex: 50% 0 1">
-            <div class="bg">
-              <div class="icons icons_1">
-                <div class="icon-1"></div>
-              </div>
-            </div>
-          </article>
-          <article v-if="windowWidth <= 600 && windowWidth > 500" class="article" style="flex: 60% 0 1">
-            <div class="bg">
-              <div class="icons icons_1">
-                <div class="icon-1"></div>
-              </div>
-            </div>
-          </article>
-          <article v-if="windowWidth <= 500 && windowWidth > 425" class="article" style="flex: 80% 0 1">
-            <div class="bg">
-              <div class="icons icons_1">
-                <div class="icon-1"></div>
-              </div>
-            </div>
-          </article>
-          <article v-if="windowWidth <= 425" class="article" style="flex: 100% 0 1">
-            <div class="bg">
-              <div class="icons icons_1">
-                <div class="icon-1"></div>
-              </div>
-            </div>
-          </article>
-        </section>
-      </div>
-    </div>
-    <div v-else class="container header-main_container">
+<!--    <div v-if="pending">-->
+<!--      <div class="container" style="display: flex">-->
+<!--        <div class="header-main_logo logo">-->
+<!--          <LogoImage/>-->
+<!--          <LogoTitle/>-->
+<!--        </div>-->
+<!--        <section v-if="windowWidth > 768" class="wrapper-pen"-->
+<!--                 style="display: flex; width: 100%; justify-content: space-between">-->
+<!--          <article class="article" style="flex: 15% 0 1">-->
+<!--            <div class="bg">-->
+<!--              <div class="icons icons_1">-->
+<!--                <div class="icon-1"></div>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </article>-->
+<!--          <article class="article" style="flex: 45% 0 1">-->
+<!--            <div class="bg bg-2">-->
+<!--              <div class="icons icons_2">-->
+<!--                <div class="icon-2"></div>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </article>-->
+<!--          <article class="article" style="flex: 35% 0 1">-->
+<!--            <div class="bg bg-2">-->
+<!--              <div class="icons icons_3">-->
+<!--                <div class="icon-3"></div>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </article>-->
+<!--        </section>-->
+<!--        <section v-else class="wrapper-pen" style="display: flex; width: 100%; justify-content: end">-->
+<!--          <article v-if="windowWidth <= 768 && windowWidth > 600" class="article" style="flex: 50% 0 1">-->
+<!--            <div class="bg">-->
+<!--              <div class="icons icons_1">-->
+<!--                <div class="icon-1"></div>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </article>-->
+<!--          <article v-if="windowWidth <= 600 && windowWidth > 500" class="article" style="flex: 60% 0 1">-->
+<!--            <div class="bg">-->
+<!--              <div class="icons icons_1">-->
+<!--                <div class="icon-1"></div>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </article>-->
+<!--          <article v-if="windowWidth <= 500 && windowWidth > 425" class="article" style="flex: 80% 0 1">-->
+<!--            <div class="bg">-->
+<!--              <div class="icons icons_1">-->
+<!--                <div class="icon-1"></div>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </article>-->
+<!--          <article v-if="windowWidth <= 425" class="article" style="flex: 100% 0 1">-->
+<!--            <div class="bg">-->
+<!--              <div class="icons icons_1">-->
+<!--                <div class="icon-1"></div>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </article>-->
+<!--        </section>-->
+<!--      </div>-->
+<!--    </div>-->
+    <div class="container header-main_container">
       <div class="header-main_logo logo">
         <LogoImage/>
         <LogoTitle/>
@@ -204,10 +204,10 @@ import {useBasketProductsStore} from "../stores/BasketProductsStore";
 import {useUserStore} from "../stores/UserStore";
 import {computed, onMounted, resolveComponent, onBeforeMount} from "vue";
 
-const favoriteProducts = computed(() => useFavoriteProductStore().favoriteProducts);
-const compareProducts = computed(() => useCompareProductStore().compareProducts);
-const basketProducts = computed(() => useBasketProductsStore().basketProducts);
-const userCity = computed(() => useUserStore().userCity);
+const favoriteProducts = computed(() => useFavoriteProductStore().getFavoriteProducts().value);
+const compareProducts = computed(() => useCompareProductStore().getCompareProducts().value);
+const basketProducts = computed(() => useBasketProductsStore().getBasketProducts().value);
+const userCity = computed(() => useUserStore().getUserCity().value);
 // const userCountBasketProducts = computed(() => useUserStore().userCountBasketProducts);
 
 const urlBasket = computed(() => config.public.apiBaseUrl + `baskets/${useUserStore().getUser().value.id}`);
@@ -217,18 +217,19 @@ const urlCompare = computed(() => config.public.apiBaseUrl + `compares/${useUser
 
 const config = useRuntimeConfig();
 const urlIp = computed(() => config.public.apiBaseUrl + 'users/userIpInfo');
+const ipInfoCity = ref('');
 // // const { pending, data: ip } = await useLazyAsyncData("ip", () => $fetch(urlIp));
 // const { pending, data: ipInfoCityNull } = await useLazyAsyncData("ipInfoCity", () => $fetch(urlIp.value));
+// const pending = ref(true);
 // TODO SetTimeout
 setTimeout( () => {
-  const {pending, data: ipInfoCityNull} = useFetch(urlIp.value);
-
-  const ipInfoCity = ref();
-  onBeforeMount(() => {
-    ipInfoCity.value = ipInfoCityNull.value;
+  const {data: ipInfoCityNull} = useFetch(urlIp.value).then((res) => {
+    ipInfoCity.value = res.data.value;
+    useUserStore().ipInfoCity = ipInfoCity.value;
+    // pending.value = false
   });
-  useUserStore().ipInfoCity = ipInfoCity.value;}
-,10000);
+  }
+,7000);
 
 onMounted(() => {
   if (useUserStore().getUser().value) {
@@ -236,33 +237,35 @@ onMounted(() => {
       for (const r of res) {
         useBasketProductsStore().pushProduct(r);
       }
-      basketProducts.value = useBasketProductsStore().getBasketProducts().value;
     }).catch((err) => {
+      if(err.status === 401){
+        useUserStore().removeUser();
+      }
       console.error('Contact form could not be send', err);
     });
 
     favoriteGetFormRequest().then((res) => {
-      for (const r of res) {
-        useFavoriteProductStore().pushProduct(r);
+      if (useUserStore().getUser().value) {
+        for (const r of res) {
+          useFavoriteProductStore().pushProduct(r);
+        }
       }
-      favoriteProducts.value = useFavoriteProductStore().getFavoriteProducts().value;
     }).catch((err) => {
       console.error('Contact form could not be send', err);
     });
 
     compareGetFormRequest().then((res) => {
-      for (const r of res) {
-        useCompareProductStore().pushProduct(r);
+      if (useUserStore().getUser().value) {
+        for (const r of res) {
+          useCompareProductStore().pushProduct(r);
+        }
       }
-      compareProducts.value = useCompareProductStore().getCompareProducts().value;
     }).catch((err) => {
       console.error('Contact form could not be send', err);
     });
   }
-  favoriteProducts.value = useFavoriteProductStore().getFavoriteProducts();
-  compareProducts.value = useCompareProductStore().getCompareProducts();
-  basketProducts.value = useBasketProductsStore().getBasketProducts();
-  userCity.value = useUserStore().getUserCity();
+  updateWidth();
+  window.addEventListener('resize', updateWidth);
 });
 
 const basketGetFormRequest = async () => {
@@ -337,10 +340,6 @@ const windowWidth = ref(0);
 const updateWidth = () => {
   windowWidth.value = window.innerWidth;
 };
-onMounted(() => {
-  updateWidth();
-  window.addEventListener('resize', updateWidth);
-});
 
 const choiceCity = ref(false);
 

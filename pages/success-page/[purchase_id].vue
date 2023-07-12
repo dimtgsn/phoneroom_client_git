@@ -4,10 +4,10 @@
       <section class="error-section">
         <div class="error-body">
           <h1 class="title_success">Заказ успешно оформлен!</h1>
-          <h2 class="subtext_success">Номер заказа <span style="color: #f53b49">{{ purchase_id }}</span></h2>
+          <h2 class="subtext_success">Номер заказа <span style="color: #f53b49">{{ purchase_id + 1234 }}</span></h2>
           <h3 class="explain_success">
             Ваша заявка
-            <span style="color: #f53b49">№{{ purchase_id }}</span> от <span style="color: #f53b49">
+            <span style="color: #f53b49">№{{ purchase_id + 1234 }}</span> от <span style="color: #f53b49">
               {{ new Date().getDate() }}.{{ new Date().getMonth() }}.{{ new Date().getFullYear() }}
             </span>
             оформлена.

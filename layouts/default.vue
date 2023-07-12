@@ -33,9 +33,10 @@
       <Transition v-if="!agree_on_cookie" name="fade" mode="out-in" appear>
         <AgreeOnCookie @close_agree="useUserStore().SetAgreeOnCookie()" />
       </Transition>
-      <Transition name="fade" mode="out-in" appear>
-        <NuxtPage keepalive />
-      </Transition>
+<!--      <Transition name="fade" mode="out-in" appear>-->
+<!--     TODO разобраться с keepalive я его убрал сейчас-->
+        <NuxtPage />
+<!--      </Transition>-->
       <div class="multibtn">
         <a class="float-btn" id="menu-share">
           <i class="fa fa-comments my-float"></i>

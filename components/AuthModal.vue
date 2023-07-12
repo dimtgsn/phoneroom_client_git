@@ -17,8 +17,12 @@
               </div>
               <div class="modal-body">
                 <div class="form">
-                  <FormLogIn v-if="logIn"/>
-                  <FormRegistration v-if="register"/>
+                  <keep-alive>
+                    <FormLogIn v-if="logIn"/>
+                  </keep-alive>
+                  <keep-alive>
+                    <FormRegistration v-if="register"/>
+                  </keep-alive>
                 </div>
               </div>
             </div>
@@ -30,9 +34,8 @@
 </template>
 
 <script setup>
-
-import FormRegistration from "./Form/FormRegistration";
-import FormLogIn from "./Form/FormLogIn";
+// import FormRegistration from "./Form/FormRegistration";
+// import FormLogIn from "./Form/FormLogIn";
 
 const open = ref(false);
 const register = ref(false);

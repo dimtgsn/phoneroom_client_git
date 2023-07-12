@@ -42,18 +42,10 @@
               <div class="order_details">
                 <div class="order_delivery">
                   <h3 class="delivery_title" v-if="windowWidth < 430">Статус заказа: <span style="color: #4B7EE8; font-weight: 400;">{{ order.status }}</span></h3>
-                  <h3 class="delivery_title">Доставка: <span style="color: #4B7EE8; font-weight: 400;">{{ order.delivery && order.delivery_date ? order.delivery + ', ' + order.delivery_date : 'В обработке' }}</span></h3>
+                  <h3 class="delivery_title">Доставка: <span style="color: #4B7EE8; font-weight: 400;">{{ (order.delivery && order.delivery_date) ? (order.delivery + ', ' + order.delivery_date) : 'В обработке' }}</span></h3>
                   <!--                <h3 class="delivery_title" style="margin-left: 2.5rem;">Дата доставки: <span style="color: #4B7EE8">{{ order.delivery_date ?? 'В обработке' }}</span></h3>-->
                 </div>
                 <div class="order_products">
-                  <div class="product" v-for="orderProduct in order.products">
-                    <nuxt-img :src="config.public.baseUrl+orderProduct.product.image" alt="ProductImage" class="product_image" />
-                    <div class="product_data">
-                      <h5 class="product_txt" style="font-weight: 500;">{{ orderProduct.product.name }}</h5><span></span>
-                      <h5 class="product_txt">Цена покупки <span style="color: #4B7EE8">{{ priceFormat(orderProduct.price) }}&nbsp;₽</span></h5>
-                      <h5 class="product_txt">Количество <span style="color: #4B7EE8">{{ orderProduct.quantity }}&nbsp;шт</span></h5>
-                    </div>
-                  </div>
                   <div class="product" v-for="orderProduct in order.products">
                     <nuxt-img :src="config.public.baseUrl+orderProduct.product.image" alt="ProductImage" class="product_image" />
                     <div class="product_data">
