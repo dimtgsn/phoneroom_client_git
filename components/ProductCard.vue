@@ -5,7 +5,7 @@
         <IconsHeartIcon @click="addFavoriteProduct(props.product_variant)" :pressed="pressedFavorite" />
         <IconsCompareIcon @click="addCompareProduct(props.product_variant)" :pressed="pressedCompare" />
       </div>
-      <nuxt-link @click="addViewedProducts(props.product_variant)" :to="`/catalog/products/${props.product_variant.slug}`" prefetch>
+      <nuxt-link :to="`/catalog/products/${props.product_variant.slug}`" prefetch>
         <div class="card-content">
           <div class="card_image">
             <div class="img-wrap scale">
@@ -82,7 +82,9 @@
         </div>
         <Transition name="fade" v-if="windowWidth > 640" mode="out-in" appear>
           <div class="card_btn" v-if="!pressedBasket">
-            <Button @click="addProductToBasket(props.product_variant)" :width_btn="7.9375" :src_btn="src">В корзину</Button>
+            <Button @click="addProductToBasket(props.product_variant)" :width_btn="7.9375" :disabled_btn="btn_pending_src !== ''" :src_btn="btn_pending_src !== '' ? btn_pending_src : src">
+              {{ btn_pending_src !== '' ? '' : 'В корзину' }}
+            </Button>
           </div>
           <div class="card_btn-outline" v-else>
             <ButtonRedOutline :basket_btn="true" :route_btn="''" :width_btn="6" >
@@ -92,7 +94,7 @@
         </Transition>
         <Transition name="fade" v-if="windowWidth <= 640" mode="out-in" appear>
           <div class="card_btn" v-if="!pressedBasket">
-            <Button @click="addProductToBasket(props.product_variant)" :width_btn="6" :without_padding="true" :src_btn="src"></Button>
+            <Button @click="addProductToBasket(props.product_variant)" :width_btn="6" :without_padding="true" :disabled_btn="btn_pending_src !== ''" :src_btn="btn_pending_src !== '' ? btn_pending_src : src"></Button>
           </div>
           <div class="card_btn-outline" v-else>
             <ButtonRedOutline :basket_btn="true" :route_btn="''" :width_btn="6" >
@@ -110,7 +112,6 @@
 import {useFavoriteProductStore} from "../stores/FavoriteProductStore";
 import {useCompareProductStore} from "../stores/CompareProductStore";
 import {useBasketProductsStore} from "../stores/BasketProductsStore";
-import {useViewedProductsStore} from "../stores/ViewedProductsStore";
 import {useUserStore} from "../stores/UserStore";
 
 import {computed, onMounted, ref} from "vue";
@@ -120,6 +121,7 @@ const config = useRuntimeConfig();
 
 const emit = defineEmits(['deleteUserProduct', 'deleteFavoriteProduct']);
 
+const btn_pending_src = ref('');
 
 const src = ref('img/basket.svg');
 const srcMobile = ref('img/basket-white.svg');
@@ -135,26 +137,28 @@ const pressedBasket = computed(() => useBasketProductsStore().checkProduct(props
 const addFavoriteProduct = (product) => {
   if  (user.value){
     if (pressedFavorite.value === false) {
+      useFavoriteProductStore().pushProduct(product);
+      useFavoriteProductStore().needUpdate = true;
       favoriteCreateFormRequest(product.id).then((res) => {
-        useFavoriteProductStore().pushProduct(product);
-        useFavoriteProductStore().needUpdate = true;
         console.log(res)
       }).catch((err) => {
         if(err.status === 401){
           useUserStore().removeUser();
         }
+        useFavoriteProductStore().removeProduct(product);
         console.error('Contact form could not be send', err)
       });
     }
     else{
+      useFavoriteProductStore().removeProduct(product);
       favoriteDeleteFormRequest(product.id).then((res) => {
         console.log(res);
-        useFavoriteProductStore().removeProduct(product);
         emit('deleteUserProduct');
       }).catch((err) => {
         if(err.status === 401){
           useUserStore().removeUser();
         }
+        useFavoriteProductStore().pushProduct(product);
         console.error('Contact form could not be send', err);
       });
     }
@@ -174,28 +178,28 @@ const addFavoriteProduct = (product) => {
 const addCompareProduct = (product) => {
   if  (user.value){
     if (pressedCompare.value === false) {
+      useCompareProductStore().pushProduct(product);
+      useCompareProductStore().needUpdate = true;
       compareCreateFormRequest(product.id, product.category_id).then((res) => {
         console.log(res)
-        useCompareProductStore().pushProduct(product);
-        useCompareProductStore().needUpdate = true;
       }).catch((err) => {
         if(err.status === 401){
           useUserStore().removeUser();
         }
+        useCompareProductStore().removeProduct(product);
         console.error('Contact form could not be send', err)
       });
     }
     else{
-      pressedCompare.value = false;
+      useCompareProductStore().removeProduct(product);
       compareDeleteFormRequest(product.id, product.category_id).then((res) => {
         console.log(res);
-        useCompareProductStore().removeProduct(product);
         emit('deleteUserProduct');
       }).catch((err) => {
         if(err.status === 401){
           useUserStore().removeUser();
         }
-        pressedCompare.value = true;
+        useCompareProductStore().pushProduct(product);
         console.error('Contact form could not be send', err);
       });
     }
@@ -216,14 +220,16 @@ const addProductToBasket = (product) => {
   if (src.value === 'img/basket.svg'){
     if  (user.value){
       if (pressedBasket.value === false) {
+        btn_pending_src.value = '/img/835.svg';
         basketCreateFormRequest(product.id).then((res) => {
-          useBasketProductsStore().pushProduct(product);
+          useBasketProductsStore().pushProduct(product, 1, true);
           useBasketProductsStore().needUpdate = true;
-          console.log(res)
+          btn_pending_src.value = '';
         }).catch((err) => {
           if(err.status === 401){
             useUserStore().removeUser();
           }
+          btn_pending_src.value = '';
           console.error('Contact form could not be send', err)
         });
       }
@@ -237,10 +243,6 @@ const addProductToBasket = (product) => {
   }
 };
 
-const addViewedProducts = (product) => {
-  useViewedProductsStore().pushProduct(product);
-};
-
 const urlBasket = computed(() => config.public.apiBaseUrl + `baskets/${useUserStore().getUser().value.id}`);
 const urlFavorite = computed(() => config.public.apiBaseUrl + `favorites/${useUserStore().getUser().value.id}`);
 const urlCompare = computed(() => config.public.apiBaseUrl + `compares/${useUserStore().getUser().value.id}`);
@@ -248,11 +250,12 @@ const urlCompare = computed(() => config.public.apiBaseUrl + `compares/${useUser
 const favoriteCreateFormRequest = async (product_id) => {
   return await $fetch(urlFavorite.value , {
     headers: {
-      'Authorization': `Bearer ${useUserStore().getToken().value}`,
       "Accept": "application/json",
       'Content-Type': 'application/json',
     },
-    method: 'POST',
+    method: 'PATCH',
+    withCredentials: true,
+    credentials: 'include',
     params: {
       product_id: product_id,
     },
@@ -262,11 +265,12 @@ const favoriteCreateFormRequest = async (product_id) => {
 const favoriteDeleteFormRequest = async (product_id) => {
   return await $fetch(urlFavorite.value , {
     headers: {
-      'Authorization': `Bearer ${useUserStore().getToken().value}`,
       "Accept": "application/json",
       'Content-Type': 'application/json',
     },
     method: 'DELETE',
+    withCredentials: true,
+    credentials: 'include',
     params: {
       product_id: product_id,
     },
@@ -276,11 +280,12 @@ const favoriteDeleteFormRequest = async (product_id) => {
 const compareCreateFormRequest = async (product_id, category_id) => {
   return await $fetch(urlCompare.value , {
     headers: {
-      'Authorization': `Bearer ${useUserStore().getToken().value}`,
       "Accept": "application/json",
       'Content-Type': 'application/json',
     },
-    method: 'POST',
+    method: 'PATCH',
+    withCredentials: true,
+    credentials: 'include',
     params: {
       category_id: category_id,
       product_id: product_id,
@@ -289,13 +294,14 @@ const compareCreateFormRequest = async (product_id, category_id) => {
 }
 
 const compareDeleteFormRequest = async (product_id, category_id) => {
-  return await $fetch(urlFavorite.value , {
+  return await $fetch(urlCompare.value , {
     headers: {
-      'Authorization': `Bearer ${useUserStore().getToken().value}`,
       "Accept": "application/json",
       'Content-Type': 'application/json',
     },
     method: 'DELETE',
+    withCredentials: true,
+    credentials: 'include',
     params: {
       product_id: product_id,
       category_id: category_id,
@@ -306,11 +312,12 @@ const compareDeleteFormRequest = async (product_id, category_id) => {
 const basketCreateFormRequest = async (product_id) => {
   return await $fetch(urlBasket.value , {
     headers: {
-      'Authorization': `Bearer ${useUserStore().getToken().value}`,
       "Accept": "application/json",
       'Content-Type': 'application/json',
     },
-    method: 'POST',
+    method: 'PATCH',
+    withCredentials: true,
+    credentials: 'include',
     params: {
       product_id: product_id,
     },

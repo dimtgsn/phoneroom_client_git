@@ -21,32 +21,32 @@
         <div class="mob-catalog_top">
           <div class="header-main_city city">
             <h2 class="city_title" v-if="userCity" @click="toggleShowChoiceCity">{{ userCity }}</h2>
-            <h2 class="city_title" v-if="ipInfoCity && !userCity" @click="toggleShowChoiceCity">{{ ipInfoCity }}</h2>
-            <h2 class="city_title" v-if="!ipInfoCity && !userCity" @click="toggleShowChoiceCity">Выбрать город</h2>
+            <h2 class="city_title" v-else-if="ipInfoCity && ipInfoCity !== ' ' && !userCity" @click="toggleShowChoiceCity">{{ ipInfoCity }}</h2>
+            <h2 class="city_title" v-else @click="toggleShowChoiceCity">Выбрать город</h2>
             <Transition name="fade">
               <component  @openCity="isOpenCity" :is="choiceCity ? SelectCity : 'div'" />
             </Transition>
             <nuxt-img class="city_icon" src="img/city_icon.svg" alt="city_icon"  loading="lazy"/>
           </div>
-          <div class="header_right">
-            <div class="dropdown" v-if="user">
-              <button @mouseenter="showDropDown" class="dropbtn">{{ user.first_name }}</button>
+<!--          <div class="header_right">-->
+<!--            <div class="dropdown" v-if="user">-->
+<!--              <button @mouseenter="showDropDown" class="dropbtn">{{ user.first_name }}</button>-->
 
-              <div id="myDropdown" @mouseleave="unShowDropDown" class="dropdown-content" :class="{'show': show}">
-                <div class="content_rec"></div>
-                <span>
-              <nuxt-link :to="`/profile`" class="link_profile">Личный кабинет</nuxt-link>
-            </span>
-                <span @click.prevent="logout">Выйти</span>
-              </div>
-            </div>
-            <div v-else >
-              <AuthModal>Войти</AuthModal>
-            </div>
-            <!--        <nuxt-link to="/" class="header_link">Войти</nuxt-link>-->
-            <nuxt-img class="header_right_profile" sizes="md:100vw sm:100vw xs:100vw" src="img/profile-user.svg" alt="user-profile" loading="lazy" />
-            <nuxt-img class="header_right_phone" sizes="md:100vw sm:100vw xs:100vw" src="img/phone.svg" alt="phone" loading="lazy" />
-          </div>
+<!--              <div id="myDropdown" @mouseleave="unShowDropDown" class="dropdown-content" :class="{'show': show}">-->
+<!--                <div class="content_rec"></div>-->
+<!--                <span>-->
+<!--              <nuxt-link :to="`/profile`" class="link_profile">Личный кабинет</nuxt-link>-->
+<!--            </span>-->
+<!--                <span @click.prevent="logout">Выйти</span>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--            <div v-else style="margin-right: 2rem">-->
+<!--              <AuthModal>Войти</AuthModal>-->
+<!--            </div>-->
+<!--            &lt;!&ndash;        <nuxt-link to="/" class="header_link">Войти</nuxt-link>&ndash;&gt;-->
+<!--&lt;!&ndash;            <nuxt-img class="header_right_profile" sizes="md:1vw sm:1vw xs:1vw" src="img/profile-user.svg" alt="user-profile" loading="lazy" />&ndash;&gt;-->
+<!--&lt;!&ndash;            <nuxt-img class="header_right_phone" sizes="md:100vw sm:100vw xs:100vw" src="img/phone.svg" alt="phone" loading="lazy" />&ndash;&gt;-->
+<!--          </div>-->
           <div class="modal_close" @click="toggleShow"></div>
         </div>
         <div class="mob-catalog_search" @submit="toggleShow">
@@ -173,10 +173,11 @@ const logout = () => {
 const logoutFormRequest = async () => {
   return await $fetch(urlLogout.value , {
     headers: {
-      'Authorization': `Bearer ${useUserStore().getToken().value}`,
       "Accept": "application/json",
       'Content-Type': 'application/json',
     },
+    withCredentials: true,
+    credentials: 'include',
     method: 'GET',
   });
 };

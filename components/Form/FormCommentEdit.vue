@@ -137,6 +137,8 @@ const commentUpdateFormRequest = async () => {
       'Content-Type': 'application/json',
     },
     method: 'PATCH',
+    withCredentials: true,
+    credentials: 'include',
     params: {
       advantages: formData.advantages,
       disadvantages: formData.disadvantages,

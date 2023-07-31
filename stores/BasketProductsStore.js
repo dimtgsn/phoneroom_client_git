@@ -19,9 +19,14 @@ export const useBasketProductsStore = defineStore('basketProductsStore', () => {
         return totalBasket;
     }
 
-    function pushProduct(product, quantity=1) {
+    function pushProduct(product, quantity=1, hasUser=false) {
         if (!checkProduct(product.id)){
-            basketProducts.value.push([product.id, quantity]);
+            if (!hasUser){
+                basketProducts.value.push([product.id, quantity]);
+            }
+            else{
+                basketProducts.value.push([product.id]);
+            }
             localStorage.setItem('basketProducts', JSON.stringify(basketProducts.value));
         }
 

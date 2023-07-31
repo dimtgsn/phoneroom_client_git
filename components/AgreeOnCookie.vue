@@ -38,4 +38,12 @@ const emit = defineEmits(['close_agree',]);
   width: 20%;
   /*margin: 0 auto;*/
 }
+
+@media (max-width: 768px) {
+  .cookie-section{
+    bottom: 5rem;
+    width: 82%;
+    left: 3%;
+  }
+}
 </style>

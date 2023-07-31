@@ -1,4 +1,4 @@
-<template>
+<template id="root">
   <div class="container">
     <div class="index_links" v-if="windowWidth > 576">
       <ul class="index_links_ul">
@@ -176,7 +176,7 @@
   </div>
 </template>
 <script setup>
-import {onMounted, onUnmounted, ref, resolveComponent} from "vue";
+import {onMounted, onUnmounted, ref, resolveComponent, defineAsyncComponent} from "vue";
 
 definePageMeta({
   title: 'Телефон.Рум',
@@ -187,6 +187,7 @@ const windowWidth = ref(0);
 const updateWidth = () => {
   windowWidth.value = window.innerWidth;
 };
+
 const TagSectionNew = resolveComponent('TagSectionNew');
 const BrandSection = resolveComponent('BrandSection');
 const TagSectionRecommend = resolveComponent('TagSectionRecommend');
@@ -201,51 +202,9 @@ const showOfferSection = ref(false);
 const showSalesSection = ref(false);
 const showViewedProducts = ref(false);
 
-// onBeforeMount(() => {
-//
-// });
-
-// TODO разобраться с обсервером
-
 onMounted(()=>{
   updateWidth();
   window.addEventListener('resize', updateWidth);
-
-  const observerNew = new IntersectionObserver((entries) => {
-    showTagSectionNew.value = true;
-  },{
-    rootMargin: '5px',
-  });
-
-  const observerBrand = new IntersectionObserver((entries) => {
-    showBrandSection.value = true;
-  },{
-    rootMargin: '25px',
-  });
-
-  const observerRec = new IntersectionObserver((entries) => {
-    showTagSectionRecommend.value = true;
-  },{
-    rootMargin: '25px',
-  });
-
-  const observerOffer = new IntersectionObserver((entries) => {
-    showOfferSection.value = true;
-  },{
-    rootMargin: '25px',
-  });
-
-  const observerSales = new IntersectionObserver((entries) => {
-    showSalesSection.value = true;
-  },{
-    rootMargin: '25px',
-  });
-
-  const observerViewed = new IntersectionObserver((entries) => {
-    showViewedProducts.value = true;
-  },{
-    rootMargin: '25px',
-  });
 
   const idTagSectionNew = document.querySelector('#tagSectionNew');
   const idBrandSection = document.querySelector('#brandSection');
@@ -253,6 +212,55 @@ onMounted(()=>{
   const idOfferSection = document.querySelector('#offerSection');
   const idSalesSection = document.querySelector('#salesSection');
   const idViewedProducts = document.querySelector('#viewedProducts');
+
+
+  const observerNew = new IntersectionObserver((entry) => {
+    if (entry[0].isIntersecting){
+      showTagSectionNew.value = true;
+    }
+  },{
+    rootMargin: '5px',
+  });
+
+  const observerBrand = new IntersectionObserver((entry) => {
+    if (entry[0].isIntersecting){
+      showBrandSection.value = true;
+    }
+  },{
+    rootMargin: '25px',
+  });
+
+  const observerRec = new IntersectionObserver((entry) => {
+    if (entry[0].isIntersecting){
+      showTagSectionRecommend.value = true;
+    }
+  },{
+    rootMargin: '25px',
+  });
+
+  const observerOffer = new IntersectionObserver((entry) => {
+    if (entry[0].isIntersecting){
+      showOfferSection.value = true;
+    }
+  },{
+    rootMargin: '25px',
+  });
+
+  const observerSales = new IntersectionObserver((entry) => {
+    if (entry[0].isIntersecting){
+      showSalesSection.value = true;
+    }
+  },{
+    rootMargin: '25px',
+  });
+
+  const observerViewed = new IntersectionObserver((entry) => {
+    if (entry[0].isIntersecting){
+      showViewedProducts.value = true;
+    }
+  },{
+    rootMargin: '25px',
+  });
 
   observerNew.observe(idTagSectionNew);
   observerBrand.observe(idBrandSection);

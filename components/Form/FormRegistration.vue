@@ -211,8 +211,8 @@ const register = (disabled) => {
         addUser(res);
         getUser();
         btn_pending_src.value = '';
-        emit('login');
         userStore.removeDis();
+        emit('login');
       }).catch((err) => {
         btn_pending_src.value = '';
         registerError.value = `Регистрация не удалась. Данные некоректны или данный номер уже зарегистрирован`;
@@ -231,7 +231,6 @@ const phoneAuthFormRequest = async () => {
     headers: {
       "Accept": "application/json",
       'Content-Type': 'application/json',
-      // Authentication: `Bearer ${token.value}`,
     },
     method: 'POST',
     params: {
@@ -412,4 +411,11 @@ const bindProps = computed(() => {
   font-size: 1rem;
   margin-top: 1rem;
 }
+
+@media (max-width: 485px) {
+  .tel, .form-input_wrapp{
+    width: auto;
+  }
+}
+
 </style>

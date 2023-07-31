@@ -15,8 +15,18 @@
               <h3 class="data_subtitle">Доставка</h3>
               <div class="data_text">Курьером до двери, <span>Бесплатно</span></div>
               <div class="data_images">
-                <nuxt-img style="margin: .625rem 0 0 0" src="img/pochta_ru.svg" loading="lazy" sizes="lg:20vw md:200vw sm:230vw xs:200vw" alt="pochta-ru"/>
-                <nuxt-img style="margin: 3rem 0 0 1rem" src="img/logo-boxberry.png" loading="lazy" sizes="xxl:100vw xl:100vw lg:100vw md:200vw sm:230vw xs:200vw" alt="boxberry"/>
+<!--                <nuxt-img style="margin: .625rem 0 0 0" src="img/pochta_ru.svg" loading="lazy" sizes="lg:20vw md:200vw sm:230vw xs:200vw" alt="pochta-ru"/>-->
+                <nuxt-img style="margin-top: 1rem" src="img/logo-boxberry.png" loading="lazy" sizes="xxl:100vw xl:100vw lg:120vw md:200vw sm:230vw xs:200vw" alt="boxberry"/>
+              </div>
+            </div>
+          </div>
+          <div class="delivery-section delivery">
+            <h2 class="data_title">В пункт выдачи</h2>
+            <div class="delivery_body data_body" :class="{ 'data_chose': delivery_chose_2 }">
+              <h3 class="data_subtitle">Выберите удобный пункт на карте</h3>
+              <div class="data_text">И заберите ваш товар в удобное время, <span>Бесплатно</span></div>
+              <div style="margin-top: 1.5rem; width: max-content" onclick="boxberry.displaySettings({top:99.2});boxberry.open(function boxberry_pvz_function(data){}, '1$bfa8494c8fc30fb6c3c92a926f3c6cd8=='); return false">
+                <ButtonRedOutline @click="chose_2" :width_btn="18">Выбрать ПВЗ</ButtonRedOutline>
               </div>
             </div>
           </div>
@@ -283,7 +293,9 @@
           </div>
           <div class="delivery_total">
             <div class="chose_title">Доставка</div>
-            <div class="chose_title" style="flex: 40% 0 1">{{ delivery_chose_1 ? delivery_chose_1 : "Не выбрано" }}</div>
+            <div v-if="delivery_chose_1" class="chose_title" style="flex: 40% 0 1">{{ delivery_chose_1 }}</div>
+            <div v-else-if="delivery_chose_2" class="chose_title" style="flex: 40% 0 1">{{ delivery_chose_2 }}</div>
+            <div v-else class="chose_title" style="flex: 40% 0 1">Не выбрано</div>
           </div>
           <div class="payment_total">
             <div class="chose_title">Оплата</div>
@@ -547,12 +559,13 @@
                                               zipCheck === false ||
                                               delivery_chose_1==='' ||
                                               payment_chose_1==='' ||
-                                              formData.suggestion.data===null ||
-                                              formData.suggestion.data.postal_code===null ||
-                                              formData.suggestion.data.region===null ||
-                                              formData.suggestion.data.street===null ||
-                                              formData.suggestion.data.house===null ||
-                                              (formData.suggestion.data.city==='' && formData.suggestion.data.settlement===''))">
+                                              (formData.suggestion ? formData.suggestion.data===null : false) ||
+                                              (formData.suggestion ? formData.suggestion.data.postal_code===null : false) ||
+                                              (formData.suggestion ? formData.suggestion.data.region===null : false) ||
+                                              (formData.suggestion ? formData.suggestion.data.street===null : false) ||
+                                              (formData.suggestion ? formData.suggestion.data.house===null : false) ||
+                                              ((formData.suggestion ? formData.suggestion.data.city==='' : false) &&
+                                              (formData.suggestion ? formData.suggestion.data.settlement==='': false)))">
                       Получить код</Button>
                   </div>
                 </div>
@@ -613,7 +626,6 @@ import { computed, onBeforeUpdate, onMounted, reactive, ref } from "vue";
 definePageMeta({
   layout: "purchase",
 });
-
 const btn_pending = ref(false);
 const btn_pending_src = ref('');
 
@@ -781,7 +793,7 @@ const payment = (disabled) => {
           });
         }).catch((err) => {
           closeButtonPending();
-          paymentError.value = `Проверьте корректноcть введенных данных или вы уже`;
+          paymentError.value = `Проверьте корректноcть введенных данных`;
           console.error('Register not be send', err)
         });
       }).catch((err) => {
@@ -803,6 +815,7 @@ const payment = (disabled) => {
           zipCheck.value = false;
         }
       }).catch((err) => {
+        console.log(err);
         if(err.status === 401){
           useUserStore().removeUser();
           sanctumCookies().then(() => {
@@ -911,10 +924,7 @@ const paymentFormRequest = async (user_id) => {
       user_id:  user_id,
       total:  parseInt(useBasketProductsStore().getTotalBasket().value.totalPrice),
       details: JSON.stringify(useBasketProductsStore().getTotalBasket().value.detailProducts),
-      ship_address: {
-        'address': formData.address,
-        'zip': formData.suggestion.data.postal_code,
-      },
+      ship_address: formData.address,
       Zip: formData.suggestion.data.postal_code,
     },
   });
@@ -970,6 +980,7 @@ const bindProps = computed(() => {
 });
 
 const delivery_chose_1 = ref('');
+const delivery_chose_2 = ref('');
 const payment_chose_1 = ref('');
 
 const priceFormat = (value) => {
@@ -981,12 +992,24 @@ const priceFormat = (value) => {
 };
 
 const chose_1 = () => {
-  if (delivery_chose_1.value){
-    delivery_chose_1.value = ''
-  }
-  else{
-    delivery_chose_1.value = 'Курьером до двери';
-  }
+  // if (delivery_chose_1.value){
+  //   delivery_chose_1.value = ''
+  // }
+  // else{
+  //   delivery_chose_1.value = 'Курьером до двери';
+  // }
+  delivery_chose_2.value = '';
+  delivery_chose_1.value = 'Курьером до двери';
+}
+const chose_2 = () => {
+  // if (delivery_chose_2.value){
+  //   delivery_chose_2.value = ''
+  // }
+  // else{
+  //   delivery_chose_2.value = 'В пункт выдачи';
+  // }
+  delivery_chose_1.value = '';
+  delivery_chose_2.value = 'В пункт выдачи';
 }
 const chose_payment_1 = () => {
   if (payment_chose_1.value){
@@ -1045,6 +1068,7 @@ const closeButtonPending = () => {
   document.querySelector('body').classList.remove('lock')
   window.scrollTo(0,document.querySelector('body').dataset.scrollY)
 };
+
 </script>
 
 <style scoped>

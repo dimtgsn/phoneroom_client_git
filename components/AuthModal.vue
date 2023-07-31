@@ -2,7 +2,7 @@
   <button :style="{color: props.link_color}" class="header_link" @click="openModal">
     <slot />
   </button>
-  <Teleport to="body" @login="closeModal">
+  <Teleport to="body">
     <Transition name="fade">
       <section v-if="open" class="modal-section" @click="closeModal" :style="{top: props.top+'rem'}" >
         <focus-trap @click.stop="open=true" v-model:active="open">
@@ -18,10 +18,10 @@
               <div class="modal-body">
                 <div class="form">
                   <keep-alive>
-                    <FormLogIn v-if="logIn"/>
+                    <FormLogIn @login="closeModal" v-if="logIn"/>
                   </keep-alive>
                   <keep-alive>
-                    <FormRegistration v-if="register"/>
+                    <FormRegistration @login="closeModal" v-if="register"/>
                   </keep-alive>
                 </div>
               </div>
@@ -69,9 +69,9 @@ const openModal = () => {
 };
 
 const closeModal = () => {
-  document.querySelector('body').classList.remove('lock')
-  window.scrollTo(0, document.querySelector('body').dataset.scrollY)
   open.value = false;
+  document.querySelector('body').classList.remove('lock');
+  window.scrollTo(0, document.querySelector('body').dataset.scrollY);
 };
 </script>
 
@@ -165,6 +165,64 @@ const closeModal = () => {
   }
   .header_link{
     display: block;
+  }
+}
+
+@media (max-width: 600px) {
+  .modal{
+    width: max-content;
+  }
+}
+
+@media (max-width: 485px) {
+  .modal{
+    width: 34rem;
+  }
+}
+
+@media (max-width: 470px) {
+  .modal{
+    width: 32rem;
+  }
+}
+
+@media (max-width: 450px) {
+  .modal{
+    width: 30rem;
+  }
+}
+
+@media (max-width: 450px) {
+  .modal{
+    width: 28rem;
+    padding: 1.625rem;
+  }
+}
+
+@media (max-width: 390px) {
+  .modal{
+    width: 26rem;
+  }
+  .register{
+    margin-left: 1.5rem;
+  }
+}
+
+@media (max-width: 375px) {
+  .modal{
+    width: 25rem;
+  }
+  .modal_titles{
+    padding-top: 2rem;
+  }
+}
+
+@media (max-width: 340px) {
+  .modal{
+    width: 24rem;
+  }
+  .register {
+    margin-left: 1rem;
   }
 }
 </style>

@@ -161,7 +161,7 @@ const updateWidth = () => {
 onMounted(()=>{
   updateWidth();
   window.addEventListener('resize', updateWidth);
-
+  console.log('SaleSection');
 });
 </script>
 

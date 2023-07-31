@@ -111,11 +111,12 @@ const sendMessage = () => {
 const messageCreateFormRequest = async () => {
   return await $fetch(urlSendMessage.value , {
     headers: {
-      'Authorization': `Bearer ${useUserStore().getToken().value}`,
       'Accept': 'application/json',
       'Content-Type': 'application/json',
     },
     method: 'POST',
+    withCredentials: true,
+    credentials: 'include',
     params: {
       theme: formData.theme,
       message: formData.message,

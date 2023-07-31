@@ -39,12 +39,12 @@
                 <div v-else-if="products && products!=0" class="cards" v-for="(product, quantity) in products">
                   <div v-if="productsIsUpdated">
                     <div v-if="product.published === true">
-                      <ProductBasketCard @deleteUserProduct="updateUserProducts" @editQuantity="editQuantity"  :product_variant="product" :product_quantity="parseInt(products_ids[quantity][1])" ></ProductBasketCard>
+                      <ProductBasketCard @deleteUserProduct="updateUserProducts" @editQuantity="editQuantity" :product_variant="product" :product_quantity="parseInt(product.quantity)" ></ProductBasketCard>
                     </div>
                   </div>
                   <div v-else>
                     <div v-if="product.published === true">
-                      <ProductBasketCard @deleteUserProduct="updateUserProducts" @editQuantity="editQuantity"  :product_variant="product" :product_quantity="parseInt(products_ids[quantity][1])" ></ProductBasketCard>
+                      <ProductBasketCard @deleteUserProduct="updateUserProducts" @editQuantity="editQuantity" :product_variant="product" :product_quantity="parseInt(product.quantity)" ></ProductBasketCard>
                     </div>
                   </div>
                 </div>
@@ -73,12 +73,12 @@
                   <div v-else-if="products && products!=0" class="cards" v-for="(product, quantity) in products">
                     <div v-if="productsIsUpdated">
                       <div v-if="product.published === true">
-                        <ProductBasketCard @delete="updateProducts"  :product_variant="product" :product_quantity="parseInt(products_ids[quantity][1])" ></ProductBasketCard>
+                        <ProductBasketCard @delete="updateProducts" :product_variant="product" :product_quantity="parseInt(products_ids[quantity][1])" ></ProductBasketCard>
                       </div>
                     </div>
                     <div v-else>
                       <div v-if="product.published === true">
-                        <ProductBasketCard @delete="updateProducts"  :product_variant="product" :product_quantity="parseInt(products_ids[quantity][1])" ></ProductBasketCard>
+                        <ProductBasketCard @delete="updateProducts" :product_variant="product" :product_quantity="parseInt(products_ids[quantity][1])" ></ProductBasketCard>
                       </div>
                     </div>
                   </div>
@@ -132,7 +132,8 @@ onBeforeMount(() => {
   hasUser.value = useUserStore().getUser().value;
 });
 
-const products_ids = computed(() => useBasketProductsStore().getBasketProducts().value);
+// const products_ids = computed(() => useBasketProductsStore().getBasketProducts().value);
+const products_ids = computed(() => useBasketProductsStore().basketProducts);
 const products = ref([]);
 
 const urlBasket = computed(() => config.public.apiBaseUrl + `baskets/${useUserStore().getUser().value.id}`);
@@ -159,12 +160,19 @@ onBeforeUpdate(() => {
     totalPrice.value = 0;
     totalSalePrice.value = 0;
     totalQuantity.value = 0;
+    let detailProducts = [];
     if (products.value && products.value.length){
       for (const product of products.value) {
         if(parseInt(product.units_in_stock) > 0){
           totalPrice.value = totalPrice.value + parseInt(product.price);
           totalPrice.value = totalPrice.value * parseInt(product.quantity);
           totalQuantity.value = totalQuantity.value + parseInt(product.quantity);
+          detailProducts.push({
+            id: product.id,
+            product_name: product.product_name ? product.product_name : product.name,
+            image: product.image,
+            quantity: product.quantity,
+          });
           if (product.old_price){
             totalSalePrice.value = totalSalePrice.value + (parseInt(product.price)-parseInt(product.old_price));
             totalSalePrice.value = totalSalePrice.value * parseInt(product.quantity);
@@ -172,12 +180,13 @@ onBeforeUpdate(() => {
         }
       }
     }
-    // let item = {
-    //   totalPrice: totalPrice.value,
-    //   totalSalePrice: totalSalePrice.value,
-    //   totalQuantity: totalQuantity.value,
-    // };
-    // useBasketProductsStore().createTotalBasket(item);
+    let item = {
+      totalPrice: totalPrice.value,
+      totalSalePrice: totalSalePrice.value,
+      totalQuantity: totalQuantity.value,
+      detailProducts: detailProducts,
+    };
+    useBasketProductsStore().createTotalBasket(item);
   }
   else{
     if (useBasketProductsStore().needUpdate){
@@ -205,7 +214,7 @@ onBeforeUpdate(() => {
             id: product.id,
             product_name: product.product_name ? product.product_name : product.name,
             image: product.image,
-            quantity: totalQuantity.value,
+            quantity: product.quantity,
           });
           if (product.old_price){
             totalSalePrice.value = totalSalePrice.value + (parseInt(product.price)-parseInt(product.old_price));
@@ -238,6 +247,36 @@ onMounted(() => {
       }
       console.error('Contact form could not be send', err);
     });
+    totalPrice.value = 0;
+    totalSalePrice.value = 0;
+    totalQuantity.value = 0;
+    let detailProducts = [];
+    if (products.value && products.value.length){
+      for (const product of products.value) {
+        if(parseInt(product.units_in_stock) > 0){
+          totalPrice.value = totalPrice.value + parseInt(product.price);
+          totalPrice.value = totalPrice.value * parseInt(product.quantity);
+          totalQuantity.value = totalQuantity.value + parseInt(product.quantity);
+          detailProducts.push({
+            id: product.id,
+            product_name: product.product_name ? product.product_name : product.name,
+            image: product.image,
+            quantity: product.quantity,
+          });
+          if (product.old_price){
+            totalSalePrice.value = totalSalePrice.value + (parseInt(product.price)-parseInt(product.old_price));
+            totalSalePrice.value = totalSalePrice.value * parseInt(product.quantity);
+          }
+        }
+      }
+    }
+    let item = {
+      totalPrice: totalPrice.value,
+      totalSalePrice: totalSalePrice.value,
+      totalQuantity: totalQuantity.value,
+      detailProducts: detailProducts,
+    };
+    useBasketProductsStore().createTotalBasket(item);
   }
   else{
     pending.value = true;
@@ -261,7 +300,7 @@ onMounted(() => {
             id: product.id,
             product_name: product.product_name ? product.product_name : product.name,
             image: product.image,
-            quantity: totalQuantity.value,
+            quantity: product.quantity,
           });
           if (product.old_price){
             totalSalePrice.value = totalSalePrice.value + (parseInt(product.price)-parseInt(product.old_price));
@@ -318,21 +357,28 @@ const updateUserProducts = () => {
   }
 };
 const editQuantity = () => {
-  pending.value = true;
+  // pending.value = true;
   if (user.value){
     basketGetFormRequest().then((res) => {
-      pending.value = false;
+      // pending.value = false;
       products.value = res;
     }).catch((err) => {
       console.error('Contact form could not be send', err);
     });
     totalPrice.value = 0;
     totalSalePrice.value = 0;
+    let detailProducts = [];
     if (products.value && products.value.length){
       for (const product of products.value) {
         if(parseInt(product.units_in_stock) > 0){
           totalPrice.value = totalPrice.value + parseInt(product.price);
           totalPrice.value = totalPrice.value * parseInt(product.quantity);
+          detailProducts.push({
+            id: product.id,
+            product_name: product.product_name ? product.product_name : product.name,
+            image: product.image,
+            quantity: product.quantity,
+          });
           if (product.old_price){
             totalSalePrice.value = totalSalePrice.value + (parseInt(product.price)-parseInt(product.old_price));
             totalSalePrice.value = totalSalePrice.value * parseInt(product.quantity);
@@ -340,6 +386,13 @@ const editQuantity = () => {
         }
       }
     }
+    let item = {
+      totalPrice: totalPrice.value,
+      totalSalePrice: totalSalePrice.value,
+      totalQuantity: totalQuantity.value,
+      detailProducts: detailProducts,
+    };
+    useBasketProductsStore().createTotalBasket(item);
   }
   else {
     pending.value = false;
@@ -357,7 +410,7 @@ const editQuantity = () => {
             id: product.id,
             product_name: product.product_name ? product.product_name : product.name,
             image: product.image,
-            quantity: totalQuantity.value,
+            quantity: product.quantity,
           });
           if (product.old_price){
             totalSalePrice.value = totalSalePrice.value + (parseInt(product.price)-parseInt(product.old_price));
@@ -382,6 +435,8 @@ const basketGetFormRequest = async () => {
         'Content-Type': 'application/json',
       },
       method: 'GET',
+      withCredentials: true,
+      credentials: 'include',
     }
   )
 };

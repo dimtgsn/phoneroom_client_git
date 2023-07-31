@@ -95,11 +95,26 @@
         </div>
       </div>
       <div class="edit_error" v-if="userEditError">{{ userEditError }}</div>
-      <div class="login-form" >
+      <div class="login-form" v-if="windowWidth >= 620">
         <Button @click.prevent="saveChanges()"
                 :src_btn="btn_pending_src"
                 :without_padding="true"
                 :width_btn="22"
+                :route_btn="''"
+                :disabled_btn="disabled_reg=(v$.name.$error || v$.last_name.$error || v$.middle_name.$error || v$.email.$error || v$.address.$error || btn_pending_src!=='' ||
+                               (formData.middle_name===useUserStore().userInfo.value.middle_name &&
+                               formData.last_name===useUserStore().userInfo.value.last_name &&
+                               formData.address===useUserStore().userInfo.value.address &&
+                               formData.email===useUserStore().userInfo.value.email &&
+                               formData.name===useUserStore().user.first_name))">
+          {{ !btn_pending_src ? 'Сохранить изменения' : '' }}
+        </Button>
+      </div>
+      <div class="login-form" v-else>
+        <Button @click.prevent="saveChanges()"
+                :src_btn="btn_pending_src"
+                :without_padding="true"
+                :width_btn="''"
                 :route_btn="''"
                 :disabled_btn="disabled_reg=(v$.name.$error || v$.last_name.$error || v$.middle_name.$error || v$.email.$error || v$.address.$error || btn_pending_src!=='' ||
                                (formData.middle_name===useUserStore().userInfo.value.middle_name &&
@@ -119,7 +134,7 @@ import { useVuelidate } from '@vuelidate/core'
 import { required, minLength, maxLength, helpers, sameAs, email } from '@vuelidate/validators'
 import {useUserStore} from "../../stores/UserStore.js";
 import {VueDadata} from "vue-dadata";
-import {computed, reactive, ref} from "vue";
+import {computed, onMounted, reactive, ref} from "vue";
 
 const appConfig = useRuntimeConfig();
 const btn_pending_src = ref('');
@@ -130,7 +145,14 @@ const isDisabledName = ref(true);
 const isNoDisabledName = () => {
   isDisabledName.value = false;
 }
-
+const windowWidth = ref(0);
+const updateWidth = () => {
+  windowWidth.value = window.innerWidth;
+};
+onMounted(() => {
+  updateWidth();
+  window.addEventListener('resize', updateWidth);
+});
 const isDisabledLastName = ref(true);
 const isNoDisabledLastName = () => {
   isDisabledLastName.value = false;
@@ -392,5 +414,51 @@ const addUserInfo = (user) => {
   color: #E31235;
   font-size: 1rem;
   margin-top: 1rem;
+}
+
+@media (max-width: 750px) {
+  .form-input_wrapp__address{
+    width: 98%;
+  }
+}
+
+@media (max-width: 720px) {
+  .form-input_wrapp{
+    width: 20rem;
+  }
+  .form-input_wrapp__address{
+    width: 96%;
+  }
+}
+
+@media (max-width: 680px) {
+  .form-input_wrapp{
+    width: 18rem;
+  }
+  .form-input_wrapp__address{
+    width: 98%;
+  }
+}
+
+@media (max-width: 620px) {
+  .form-input_wrapp{
+    width: 15rem;
+  }
+  .form-input_wrapp__address{
+    width: 94%;
+  }
+}
+
+@media (max-width: 620px) {
+  .form-input_wrapp{
+    width: auto;
+  }
+  .multiply-group{
+    flex-direction: column;
+  }
+  .group-1{
+    margin-bottom: 1rem;
+    margin-right: 0;
+  }
 }
 </style>

@@ -1,10 +1,79 @@
 <template>
   <div>
     <div class="cards-section">
-      <Swiper v-if="windowWidth > 768" class="swiper-wrapp-viewed"
+      <Swiper v-if="windowWidth > 1100" class="swiper-wrapp-viewed"
               :modules="[SwiperAutoplay, SwiperEffectFade, SwiperLazy, SwiperKeyboard, SwiperNavigation]"
               :slides-per-view="3"
-              :spaceBetween="85"
+              :spaceBetween="80"
+              :preloadImages="false"
+              :loop="false"
+              :lazy="true"
+              :keyboard="{
+            enabled: true,
+          }"
+              :navigation="{
+          nextEl: '.swiper-button-next',
+          prevEl: '.swiper-button-prev',
+        }">
+<!--        <div class="cards" v-for="product in products"></div>-->
+        <SwiperSlide class="cards" v-for="product in products">
+          <div v-if="product.published === true">
+            <ProductViewedCard :product_variant="product" ></ProductViewedCard>
+          </div>
+        </SwiperSlide>
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+      </Swiper>
+      <Swiper v-if="windowWidth <= 1100 && windowWidth > 950" class="swiper-wrapp-viewed"
+              :modules="[SwiperAutoplay, SwiperEffectFade, SwiperLazy, SwiperKeyboard, SwiperNavigation]"
+              :slides-per-view="3"
+              :spaceBetween="55"
+              :preloadImages="false"
+              :loop="false"
+              :lazy="true"
+              :keyboard="{
+            enabled: true,
+          }"
+              :navigation="{
+          nextEl: '.swiper-button-next',
+          prevEl: '.swiper-button-prev',
+        }">
+<!--        <div class="cards" v-for="product in products"></div>-->
+        <SwiperSlide class="cards" v-for="product in products">
+          <div v-if="product.published === true">
+            <ProductViewedCard :product_variant="product" ></ProductViewedCard>
+          </div>
+        </SwiperSlide>
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+      </Swiper>
+      <Swiper v-if="windowWidth <= 950 && windowWidth > 855" class="swiper-wrapp-viewed"
+              :modules="[SwiperAutoplay, SwiperEffectFade, SwiperLazy, SwiperKeyboard, SwiperNavigation]"
+              :slides-per-view="3"
+              :spaceBetween="30"
+              :preloadImages="false"
+              :loop="false"
+              :lazy="true"
+              :keyboard="{
+            enabled: true,
+          }"
+              :navigation="{
+          nextEl: '.swiper-button-next',
+          prevEl: '.swiper-button-prev',
+        }">
+<!--        <div class="cards" v-for="product in products"></div>-->
+        <SwiperSlide class="cards" v-for="product in products">
+          <div v-if="product.published === true">
+            <ProductViewedCard :product_variant="product" ></ProductViewedCard>
+          </div>
+        </SwiperSlide>
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+      </Swiper>
+      <Swiper v-if="windowWidth <= 855 && windowWidth > 768" class="swiper-wrapp-viewed"
+              :modules="[SwiperAutoplay, SwiperEffectFade, SwiperLazy, SwiperKeyboard, SwiperNavigation]"
+              :slides-per-view="2"
+              :spaceBetween="30"
               :preloadImages="false"
               :loop="false"
               :lazy="true"
@@ -158,6 +227,7 @@ const updateWidth = () => {
 };
 onMounted(()=>{
   products.value = viewedProducts.value;
+  console.log(products.value);
   updateWidth();
   window.addEventListener('resize', updateWidth);
 });

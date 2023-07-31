@@ -419,6 +419,11 @@ main {
     background-color: #f7f7f7;
 }
 
+.v-field{
+    color: rgb(26, 26, 37) !important;
+    caret-color: rgb(26, 26, 37) !important;
+}
+
 .aa-Input{
     color: #4a76a8 !important;
     font-size: 1.25rem !important;

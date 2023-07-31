@@ -5,7 +5,7 @@
         <nuxt-link :to="`/catalog/products/${props.product_variant.slug}`" prefetch>
           <div class="card_image">
             <div class="img-wrap">
-              <nuxt-img class="lazy img-product" :src="`http://127.0.0.1:8000/${props.product_variant.image}`" alt="ProductImage" loading="lazy"/>
+              <nuxt-img class="lazy img-product" :src="config.public.baseUrl+props.product_variant.image" alt="ProductImage" loading="lazy"/>
             </div>
           </div>
         </nuxt-link>
@@ -16,78 +16,84 @@
             <IconsCompareIcon @click="addCompareProduct(props.product_variant)" :pressed="pressedCompare" />
           </div>
 
-          <div class="card_status">
-            <div class="card_status">
-              <InStock v-if="parseInt(props.product_variant.units_in_stock) >= 20" />
-              <NotMuchLeftInStock v-else-if="parseInt(props.product_variant.units_in_stock) < 20 && parseInt(props.product_variant.units_in_stock) > 0" />
-              <NotInStock v-else />
-            </div>
-          </div>
-          <nuxt-link :to="`/catalog/products/${props.product_variant.slug}`" prefetch>
-            <div class="card_name">
-              <h2 class="card_product_name" v-if="(props.product_variant.product_name ? props.product_variant.product_name.length >= 41 : props.product_variant.name.length >= 41) && windowWidth <= 370">{{ props.product_variant.product_name ? props.product_variant.product_name.slice(0, 40) : props.product_variant.name.slice(0, 40) }}...</h2>
-              <h2 class="card_product_name" v-else>{{ props.product_variant.product_name ? props.product_variant.product_name : props.product_variant.name }}</h2>
-            </div>
-          </nuxt-link>
+<!--          <div class="card_status">-->
+<!--            <div class="card_status">-->
+<!--              <InStock v-if="parseInt(props.product_variant.units_in_stock) >= 20" />-->
+<!--              <NotMuchLeftInStock v-else-if="parseInt(props.product_variant.units_in_stock) < 20 && parseInt(props.product_variant.units_in_stock) > 0" />-->
+<!--              <NotInStock v-else />-->
+<!--            </div>-->
+<!--          </div>-->
+          <div>
+            <nuxt-link :to="`/catalog/products/${props.product_variant.slug}`" prefetch>
+              <div class="card_name">
+                <h2 class="card_product_name" v-if="(props.product_variant.product_name ? props.product_variant.product_name.length >= 41 : props.product_variant.name.length >= 41)
+                                                  && windowWidth <= 370">
+                  {{ props.product_variant.product_name ? props.product_variant.product_name.slice(0, 40) : props.product_variant.name.slice(0, 40) }}...
+                </h2>
+                <h2 class="card_product_name" v-else>{{ props.product_variant.product_name ? props.product_variant.product_name : props.product_variant.name }}</h2>
+              </div>
+            </nuxt-link>
 
-          <div class="card_rating">
-            <h4 class="rating_title">Рейтинг</h4>
-            <div class="rating_body" v-if="windowWidth > 1280">
-              <ClientOnly>
-                <star-rating :star-size="12"
-                             :rating="props.product_variant.rating"
-                             :read-only="true"
-                             :increment="0.01"
-                             :padding="2"
-                             :show-rating="false"
-                             :round-start-rating="true"
-                             :inline="true"
-                             :rounded-corners="false"
-                             inactive-color="#909CB5"
-                             active-color="#F99808"
-                             :star-points="[23,2, 14,17, 0,19, 10,34, 7,50, 23,43, 38,50, 36,34, 46,19, 31,17]"></star-rating>
-              </ClientOnly>
+            <div class="card_rating">
+              <h4 class="rating_title">Рейтинг</h4>
+              <div class="rating_body" v-if="windowWidth > 1280">
+                <ClientOnly>
+                  <star-rating :star-size="12"
+                               :rating="props.product_variant.rating"
+                               :read-only="true"
+                               :increment="0.01"
+                               :padding="2"
+                               :show-rating="false"
+                               :round-start-rating="true"
+                               :inline="true"
+                               :rounded-corners="false"
+                               inactive-color="#909CB5"
+                               active-color="#F99808"
+                               :star-points="[23,2, 14,17, 0,19, 10,34, 7,50, 23,43, 38,50, 36,34, 46,19, 31,17]"></star-rating>
+                </ClientOnly>
+              </div>
+              <div class="rating_body" v-if="windowWidth <= 1280 && windowWidth > 1020">
+                <ClientOnly>
+                  <star-rating :star-size="10"
+                               :rating="props.product_variant.rating"
+                               :read-only="true"
+                               :increment="0.01"
+                               :padding="2"
+                               :show-rating="false"
+                               :round-start-rating="true"
+                               :inline="true"
+                               :rounded-corners="false"
+                               inactive-color="#909CB5"
+                               active-color="#F99808"
+                               :star-points="[23,2, 14,17, 0,19, 10,34, 7,50, 23,43, 38,50, 36,34, 46,19, 31,17]"></star-rating>
+                </ClientOnly>
+              </div>
+              <div class="rating_body" v-if="windowWidth <= 1020">
+                <ClientOnly>
+                  <star-rating :star-size="8"
+                               :rating="props.product_variant.rating"
+                               :read-only="true"
+                               :increment="0.01"
+                               :padding="2"
+                               :show-rating="false"
+                               :round-start-rating="true"
+                               :inline="true"
+                               :rounded-corners="false"
+                               inactive-color="#909CB5"
+                               active-color="#F99808"
+                               :star-points="[23,2, 14,17, 0,19, 10,34, 7,50, 23,43, 38,50, 36,34, 46,19, 31,17]"></star-rating>
+                </ClientOnly>
+              </div>
             </div>
-            <div class="rating_body" v-if="windowWidth <= 1280 && windowWidth > 1020">
-              <ClientOnly>
-                <star-rating :star-size="10"
-                             :rating="props.product_variant.rating"
-                             :read-only="true"
-                             :increment="0.01"
-                             :padding="2"
-                             :show-rating="false"
-                             :round-start-rating="true"
-                             :inline="true"
-                             :rounded-corners="false"
-                             inactive-color="#909CB5"
-                             active-color="#F99808"
-                             :star-points="[23,2, 14,17, 0,19, 10,34, 7,50, 23,43, 38,50, 36,34, 46,19, 31,17]"></star-rating>
-              </ClientOnly>
-            </div>
-            <div class="rating_body" v-if="windowWidth <= 1020">
-              <ClientOnly>
-                <star-rating :star-size="8"
-                             :rating="props.product_variant.rating"
-                             :read-only="true"
-                             :increment="0.01"
-                             :padding="2"
-                             :show-rating="false"
-                             :round-start-rating="true"
-                             :inline="true"
-                             :rounded-corners="false"
-                             inactive-color="#909CB5"
-                             active-color="#F99808"
-                             :star-points="[23,2, 14,17, 0,19, 10,34, 7,50, 23,43, 38,50, 36,34, 46,19, 31,17]"></star-rating>
-              </ClientOnly>
+            <div class="card-footer">
+              <div class="card_price">
+                <h2 class="price_title">{{ priceFormat(props.product_variant.price) }} ₽</h2>
+                <h2 class="old_price_title">{{ priceFormat(props.product_variant.old_price) }} ₽</h2>
+              </div>
             </div>
           </div>
 
-          <div class="card-footer">
-            <div class="card_price">
-              <h2 class="price_title">{{ priceFormat(props.product_variant.price) }} ₽</h2>
-              <h2 class="old_price_title">{{ priceFormat(props.product_variant.old_price) }} ₽</h2>
-            </div>
-          </div>
+         <div></div>
         </div>
       </div>
     </div>
@@ -111,24 +117,34 @@ const config = useRuntimeConfig();
 
 const pressedFavorite = computed(() => useFavoriteProductStore().checkProduct(props.product_variant.id))
 const pressedCompare = computed(() => useCompareProductStore().checkProduct(props.product_variant.id));
-const pressedBasket = computed(() => useBasketProductsStore().checkProduct(props.product_variant.id));
-// TODO проверить почему нет метода delete
+
 const addFavoriteProduct = (product) => {
   if  (user.value){
     if (pressedFavorite.value === false) {
       useFavoriteProductStore().pushProduct(product);
-      favoriteCreateFormRequest(user.value.id, product.id)
+      useFavoriteProductStore().needUpdate = true;
+      favoriteCreateFormRequest(product.id)
       .then((res) => {
         console.log(res)
       }).catch((err) => {
         if(err.status === 401){
           useUserStore().removeUser();
         }
+        useFavoriteProductStore().removeProduct(product);
         console.error('Contact form could not be send', err)
       });
     }
     else{
       useFavoriteProductStore().removeProduct(product);
+      favoriteDeleteFormRequest(product.id).then((res) => {
+        console.log(res);
+      }).catch((err) => {
+        if(err.status === 401){
+          useUserStore().removeUser();
+        }
+        useFavoriteProductStore().pushProduct(product);
+        console.error('Contact form could not be send', err);
+      });
     }
   }
   else{
@@ -146,18 +162,29 @@ const addCompareProduct = (product) => {
   if  (user.value){
     if (pressedCompare.value === false) {
       useCompareProductStore().pushProduct(product);
-      compareCreateFormRequest(user.value.id, product.id, product.category_id)
+      useCompareProductStore().needUpdate = true;
+      compareCreateFormRequest(product.id, product.category_id)
       .then((res) => {
         console.log(res)
       }).catch((err) => {
         if(err.status === 401){
           useUserStore().removeUser();
         }
+        useCompareProductStore().removeProduct(product);
         console.error('Contact form could not be send', err)
       });
     }
     else{
       useCompareProductStore().removeProduct(product);
+      compareDeleteFormRequest(product.id, product.category_id).then((res) => {
+        console.log(res);
+      }).catch((err) => {
+        if(err.status === 401){
+          useUserStore().removeUser();
+        }
+        useCompareProductStore().pushProduct(product);
+        console.error('Contact form could not be send', err);
+      });
     }
   }
   else{
@@ -172,68 +199,67 @@ const addCompareProduct = (product) => {
 
 };
 
-const addProductToBasket = (product) => {
-  if  (user.value){
-    if (pressedBasket.value === false) {
-      useBasketProductsStore().pushProduct(product);
-      basketCreateFormRequest(user.value.id, product.id).then((res) => {
-        console.log(res)
-      }).catch((err) => {
-        console.error('Contact form could not be send', err)
-      });
-    }
-  }
-  else{
-    if (pressedBasket.value === false) {
-      useBasketProductsStore().pushProduct(product);
-    }
-    useBasketProductsStore().needUpdate = true;
-  }
-};
+const urlFavorite = computed(() => config.public.apiBaseUrl + `favorites/${useUserStore().getUser().value.id}`);
+const urlCompare = computed(() => config.public.apiBaseUrl + `compares/${useUserStore().getUser().value.id}`);
 
-
-const urlBasket = computed(() => config.public.apiBaseUrl + 'baskets/create');
-const urlFavorite = computed(() => config.public.apiBaseUrl + 'favorites/create');
-const urlCompare = computed(() => config.public.apiBaseUrl + 'compares/create');
-
-const favoriteCreateFormRequest = async (user_id, product_id) => {
+const favoriteCreateFormRequest = async (product_id) => {
   return await $fetch(urlFavorite.value , {
     headers: {
       "Accept": "application/json",
       'Content-Type': 'application/json',
     },
-    method: 'POST',
+    method: 'PATCH',
+    withCredentials: true,
+    credentials: 'include',
     params: {
-      user_id: user_id,
       product_id: product_id,
     },
   });
 }
-const compareCreateFormRequest = async (user_id, product_id, category_id) => {
+
+const favoriteDeleteFormRequest = async (product_id) => {
+  return await $fetch(urlFavorite.value , {
+    headers: {
+      "Accept": "application/json",
+      'Content-Type': 'application/json',
+    },
+    method: 'DELETE',
+    withCredentials: true,
+    credentials: 'include',
+    params: {
+      product_id: product_id,
+    },
+  });
+}
+
+const compareCreateFormRequest = async (product_id, category_id) => {
   return await $fetch(urlCompare.value , {
     headers: {
       "Accept": "application/json",
       'Content-Type': 'application/json',
     },
-    method: 'POST',
+    method: 'PATCH',
+    withCredentials: true,
+    credentials: 'include',
     params: {
-      user_id: user_id,
       product_id: product_id,
       category_id: category_id,
     },
   });
 }
 
-const basketCreateFormRequest = async (user_id, product_id) => {
-  return await $fetch(urlBasket.value , {
+const compareDeleteFormRequest = async (product_id, category_id) => {
+  return await $fetch(urlCompare.value , {
     headers: {
       "Accept": "application/json",
       'Content-Type': 'application/json',
     },
-    method: 'POST',
+    method: 'DELETE',
+    withCredentials: true,
+    credentials: 'include',
     params: {
-      user_id: user_id,
       product_id: product_id,
+      category_id: category_id,
     },
   });
 }
@@ -297,11 +323,13 @@ onMounted(()=>{
 .card-content_text{
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+  min-height: 100%;
 }
 
 .card_rating{
   cursor: default;
-  margin: 8px 0;
+  /*margin: 8px 0;*/
   margin-bottom: .9375rem;
   height: .9375rem;
 }
@@ -427,6 +455,19 @@ onMounted(()=>{
   margin-top: .625rem;
   justify-content: end;
   align-items: center;
+}
+
+@media (max-width: 1040px) and (min-width: 1025px) {
+  .price_title,
+  .old_price_title{
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 1060px) {
+  .card_status{
+    height: 15px;
+  }
 }
 
 @media (max-width: 715px) {

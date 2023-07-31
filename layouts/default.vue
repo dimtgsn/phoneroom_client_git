@@ -470,7 +470,8 @@ a#menu-share {
 
 @media (max-width: 768px) {
   .multibtn .float-btn{
-    bottom: 10vh;
+    bottom: 11vh;
+    right: 1.75rem;
   }
   .multibtn ul{
     bottom: 13vh;

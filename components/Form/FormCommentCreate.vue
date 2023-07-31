@@ -140,6 +140,8 @@ const commentCreateFormRequest = async () => {
       'Content-Type': 'application/json',
     },
     method: 'POST',
+    withCredentials: true,
+    credentials: 'include',
     params: {
       advantages: formData.advantages,
       disadvantages: formData.disadvantages,

@@ -127,23 +127,28 @@ const urlFavorite = computed(() => config.public.apiBaseUrl + `favorites/${useUs
 
 const emit = defineEmits(['delete', 'editQuantity', 'deleteUserProduct']);
 
-
 const addFavoriteProduct = (product) => {
   if  (useUserStore().getUser().value){
     if (pressedFavorite.value === false) {
+      useFavoriteProductStore().pushProduct(product);
+      useFavoriteProductStore().needUpdate = true;
       favoriteCreateFormRequest(product.id).then((res) => {
-        useFavoriteProductStore().pushProduct(product);
-        useFavoriteProductStore().needUpdate = true;
       }).catch((err) => {
-        pressedFavorite.value = false;
+        if(err.status === 401){
+          useUserStore().removeUser();
+        }
+        useFavoriteProductStore().removeProduct(product);
         console.error('Contact form could not be send', err)
       });
     }
     else{
+      useFavoriteProductStore().removeProduct(product);
       favoriteDeleteFormRequest(product.id).then((res) => {
-        useFavoriteProductStore().removeProduct(product);
-        // emit('deleteUserProduct');
       }).catch((err) => {
+        if(err.status === 401){
+          useUserStore().removeUser();
+        }
+        useFavoriteProductStore().pushProduct(product);
         console.error('Contact form could not be send', err);
       });
     }
@@ -166,6 +171,9 @@ const removeProduct = (product) => {
       useBasketProductsStore().removeProduct(product);
       emit('deleteUserProduct');
     }).catch((err) => {
+      if(err.status === 401){
+        useUserStore().removeUser();
+      }
       console.error('Contact form could not be send', err);
     });
   }
@@ -184,8 +192,10 @@ const increaseQuantity = (product) =>{
       basketUpdateFormRequest(product, quantity.value).then((res) => {
         console.log(res);
         emit('editQuantity');
-
       }).catch((err) => {
+        if(err.status === 401){
+          useUserStore().removeUser();
+        }
         console.error('Contact form could not be send', err);
       });
     }
@@ -193,7 +203,7 @@ const increaseQuantity = (product) =>{
       useBasketProductsStore().removeProduct(product);
       // product.quantity = quantity.value;
       useBasketProductsStore().pushProduct(product, quantity.value);
-      emit('editQuantity');
+      // emit('editQuantity');
     }
   }
 }
@@ -207,6 +217,9 @@ const reduceQuantity = (product) =>{
           console.log(res);
           emit('editQuantity');
         }).catch((err) => {
+          if(err.status === 401){
+            useUserStore().removeUser();
+          }
           console.error('Contact form could not be send', err);
         });
       }
@@ -214,7 +227,7 @@ const reduceQuantity = (product) =>{
         useBasketProductsStore().removeProduct(product);
         // product.quantity = quantity.value;
         useBasketProductsStore().pushProduct(product, quantity.value);
-        emit('editQuantity');
+        // emit('editQuantity');
       }
     }
   }
@@ -223,11 +236,12 @@ const reduceQuantity = (product) =>{
 const basketUpdateFormRequest = async (product, quantity) => {
   return await $fetch(urlBasket.value , {
     headers: {
-      'Authorization': `Bearer ${useUserStore().getToken().value}`,
       "Accept": "application/json",
       'Content-Type': 'application/json',
     },
     method: 'PATCH',
+    withCredentials: true,
+    credentials: 'include',
     params: {
       product_id: product.id,
       quantity: quantity,
@@ -239,11 +253,12 @@ const basketUpdateFormRequest = async (product, quantity) => {
 const basketDeleteFormRequest = async (product) => {
   return await $fetch(urlBasket.value , {
     headers: {
-      'Authorization': `Bearer ${useUserStore().getToken().value}`,
       "Accept": "application/json",
       'Content-Type': 'application/json',
     },
     method: 'DELETE',
+    withCredentials: true,
+    credentials: 'include',
     params: {
       product_id: product.id,
     },
@@ -253,11 +268,12 @@ const basketDeleteFormRequest = async (product) => {
 const favoriteCreateFormRequest = async (product_id) => {
   return await $fetch(urlFavorite.value , {
     headers: {
-      'Authorization': `Bearer ${useUserStore().getToken().value}`,
       "Accept": "application/json",
       'Content-Type': 'application/json',
     },
-    method: 'POST',
+    method: 'PATCH',
+    withCredentials: true,
+    credentials: 'include',
     params: {
       product_id: product_id,
     },
@@ -267,11 +283,12 @@ const favoriteCreateFormRequest = async (product_id) => {
 const favoriteDeleteFormRequest = async (product_id) => {
   return await $fetch(urlFavorite.value , {
     headers: {
-      'Authorization': `Bearer ${useUserStore().getToken().value}`,
       "Accept": "application/json",
       'Content-Type': 'application/json',
     },
     method: 'DELETE',
+    withCredentials: true,
+    credentials: 'include',
     params: {
       product_id: product_id,
     },

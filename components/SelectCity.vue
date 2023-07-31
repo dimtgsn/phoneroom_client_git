@@ -46,6 +46,7 @@ const closeModalCity = () => {
   z-index: 999;
   left: 0;
   top: 0;
+  cursor: default;
   width: 100%;
   height: 100vh;
   background: rgba(26, 26, 37, 0.5);
@@ -89,10 +90,46 @@ const closeModalCity = () => {
   opacity: .5;
   transition: all .3s ease;
 }
+/*TODO проверить то, что закоментировал*/
+/*@media (max-width: 768px) {*/
+/*  .modal-section{*/
+/*    top: 4.6rem;*/
+/*  }*/
+/*}*/
 
-@media (max-width: 768px) {
-  .modal-section{
-    top: 4.6rem;
+@media (max-width: 440px) {
+  .modal{
+    width: 29.75rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .modal{
+    width: 28rem;
+  }
+}
+
+@media (max-width: 390px) {
+  .modal{
+    width: 26rem;
+  }
+}
+
+@media (max-width: 370px) {
+  .modal{
+    width: 25rem;
+  }
+}
+
+@media (max-width: 350px) {
+  .modal{
+    width: 24rem;
+  }
+}
+
+@media (max-width: 330px) {
+  .modal{
+    width: 23.5rem;
   }
 }
 </style>

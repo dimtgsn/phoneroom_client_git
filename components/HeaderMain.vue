@@ -69,8 +69,8 @@
       </div>
       <div v-if="windowWidth > 768" class="header-main_city city">
         <h2 class="city_title" v-if="userCity" @click="openModalCity">{{ userCity }}</h2>
-        <h2 class="city_title" v-if="ipInfoCity && !userCity" @click="openModalCity">{{ ipInfoCity }}</h2>
-        <h2 class="city_title" v-if="!ipInfoCity && !userCity" @click="openModalCity">Выбрать город</h2>
+        <h2 class="city_title" v-else-if="ipInfoCity && ipInfoCity !== ' ' && !userCity" @click="openModalCity">{{ ipInfoCity }}</h2>
+        <h2 class="city_title" v-else @click="openModalCity">Выбрать город</h2>
         <Transition name="fade">
           <component @openCity="isOpenCity" :is="choiceCity ? SelectCity : 'div'"/>
         </Transition>
@@ -114,10 +114,10 @@
             </div>
           </nuxt-link>
 
-          <nuxt-link v-if="favoriteProducts && favoriteProducts.length !== 0" to="/favorites/" class="icons_put">
+          <nuxt-link v-if="(favoriteProducts && favoriteProducts.length !== 0) || (favoriteProducts2 && favoriteProducts2.length !== 0)" to="/favorites/" class="icons_put">
             <div class="icons heart">
-              <div class="icons_count" v-if="favoriteProducts && favoriteProducts.length !== 0">
-                <HeaderIconsCount>{{ favoriteProducts.length }}</HeaderIconsCount>
+              <div class="icons_count" v-if="(favoriteProducts && favoriteProducts.length !== 0) || (favoriteProducts2 && favoriteProducts2.length !== 0)">
+                <HeaderIconsCount>{{ favoriteProducts.length !== 0 ? favoriteProducts.length : favoriteProducts2.length }}</HeaderIconsCount>
               </div>
               <div class="icons_icon">
                 <HeaderIconsHeartIcon/>
@@ -129,8 +129,8 @@
           </nuxt-link>
           <nuxt-link v-else to="" class="cursor_hidden">
             <div class="icons heart">
-              <div class="icons_count" v-if="favoriteProducts && favoriteProducts.length !== 0">
-                <HeaderIconsCount>{{ favoriteProducts.length }}</HeaderIconsCount>
+              <div class="icons_count" v-if="(favoriteProducts && favoriteProducts.length !== 0) || (favoriteProducts2 && favoriteProducts2.length !== 0)">
+                <HeaderIconsCount>{{ favoriteProducts.length !== 0 ? favoriteProducts.length : favoriteProducts2.length }}</HeaderIconsCount>
               </div>
               <div class="icons_icon">
                 <HeaderIconsHeartIcon/>
@@ -174,15 +174,15 @@
 
         <div class="delimiter"></div>
         <nuxt-img class="search-mob" v-if="windowWidth > 640" src="img/search.svg" loading="lazy"
-                  sizes="md:65vw sm:100vw xs:150vw" alt="search"/>
+                  sizes="md:0vw sm:1vw xs:0vw" alt="search"/>
         <nuxt-img class="search-mob" v-if="windowWidth <= 640 && windowWidth > 500" src="img/search.svg" loading="lazy"
-                  sizes="md:65vw sm:70vw xs:150vw" alt="search"/>
+                  sizes="md:0vw sm:100vw xs:0vw" alt="search"/>
         <nuxt-img class="search-mob" v-if="windowWidth <= 500 && windowWidth > 440" src="img/search.svg" loading="lazy"
                   sizes="md:65vw sm:100vw xs:150vw" alt="search"/>
         <nuxt-img class="search-mob" v-if="windowWidth <= 440 && windowWidth > 360" src="img/search.svg" loading="lazy"
                   sizes="md:100vw sm:150vw xs:110vw" alt="search"/>
         <nuxt-img class="search-mob" v-if="windowWidth <= 360" src="img/search.svg" loading="lazy"
-                  sizes="md:0vw sm:1vw xs:0vw" alt="search"/>
+                  sizes="md:0vw sm:100vw xs:0vw" alt="search"/>
         <div @click="showCategoriesMobile" class="menu__icon_wrapper">
           <div class="menu__icon">
             <span></span>
@@ -203,13 +203,17 @@ import {useCompareProductStore} from "../stores/CompareProductStore";
 import {useBasketProductsStore} from "../stores/BasketProductsStore";
 import {useUserStore} from "../stores/UserStore";
 import {computed, onMounted, resolveComponent, onBeforeMount} from "vue";
+import HeaderIconsCompareIcon from "./HeaderIcons/HeaderIconsCompareIcon/HeaderIconsCompareIcon.vue";
+import HeaderIconsBasketIcon from "./HeaderIcons/HeaderIconsBasketIcon/HeaderIconsBasketIcon.vue";
+import HeaderIconsHeartIcon from "./HeaderIcons/HeaderIconsHeartIcon/HeaderIconsHeartIcon.vue";
 
-const favoriteProducts = computed(() => useFavoriteProductStore().getFavoriteProducts().value);
+const favoriteProducts = computed(() => useFavoriteProductStore().favoriteProducts);
+const favoriteProducts2 = computed(() => useFavoriteProductStore().getFavoriteProducts().value);
+// const compareProducts = computed(() => useCompareProductStore().сompareProducts);
 const compareProducts = computed(() => useCompareProductStore().getCompareProducts().value);
 const basketProducts = computed(() => useBasketProductsStore().getBasketProducts().value);
 const userCity = computed(() => useUserStore().getUserCity().value);
 // const userCountBasketProducts = computed(() => useUserStore().userCountBasketProducts);
-
 const urlBasket = computed(() => config.public.apiBaseUrl + `baskets/${useUserStore().getUser().value.id}`);
 const urlFavorite = computed(() => config.public.apiBaseUrl + `favorites/${useUserStore().getUser().value.id}`);
 const urlCompare = computed(() => config.public.apiBaseUrl + `compares/${useUserStore().getUser().value.id}`);
@@ -221,21 +225,24 @@ const ipInfoCity = ref('');
 // // const { pending, data: ip } = await useLazyAsyncData("ip", () => $fetch(urlIp));
 // const { pending, data: ipInfoCityNull } = await useLazyAsyncData("ipInfoCity", () => $fetch(urlIp.value));
 // const pending = ref(true);
+let ipGetted = false;
 // TODO SetTimeout
-setTimeout( () => {
-  const {data: ipInfoCityNull} = useFetch(urlIp.value).then((res) => {
-    ipInfoCity.value = res.data.value;
-    useUserStore().ipInfoCity = ipInfoCity.value;
-    // pending.value = false
-  });
-  }
-,7000);
+if (!ipGetted){
+  setTimeout( () => {
+    const {data: ipInfoCityNull} = useFetch(urlIp.value).then((res) => {
+      ipInfoCity.value = res.data.value;
+      useUserStore().ipInfoCity = ipInfoCity.value;
+      // pending.value = false
+    });
+    ipGetted = true;
+  },7000);
+}
 
 onMounted(() => {
   if (useUserStore().getUser().value) {
     basketGetFormRequest().then((res) => {
       for (const r of res) {
-        useBasketProductsStore().pushProduct(r);
+        useBasketProductsStore().pushProduct(r, 1, true);
       }
     }).catch((err) => {
       if(err.status === 401){
@@ -526,6 +533,13 @@ const isOpenCity = () => {
 
   .icons.heart {
     padding: 0 3.25rem;
+  }
+}
+
+@media (max-width: 900px) {
+
+  .icons.heart {
+    padding: 0 2rem;
   }
 }
 

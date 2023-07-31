@@ -99,9 +99,76 @@ const closeModalEdit = () => {
   transition: all .3s ease;
 }
 
-@media (max-width: 768px) {
-  .modal-section{
-    top: 4.6rem;
+@media (max-width: 750px) {
+  .modal{
+    width: 53rem;
+  }
+}
+
+@media (max-width: 720px) {
+  .modal{
+    width: 50rem;
+  }
+}
+
+@media (max-width: 680px) {
+  .modal{
+    width: 45rem;
+  }
+}
+
+@media (max-width: 620px) {
+  .modal{
+    width: 40rem;
+  }
+}
+
+@media (max-width: 550px) {
+  .modal{
+    width: 37rem;
+    margin-top: 19%;
+  }
+}
+
+@media (max-width: 515px) {
+  .modal{
+    width: 35rem;
+    margin-top: 20%;
+  }
+}
+
+@media (max-width: 485px) {
+  .modal{
+    width: 32rem;
+    margin-top: 22%;
+  }
+}
+
+@media (max-width: 445px) {
+  .modal{
+    width: 30rem;
+    margin-top: 23%;
+  }
+}
+
+@media (max-width: 420px) {
+  .modal{
+    width: 27rem;
+    margin-top: 25%;
+  }
+}
+
+@media (max-width: 385px) {
+  .modal{
+    width: 25rem;
+    margin-top: 27%;
+  }
+}
+
+@media (max-width: 360px) {
+  .modal{
+    width: 24rem;
+    margin-top: 29%;
   }
 }
 </style>

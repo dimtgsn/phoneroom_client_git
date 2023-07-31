@@ -8,6 +8,18 @@ export default defineNuxtConfig({
         '@vueform/slider/themes/default.css',
         '~/assets/css/style.css',
     ],
+    // app: {
+    //     head: {
+    //         script: [
+    //             {
+    //                 src: 'https://points.boxberry.de/js/boxberry.js',
+    //                 body: true,
+    //                 async: true,
+    //                 defer: true
+    //             }
+    //         ],
+    //     }
+    // },
     build: {
         transpile: [
             '@fortawesome/fontawesome-svg-core',

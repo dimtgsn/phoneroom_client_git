@@ -100,6 +100,7 @@ onMounted(() => {
     favoriteGetFormRequest().then((res) => {
       pending.value = false;
       products.value = res;
+      console.log(res);
     }).catch((err) => {
       if(err.status === 401){
         useUserStore().removeUser();
@@ -143,10 +144,11 @@ const updateUserProducts = () => {
 const favoriteGetFormRequest = async () => {
   return await $fetch(urlFavorite.value , {
       headers: {
-        'Authorization': `Bearer ${useUserStore().getToken().value}`,
         "Accept": "application/json",
         'Content-Type': 'application/json',
       },
+      withCredentials: true,
+      credentials: 'include',
       method: 'GET',
     }
   )

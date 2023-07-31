@@ -184,8 +184,8 @@ const login = (disabled) => {
           addUser(res);
           getUser();
           btn_pending_src.value = '';
-          emit('login');
           userStore.removeDis();
+          emit('login');
         }).catch((err) => {
           btn_pending_src.value = '';
           loginError.value = `Авторизация не удалась, проверьте корректность введённых данных.`;
@@ -385,5 +385,11 @@ const bindProps = computed(() => {
   color: #E31235;
   font-size: 1rem;
   margin-top: 1rem;
+}
+
+@media (max-width: 485px) {
+  .tel{
+    width: auto;
+  }
 }
 </style>

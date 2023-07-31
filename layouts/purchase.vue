@@ -30,7 +30,7 @@
             <h2 class="city_title" v-if="userCity" @click="toggleShowChoiceCity">{{ userCity }}</h2>
             <h2 class="city_title" v-else @click="toggleShowChoiceCity">Выбрать город</h2>
             <Transition name="fade">
-              <component :top="'6.26'"  @openCity="isOpenCity" :is="choiceCity ? SelectCity : 'div'" />
+              <component @openCity="isOpenCity" :is="choiceCity ? SelectCity : 'div'" />
             </Transition>
             <nuxt-img class="city_icon" src="img/city_icon.svg" alt="city_icon"  loading="lazy"/>
           </div>
@@ -130,8 +130,7 @@ const SelectCity = resolveComponent('SelectCity');
 
 const pending = ref(true);
 useHead({
-  title: 'Телефон.Рум - интернет-магазин с широким ассортиментом новинок и' +
-      ' хитов продаж смартфонов, планшетов, смарт-часов, и другой электроники',
+  title: 'Телефон.рум | Оформление заказ',
   meta: [
     { name: 'charset', content: 'UTF-8' },
     { name: 'description', content: 'Телефон.Рум - интернет-магазин с широким ассортиментом новинок и' +
@@ -146,6 +145,9 @@ useHead({
     { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon-16x16.png'},
     { rel: 'manifest', href: '/manifest.json'},
     { rel: 'mask-icon', href: '/public/safari-pinned-tab.svg', color: '#e31235'},
+  ],
+  script: [
+    { type: 'text/javascript', src: "https://points.boxberry.de/js/boxberry.js", body: true },
   ],
 })
 

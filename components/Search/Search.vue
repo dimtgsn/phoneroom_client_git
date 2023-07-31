@@ -72,25 +72,37 @@ const changeQuery = () => {
 
 @media (max-width: 885px) {
   .search_container{
-    width: 35rem;
+    width: 36rem;
   }
 }
 
 @media (max-width: 855px) {
+  .search_container{
+    width: 34.2rem;
+  }
+}
+
+@media (max-width: 840px) {
   .search_container{
     width: 32rem;
   }
 }
 
-@media (max-width: 855px) {
+@media (max-width: 820px) {
   .search_container{
-    width: 29.9rem;
+    width: 30rem;
   }
 }
 
 @media (max-width: 805px) {
   .search_container{
-    width: 26.6rem;
+    width: 29rem;
+  }
+}
+
+@media (max-width: 790px) {
+  .search_container{
+    width: 27rem;
   }
 }
 

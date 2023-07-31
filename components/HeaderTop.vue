@@ -54,18 +54,18 @@
             <span v-if="!btn_pending" @click.prevent="logout">Выйти</span>
             <span v-else style="text-align: center"><img src="/img/834.svg" alt=""></span>
           </div>
-          <nuxt-img class="header_right_profile" sizes="xxl:100vw xl:100vw lg:110vw md:100vw sm:100vw xs:100vw" src="img/profile-user.svg" alt="user-profile" loading="lazy" />
+<!--          <nuxt-img class="header_right_profile" sizes="xxl:100vw xl:100vw lg:110vw md:100vw sm:100vw xs:100vw" src="img/profile-user.svg" alt="user-profile" loading="lazy" />-->
         </div>
         <div v-else>
           <AuthModal>Войти</AuthModal>
           <AuthModal>
-            <nuxt-img class="header_right_profile" sizes="xxl:100vw xl:100vw lg:110vw md:100vw sm:100vw xs:100vw" src="img/profile-user.svg" alt="user-profile" loading="lazy" />
+<!--            <nuxt-img class="header_right_profile" sizes="xxl:100vw xl:100vw lg:120vw md:100vw sm:100vw xs:100vw" src="img/profile-user.svg" alt="user-profile" loading="lazy" />-->
           </AuthModal>
         </div>
 <!--        <nuxt-link to="/" class="header_link">Войти</nuxt-link>-->
         <div class="delimiter"></div>
         <a class="phone-wrapp" href="tel:+78000000000">
-          <nuxt-img class="header_right_phone" sizes="xxl:100vw xl:100vw lg:110vw md:100vw sm:100vw xs:100vw" src="img/phone.svg" alt="phone" loading="lazy" />
+          <nuxt-img class="header_right_phone" sizes="xxl:100vw xl:100vw lg:120vw md:100vw sm:100vw xs:100vw" src="img/phone.svg" alt="phone" loading="lazy" />
           <div class="phone_number">+7 (800) 000-00-00</div>
         </a>
       </div>
@@ -175,6 +175,7 @@ const removeUser = () => {
   transition: all .3s ease;
 }
 .header_right_profile{
+  display: flex;
   padding-left: 0.875rem;
   cursor: pointer;
 }
@@ -188,6 +189,10 @@ const removeUser = () => {
   background: rgba(133, 143, 164, 0.15);
   border-radius: 1px;
   margin: 0 1.0625rem;
+}
+.phone-wrapp{
+  display: flex;
+  align-items: center;
 }
 
 .dropbtn {

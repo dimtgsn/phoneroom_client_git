@@ -84,12 +84,14 @@ const pending = ref(true);
 const addOpenCategory = (category) => {
   openCategory.value = category
   if (user.value){
-    compareGetCategoryFormRequest(openCategory.value).then((res) => {
-      products.value = res;
-      // checkCategory();
-    }).catch((err) => {
-      console.error('Contact form could not be send', err);
-    });
+    if  (category){
+      compareGetCategoryFormRequest(openCategory.value).then((res) => {
+        products.value = res;
+        // checkCategory();
+      }).catch((err) => {
+        console.error('Contact form could not be send', err);
+      });
+    }
   }
 };
 
@@ -212,10 +214,11 @@ const urlCompareCategory = computed(() => config.public.apiBaseUrl + `compares/c
 const compareGetFormRequest = async () => {
   return await $fetch(urlCompare.value , {
     headers: {
-      'Authorization': `Bearer ${useUserStore().getToken().value}`,
       "Accept": "application/json",
       'Content-Type': 'application/json',
     },
+    withCredentials: true,
+    credentials: 'include',
     method: 'GET'
   });
 }
@@ -223,11 +226,12 @@ const compareGetFormRequest = async () => {
 const compareGetCategoryFormRequest = async (category_id) => {
   return await $fetch(urlCompareCategory.value , {
     headers: {
-      'Authorization': `Bearer ${useUserStore().getToken().value}`,
       "Accept": "application/json",
       'Content-Type': 'application/json',
     },
     method: 'GET',
+    withCredentials: true,
+    credentials: 'include',
     params: {
       category_id: category_id,
     },

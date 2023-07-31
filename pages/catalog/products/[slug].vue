@@ -509,12 +509,16 @@
                         </div>
                         <div class="btn-wrap">
                           <div v-if="!pressedBasket">
-                            <Button v-if="windowWidth > 640" @click="addProductToBasket(product)" :pressed="pressedBasket" :disabled_btn="src==='img/835.svg'" :width_btn="10.625" :src_btn="src">В корзину</Button>
-                            <Button v-if="windowWidth <= 640" @click="addProductToBasket(product)" :without_padding="true" :pressed="pressedBasket" :disabled_btn="src==='img/835.svg'" :width_btn="5.625" :src_btn="src"></Button>
+                            <Button v-if="windowWidth > 640" @click="addProductToBasket(product)" :pressed="pressedBasket" :disabled_btn="btn_pending_src !== ''" :width_btn="10.625" :src_btn="btn_pending_src !== '' ? btn_pending_src : src">
+                              {{ btn_pending_src !== '' ? '' : 'В корзину' }}
+                            </Button>
+                            <Button v-if="windowWidth <= 640" @click="addProductToBasket(product)" :without_padding="true" :pressed="pressedBasket" :disabled_btn="btn_pending_src !== ''" :width_btn="5.625" :src_btn="btn_pending_src !== '' ? btn_pending_src : src"></Button>
                           </div>
                           <div v-else>
-                            <Button v-if="windowWidth > 640" :pressed="pressedBasket" :disabled_btn="true" :width_btn="10.625" :src_btn="src">В корзину</Button>
-                            <Button v-if="windowWidth <= 640" :without_padding="true" :pressed="pressedBasket" :disabled_btn="true" :width_btn="5.625" :src_btn="src"></Button>
+                            <Button v-if="windowWidth > 640" :pressed="pressedBasket" :disabled_btn="true" :width_btn="10.625" :src_btn="btn_pending_src !== '' ? btn_pending_src : src">
+                              {{ btn_pending_src !== '' ? '' : 'В корзину' }}
+                            </Button>
+                            <Button v-if="windowWidth <= 640" :without_padding="true" :pressed="pressedBasket" :disabled_btn="true" :width_btn="5.625" :src_btn="btn_pending_src !== '' ? btn_pending_src : src"></Button>
                           </div>
                         </div>
                       </div>
@@ -557,7 +561,9 @@
                   <div class="add" @click="increaseQuantity">+</div>
                 </div>
                 <div class="btn-wrap">
-                  <Button @click="addProductToBasket(product)" :pressed="pressedBasket" :disabled_btn="src==='img/835.svg'" :width_btn="10.625" :src_btn="src">В корзину</Button>
+                  <Button @click="addProductToBasket(product)" :pressed="pressedBasket" :disabled_btn="btn_pending_src !== ''" :width_btn="10.625" :src_btn="btn_pending_src !== '' ? btn_pending_src : src">
+                    {{ btn_pending_src !== '' ? '' : 'В корзину' }}
+                  </Button>
                 </div>
               </div>
             </div>
@@ -1033,6 +1039,7 @@ import {useFavoriteProductStore} from "../../../stores/FavoriteProductStore";
 import {useCompareProductStore} from "../../../stores/CompareProductStore";
 import {useBasketProductsStore} from "../../../stores/BasketProductsStore";
 import {useUserStore} from "../../../stores/UserStore";
+import {useViewedProductsStore} from "../../../stores/ViewedProductsStore.js";
 import CommentsPage from "../../../components/CommentsPage";
 import {computed, ref, onMounted} from "vue";
 
@@ -1109,7 +1116,7 @@ const show = ref(false);
 const showText = () => {
   show.value = !show.value;
 };
-
+const btn_pending_src = ref('');
 const src = ref('img/basket.svg');
 
 const urlBasket = computed(() => config.public.apiBaseUrl + `baskets/${useUserStore().getUser().value.id}`);
@@ -1119,20 +1126,27 @@ const urlCompare = computed(() => config.public.apiBaseUrl + `compares/${useUser
 const addFavoriteProduct = (product) => {
   if  (user.value){
     if (pressedFavorite.value === false) {
+      useFavoriteProductStore().pushProduct(product);
+      useFavoriteProductStore().needUpdate = true;
       favoriteCreateFormRequest(product.id).then((res) => {
-        useFavoriteProductStore().pushProduct(product);
-        useFavoriteProductStore().needUpdate = true;
         console.log(res)
       }).catch((err) => {
+        if(err.status === 401){
+          useUserStore().removeUser();
+        }
+        useFavoriteProductStore().removeProduct(product);
         console.error('Contact form could not be send', err)
       });
     }
     else{
+      useFavoriteProductStore().removeProduct(product);
       favoriteDeleteFormRequest(product.id).then((res) => {
         console.log(res);
-        useFavoriteProductStore().removeProduct(product);
-        emit('deleteUserProduct');
       }).catch((err) => {
+        if(err.status === 401){
+          useUserStore().removeUser();
+        }
+        useFavoriteProductStore().pushProduct(product);
         console.error('Contact form could not be send', err);
       });
     }
@@ -1151,20 +1165,27 @@ const addFavoriteProduct = (product) => {
 const addCompareProduct = (product) => {
   if  (user.value){
     if (pressedCompare.value === false) {
-      console.log(product)
+      useCompareProductStore().pushProduct(product);
+      useCompareProductStore().needUpdate = true;
       compareCreateFormRequest(product.id, product.category_id).then((res) => {
         console.log(res)
-        useCompareProductStore().pushProduct(product);
-        useCompareProductStore().needUpdate = true;
       }).catch((err) => {
+        if(err.status === 401){
+          useUserStore().removeUser();
+        }
+        useCompareProductStore().removeProduct(product);
         console.error('Contact form could not be send', err)
       });
     }
     else{
+      useCompareProductStore().removeProduct(product);
       compareDeleteFormRequest(product.id, product.category_id).then((res) => {
         console.log(res);
-        useCompareProductStore().removeProduct(product);
       }).catch((err) => {
+        if(err.status === 401){
+          useUserStore().removeUser();
+        }
+        useCompareProductStore().pushProduct(product);
         console.error('Contact form could not be send', err);
       });
     }
@@ -1183,15 +1204,18 @@ const addCompareProduct = (product) => {
 
 const addProductToBasket = (product) => {
   if (src.value === 'img/basket.svg'){
-    src.value = 'img/835.svg';
     if  (user.value){
       if (pressedBasket.value === false) {
+        btn_pending_src.value = '/img/835.svg';
         basketCreateFormRequest(product.id).then((res) => {
           useBasketProductsStore().pushProduct(product);
           useBasketProductsStore().needUpdate = true;
-          console.log(res)
+          btn_pending_src.value = '';
         }).catch((err) => {
-          src.value = 'img/basket.svg';
+          if(err.status === 401){
+            useUserStore().removeUser();
+          }
+          btn_pending_src.value = '';
           console.error('Contact form could not be send', err)
         });
       }
@@ -1235,11 +1259,12 @@ setTimeout(() => {
 const favoriteCreateFormRequest = async (product_id) => {
   return await $fetch(urlFavorite.value , {
     headers: {
-      'Authorization': `Bearer ${useUserStore().getToken().value}`,
       "Accept": "application/json",
       'Content-Type': 'application/json',
     },
-    method: 'POST',
+    method: 'PATCH',
+    withCredentials: true,
+    credentials: 'include',
     params: {
       product_id: product_id,
     },
@@ -1249,11 +1274,12 @@ const favoriteCreateFormRequest = async (product_id) => {
 const favoriteDeleteFormRequest = async (product_id) => {
   return await $fetch(urlFavorite.value , {
     headers: {
-      'Authorization': `Bearer ${useUserStore().getToken().value}`,
       "Accept": "application/json",
       'Content-Type': 'application/json',
     },
     method: 'DELETE',
+    withCredentials: true,
+    credentials: 'include',
     params: {
       product_id: product_id,
     },
@@ -1263,11 +1289,12 @@ const favoriteDeleteFormRequest = async (product_id) => {
 const compareCreateFormRequest = async (product_id, category_id) => {
   return await $fetch(urlCompare.value , {
     headers: {
-      'Authorization': `Bearer ${useUserStore().getToken().value}`,
       "Accept": "application/json",
       'Content-Type': 'application/json',
     },
-    method: 'POST',
+    method: 'PATCH',
+    withCredentials: true,
+    credentials: 'include',
     params: {
       category_id: category_id,
       product_id: product_id,
@@ -1276,13 +1303,14 @@ const compareCreateFormRequest = async (product_id, category_id) => {
 }
 
 const compareDeleteFormRequest = async (product_id, category_id) => {
-  return await $fetch(urlFavorite.value , {
+  return await $fetch(urlCompare.value , {
     headers: {
-      'Authorization': `Bearer ${useUserStore().getToken().value}`,
       "Accept": "application/json",
       'Content-Type': 'application/json',
     },
     method: 'DELETE',
+    withCredentials: true,
+    credentials: 'include',
     params: {
       product_id: product_id,
       category_id: category_id,
@@ -1293,11 +1321,12 @@ const compareDeleteFormRequest = async (product_id, category_id) => {
 const basketCreateFormRequest = async (product_id) => {
   return await $fetch(urlBasket.value , {
     headers: {
-      'Authorization': `Bearer ${useUserStore().getToken().value}`,
       "Accept": "application/json",
       'Content-Type': 'application/json',
     },
-    method: 'POST',
+    method: 'PATCH',
+    withCredentials: true,
+    credentials: 'include',
     params: {
       product_id: product_id,
     },
@@ -1353,6 +1382,22 @@ const windowWidth = ref(0);
 const updateWidth = () => {
   windowWidth.value = window.innerWidth;
 };
+setTimeout(() => {
+  if (product.value){
+    useViewedProductsStore().pushProduct({
+      'id': product.value.id,
+      'slug': product.value.slug,
+      'image': product.value.image,
+      'product_name': product.value.product_name,
+      'name': product.value.name,
+      'price': product.value.price,
+      'published': product.value.published,
+      'old_price': product.value.old_price,
+      'units_in_stock': product.value.units_in_stock,
+      'category_id': product.value.category_id,
+    });
+  }
+}, 5000)
 onMounted(()=>{
   updateWidth();
   window.addEventListener('resize', updateWidth);

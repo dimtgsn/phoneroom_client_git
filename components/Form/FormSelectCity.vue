@@ -1,6 +1,7 @@
 <template>
   <div>
     <v-autocomplete
+        class="select-city"
         v-model="city"
         label="Начните вводить название города"
         :disabled="formIsDisabled"
